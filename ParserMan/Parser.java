@@ -22,8 +22,8 @@ public class Parser {
 		boolean value;
 		
 		while(token.getTokenType() != Token.EOF) {
-			value = expr();
-			value &= match(Token.SM);
+			value = ClassDecl();
+			//value &= match(Token.SM);
 			
 			if(!value)
 				return false;
@@ -31,7 +31,107 @@ public class Parser {
 		
 		return true;
 	}
+	private boolean ClassDecl()
+	{
+		boolean value=match("class");
+		value&=match(Token.ID);
+		value&=match(Token.LB);
+		value&=MethodDecls();
+		value&=match(Token.RB);
+
+		return value;
+	}
 	
+	private boolean MethodDecls()
+	{
+		//Handle Epsilon case
+		if(token.getTokenType()==Token.RB)
+			return true;
+		
+		boolean value=true;
+		while(true)
+		{
+			if(token.getLexeme().equals("static"))
+			{
+				value&=MethodDecl();
+			}else break;
+		}
+		return value;
+	}
+	private boolean MethodDecl()
+	{
+		boolean value=match("static");
+		value&=Type();
+		value&=match(Token.ID);
+		value&=match(Token.LP);
+		value&=FormalParams();
+		value&=match(Token.RP);
+		//TODO match block value&=Block();
+		return value;
+	}
+	private boolean FormalParams(){
+	
+		//Handle Epsilon case
+		if(token.getTokenType()==Token.RP)
+			return true;
+		
+		return ProperFormalParams();
+	
+	}
+	private boolean ProperFormalParams(){
+		
+		boolean value=FormalParam();
+		value&=ProperFormalParamsPRIME();
+		return value;
+	}
+	private boolean ProperFormalParamsPRIME(){
+		
+		//Handle Epsilon case
+		if(token.getTokenType()==Token.RP)
+			return true;
+		
+		boolean value=true;
+		
+		while(true)
+		{
+			if(token.getLexeme().equals(","))
+			{
+				value&=match(",");
+				value&=FormalParam();
+			}else break;
+				
+		}
+		return value;
+		}
+		
+	
+	private boolean FormalParam(){
+		
+		boolean value=Type();
+		value&=match(Token.ID);
+
+		return value;
+	}
+	private boolean Type()
+	{
+		boolean value=false;
+		
+		if(token.getLexeme().equals("int") || token.getLexeme().equals("float")
+			|| token.getLexeme().equals("boolean") || token.getLexeme().equals("String"))
+		{
+			value=match(token.getTokenType());
+		}
+		return value;
+		
+	}
+	private boolean Block(){
+		
+		boolean value=match(Token.LB);
+		//TODO value&=Statements();
+		value&=match(Token.RB);
+		return value;
+		
+	}
 	private boolean expr(){
 		boolean value = term();
 
@@ -75,6 +175,15 @@ public class Parser {
 		}
 	}
 
+	// matches token against lexeme and advances to next token.
+	private boolean match(String lexeme){
+		if(token.getLexeme().equals(lexeme)){
+			token=lexer.nextToken();
+			return true;
+		}else 
+			return false;
+	}
+	// matches token against type and advances to next token.
 	private boolean match(int t) {
 		if (token.getTokenType() == t) {
 			token = lexer.nextToken();
