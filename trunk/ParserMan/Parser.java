@@ -129,13 +129,13 @@ public class Parser {
 		
 		boolean value = match(Token.LB);
 		
-		System.out.println("Matching value in block: " + value);
+		// System.out.println("Matching value in block: " + value);
 		value&=Statements();
 		
-		System.out.println("matching statements in block: " + value);
+		// System.out.println("matching statements in block: " + value);
 		value&=match(Token.RB);
 		
-		System.out.println("RB in Block: " + value);
+		// System.out.println("RB in Block: " + value);
 		return value;
 		
 	}
@@ -147,7 +147,7 @@ public class Parser {
 	
 	public boolean Statements()
 	{
-		System.out.println("Hello I am from statemetns");
+		// System.out.println("Hello I am from statemetns");
 		//Handle Epsilon case
 		if(token.getTokenType()==Token.RB)
 			return true;
