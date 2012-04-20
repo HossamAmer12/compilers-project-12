@@ -1,5 +1,5 @@
 class GoodJob
 {
-static int findMeAJob (int c,boolean lol)
-static int whyDoIHaveAJob()
+static int findMeAJob (int c,boolean lol){}
+static int whyDoIHaveAJob(){}
 }
