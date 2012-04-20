@@ -66,6 +66,7 @@ public class Parser {
 		value&=match(Token.LP);
 		value&=FormalParams();
 		value&=match(Token.RP);
+		value&=Block();
 		//TODO match block value&=Block();
 		return value;
 	}
@@ -126,12 +127,33 @@ public class Parser {
 	}
 	private boolean Block(){
 		
-		boolean value=match(Token.LB);
-		//TODO value&=Statements();
+		boolean value = match(Token.LB);
+		
+		System.out.println("Matching value in block: " + value);
+		value&=Statements();
+		
+		System.out.println("matching statements in block: " + value);
 		value&=match(Token.RB);
+		
+		System.out.println("RB in Block: " + value);
 		return value;
 		
 	}
+	
+	/**
+	* Checks for the statements grammar
+	* @author Hossam_Amer
+	**/
+	
+	public boolean Statements()
+	{
+		System.out.println("Hello I am from statemetns");
+		//Handle Epsilon case
+		if(token.getTokenType()==Token.RB)
+			return true;
+
+	}
+	
 	private boolean expr(){
 		boolean value = term();
 
