@@ -197,14 +197,22 @@ public class Parser {
 	// TODO
 	public boolean IfStmt()
 	{
-		boolean value = match("if");
-		value &= match(Token.LP);
-		value &= Expression();
-		token = lexer.nextToken();// Expression not implemented
 		
+		System.out.println("\nHello From IF Statment! :D");
+		boolean value = match("if");
+		System.out.println("IfStmt: if: " + value + ", " + token.getLexeme());
+		value &= match(Token.LP);
+		System.out.println("IfStmt: LP: " + value + ", " + token.getLexeme());		
+		value &= Expression();
+		System.out.println("IfStmt: Expression: " + value + ", " + token.getLexeme());		
+		// token = lexer.nextToken();// Expression not implemented
 		value &= match(Token.RP);
-		value &= match(Statement());
+		System.out.println("IfStmt: RP: " + value + ", " + token.getLexeme());		
+
+		value &= Statement();
+		System.out.println("IfStmt: Statement: " + value + ", " + token.getLexeme());				
 		value &= IfStmtHelper();
+		System.out.println("IfStmt: IfStmtHelper: " + value + ", " + token.getLexeme());		
 				
 		return value;
 	}
@@ -212,7 +220,18 @@ public class Parser {
 	
 	public boolean IfStmtHelper()
 	{
+		if(token.getLexeme().equals("else"))
+		{
+			boolean value = match("else");
+			System.out.println("IfStmtHelper: else: " + value + ", " + token.getLexeme());
+			
+			value &= Statement();// XXX not sure for dangling else
+			
+			return value;
+		}
+		
 		return true;
+
 	}
 	
 	// TODO
