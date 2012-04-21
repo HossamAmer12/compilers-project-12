@@ -130,13 +130,13 @@ public class Parser {
 		
 		boolean value = match(Token.LB);
 		
-		// System.out.println("Matching value in block: " + value);
+		System.out.println("Matching LB in block: " + value + ", " + token.getLexeme());		
 		value&=Statements();
 		
-		// System.out.println("matching statements in block: " + value);
+		 System.out.println("Matching Statements in block: " + value + ", " + token.getLexeme());		
 		value&=match(Token.RB);
 		
-		 // System.out.println("RB in Block: " + value);
+		System.out.println("Matching RB in Block: " + value + ", " + token.getLexeme());		
 		return value;
 		
 	}
@@ -194,18 +194,42 @@ public class Parser {
 				return value;
 	}
 	
+	// TODO
 	public boolean IfStmt()
+	{
+		boolean value = match("if");
+		value &= match(Token.LP);
+		value &= Expression();
+		token = lexer.nextToken();// Expression not implemented
+		
+		value &= match(Token.RP);
+		value &= match(Statement());
+		value &= IfStmtHelper();
+				
+		return value;
+	}
+	
+	
+	public boolean IfStmtHelper()
 	{
 		return true;
 	}
 	
+	// TODO
 	public boolean WhileStmt()
 	{
+		System.out.println("Hello from While! ");
 		boolean value = match("while");
+		System.out.println("I matched the while: " + value + ", " + token.getLexeme());
 		value &= match(Token.LP);
+		System.out.println("I matched the LP: " + value+ ", " + token.getLexeme());
 		value &= Expression();
+		System.out.println("I matched the Expression: " + value + ", " + token.getLexeme());
 		value &= match(Token.RP);
+		System.out.println("I matched the RP: " + value + ", " + token.getLexeme());
 		value &= Statement();
+		// token = lexer.nextToken();
+		System.out.println("I matched the Statement: " + value + ", " + token.getLexeme());
 		
 		return value;
 	}
@@ -221,22 +245,35 @@ public class Parser {
 	public boolean LocalVarDecl()
 	{
 		boolean value = Type();
-		value &= match(Token.ID);
-		value &= match(Token.SM);
 		
+		System.out.println("LocalVarDecl(1): Type: " + value+ ", " + token.getLexeme());		
+		value &= match(Token.ID);
+		System.out.println("LocalVarDecl(2): ID: " + value+ ", " + token.getLexeme());		
+		value &= match(Token.SM);
+		System.out.println("LocalVarDecl(3): SM: " + value + ", " + token.getLexeme());		
+		
+
 		return value;
 	}
 
 	public boolean AssignStmt()
 	{
 		boolean value = match(Token.ID);
-		value &= match(Token.EQ);
+		
+		System.out.println("AssignStmt: Matching ID: " + value+ ", " + token.getLexeme());		
+		value &= match(Token.AO);
+		System.out.println("AssignStmt: Matching AO: " + value + ", " + token.getLexeme());		
 		value &= Expression();
+		
+		System.out.println("AssignStmt: Matching Expression: " + value + ", " + token.getLexeme());		
+		token = lexer.nextToken(); // XXX Done since Expression is not done
 		value &= match(Token.SM);
+		System.out.println("AssignStmt: Matching SM: " + value + ", " + token.getLexeme());		
 		
 		return value;
 	}
 	
+	// TODO
 	public boolean Expression()
 	{
 		return true;

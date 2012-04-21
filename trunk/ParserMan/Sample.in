@@ -5,5 +5,12 @@ static int whyDoIHaveAJob()
 {
 	int x;
 	int y;
+	while()
+	{
+		x = 3;
+		y = 4;
+		z = 12;
+		
+	}
 }
 }
