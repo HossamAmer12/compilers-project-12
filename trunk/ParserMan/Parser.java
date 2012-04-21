@@ -39,6 +39,7 @@ public class Parser {
 		value&=MethodDecls();
 		value&=match(Token.RB);
 
+		// System.out.println(value + " > Class Decl"); // class{ case!
 		return value;
 	}
 	
@@ -135,7 +136,7 @@ public class Parser {
 		// System.out.println("matching statements in block: " + value);
 		value&=match(Token.RB);
 		
-		// System.out.println("RB in Block: " + value);
+		 // System.out.println("RB in Block: " + value);
 		return value;
 		
 	}
@@ -151,9 +152,96 @@ public class Parser {
 		//Handle Epsilon case
 		if(token.getTokenType()==Token.RB)
 			return true;
+			
+			return StatementsPrime();
 
 	}
 	
+	public boolean StatementsPrime()
+	{
+		boolean value = Statement();
+		
+		return value;
+	}
+	
+	public boolean Statement()
+	{
+		
+		boolean value = true;
+	
+		while(true)
+		{
+		
+			if(token.getLexeme().equals("int") || token.getLexeme().equals("float")
+				|| token.getLexeme().equals("boolean") || token.getLexeme().equals("String"))
+					value &= LocalVarDecl();
+				else if (token.getTokenType() == Token.ID)		
+					value &= AssignStmt();
+				else if(token.getLexeme().equals("if"))	
+					value &= IfStmt();
+				else if(token.getLexeme().equals("while"))
+					value &= WhileStmt();
+				else if (token.getLexeme().equals("return"))
+					value &= ReturnStmt();
+				else if(token.getTokenType() == Token.LB)
+				 		value &= Block();
+					else if (token.getTokenType() == Token.RB)
+						break;
+					else
+						return false; // To avoid infinite loop when having a statement
+	
+		}		
+				return value;
+	}
+	
+	public boolean IfStmt()
+	{
+		return true;
+	}
+	
+	public boolean WhileStmt()
+	{
+		boolean value = match("while");
+		value &= match(Token.LP);
+		value &= Expression();
+		value &= match(Token.RP);
+		value &= Statement();
+		
+		return value;
+	}
+	
+	public boolean ReturnStmt()
+	{
+		boolean value = match("return");
+		value &= Expression();
+		
+		return value;
+	}
+	
+	public boolean LocalVarDecl()
+	{
+		boolean value = Type();
+		value &= match(Token.ID);
+		value &= match(Token.SM);
+		
+		return value;
+	}
+
+	public boolean AssignStmt()
+	{
+		boolean value = match(Token.ID);
+		value &= match(Token.EQ);
+		value &= Expression();
+		value &= match(Token.SM);
+		
+		return value;
+	}
+	
+	public boolean Expression()
+	{
+		return true;
+	}
+		
 	private boolean expr(){
 		boolean value = term();
 
