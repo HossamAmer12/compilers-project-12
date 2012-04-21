@@ -12,5 +12,13 @@ static int whyDoIHaveAJob()
 		z = 12;
 		
 	}
+	
+	if()
+	{
+		x = 3;
+		y = 3;
+		int z;
+
+	}
 }
 }
