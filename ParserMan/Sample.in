@@ -20,5 +20,24 @@ static int whyDoIHaveAJob()
 		int z;
 
 	}
+	else
+	{
+		x = 12;
+		hashas = 12;
+	}
+	
+	if()
+	{
+	  hashas = 1;
+	}
+	else if()
+	{
+	 hashas = 2;
+	}
+	else
+	{
+		hashas = 3;
+	}
+	
 }
 }

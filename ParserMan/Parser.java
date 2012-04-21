@@ -187,6 +187,8 @@ public class Parser {
 				 		value &= Block();
 					else if (token.getTokenType() == Token.RB)
 						break;
+					//  else if (token.getLexeme().equals("else"))
+					// {	value &= IfStmtHelper();}	
 					else
 						return false; // To avoid infinite loop when having a statement
 	
@@ -205,17 +207,48 @@ public class Parser {
 		System.out.println("IfStmt: LP: " + value + ", " + token.getLexeme());		
 		value &= Expression();
 		System.out.println("IfStmt: Expression: " + value + ", " + token.getLexeme());		
-		// token = lexer.nextToken();// Expression not implemented
-
+		// token = lexer.nextToken();//XXX Expression not implemented
 		value &= match(Token.RP);
 		System.out.println("IfStmt: RP: " + value + ", " + token.getLexeme());		
 
-		value &= Statement();
+		value &= IfStmtInsideHelper();
 		System.out.println("IfStmt: Statement: " + value + ", " + token.getLexeme());				
-		value &= IfStmtHelper();
+		// value &= IfStmtHelper();
 		System.out.println("IfStmt: IfStmtHelper: " + value + ", " + token.getLexeme());		
 				
 		return value;
+	}
+	
+	
+	public boolean IfStmtInsideHelper()
+	{
+		boolean value = true;
+	
+		while(true)
+		{
+		
+			if(token.getLexeme().equals("int") || token.getLexeme().equals("float")
+				|| token.getLexeme().equals("boolean") || token.getLexeme().equals("String"))
+					value &= LocalVarDecl();
+				else if (token.getTokenType() == Token.ID)		
+					value &= AssignStmt();
+				else if(token.getLexeme().equals("if"))	
+					value &= IfStmt();
+				else if(token.getLexeme().equals("while"))
+					value &= WhileStmt();
+				else if (token.getLexeme().equals("return"))
+					value &= ReturnStmt();
+				else if(token.getTokenType() == Token.LB)
+				 		value &= Block();
+					else if (token.getTokenType() == Token.RB)
+						break;
+					 else if (token.getLexeme().equals("else"))
+					 {	value &= IfStmtHelper();}	
+					else
+						return false; // To avoid infinite loop when having a statement
+	
+		}		
+				return value;	
 	}
 	
 	
@@ -223,14 +256,20 @@ public class Parser {
 	{
 		if(token.getLexeme().equals("else"))
 		{
-			boolean value = match("else");
+			boolean value = false;
+			value = match("else");
 			System.out.println("IfStmtHelper: else: " + value + ", " + token.getLexeme());
 			
-			value &= Statement();// XXX not sure for dangling else
+			// Did like that to make sure that there if there is an else after an if > Go!
+			 value &= Statement();// XXX not sure for dangling else
+				
+			
+			System.out.println("IfStmtHelper: Statement: " + value + ", " + token.getLexeme());
 			
 			return value;
 		}
 		
+		// For the epsilon case, no else
 		return true;
 
 	}
