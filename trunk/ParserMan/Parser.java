@@ -206,6 +206,7 @@ public class Parser {
 		value &= Expression();
 		System.out.println("IfStmt: Expression: " + value + ", " + token.getLexeme());		
 		// token = lexer.nextToken();// Expression not implemented
+
 		value &= match(Token.RP);
 		System.out.println("IfStmt: RP: " + value + ", " + token.getLexeme());		
 
