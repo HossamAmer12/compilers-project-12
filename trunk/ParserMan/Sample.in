@@ -5,23 +5,14 @@ static int whyDoIHaveAJob()
 {
 	int a;
 	int b;
-	while(d==3)
+	
+	return false;
+	while(d!= hashas)
 	{
 		e = 3;
 		f = 4;
 		g = 12;
 		
-	}
-	
-	if(h!=3)
-	{
-		int i;
-		J = j + j;
-		ff = 2 + 2;
-	}
-	else
-	{
-		k = 3;
 	}
 		
 }
