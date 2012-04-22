@@ -159,12 +159,27 @@ public class Parser {
 	
 	public boolean StatementsPrime()
 	{
-		boolean value = Statement();
+		if(willGoStatement())
+		{
+			boolean value = Statement();
+			System.out.println("StatementsPrime: Matching Statement: " + value + ", " + token.getLexeme());
+			return value;
+		}
 		
+		return true;
 		// XXXX possible problem: not calling statementsPrime!
 		
 		
-		return value;
+		// return value;
+	}
+	
+	public boolean willGoStatement()
+	{
+		return token.getLexeme().equals("int") || token.getLexeme().equals("float")
+			|| token.getLexeme().equals("boolean") || token.getLexeme().equals("String") ||
+			token.getTokenType() == Token.ID || token.getLexeme().equals("if") ||
+			token.getLexeme().equals("while") || token.getTokenType() == Token.LB ||
+			token.getTokenType() == Token.RB;
 	}
 	
 	public boolean Statement()
@@ -300,7 +315,12 @@ public class Parser {
 	public boolean ReturnStmt()
 	{
 		boolean value = match("return");
+		
+		System.out.println("ReturnStmt: I matched the return: " + value + ", " + token.getLexeme());
 		value &= Expression();
+		System.out.println("ReturnStmt: I matched the Expression: " + value + ", " + token.getLexeme());
+		value &= match(Token.SM);
+		System.out.println("ReturnStmt: I matched the SM: " + value + ", " + token.getLexeme());
 		
 		return value;
 	}
@@ -522,14 +542,14 @@ public class Parser {
 			token = lexer.nextToken(); // to advance to the next token after finishing the Comparison methods
 			return true;
 		}
-		else if(token.getTokenType() == Token.RP)
+		else if(token.getTokenType() == Token.LP)
 		{
-			boolean value = match(Token.RP);
-			System.out.println("PrimaryExpr: Matching RP: " + value + ", " + token.getLexeme());
+			boolean value = match(Token.LP);
+			System.out.println("PrimaryExpr: Matching LP: " + value + ", " + token.getLexeme());
 			value &= Expression();
 			System.out.println("PrimaryExpr: Matching Expression: " + value + ", " + token.getLexeme());
-			value &= match(Token.LP);
-			System.out.println("PrimaryExpr: Matching LP: " + value + ", " + token.getLexeme());
+			value &= match(Token.RP);
+			System.out.println("PrimaryExpr: Matching RP: " + value + ", " + token.getLexeme());
 		}
 		else if(token.getTokenType() == Token.ID)
 		{
@@ -542,10 +562,19 @@ public class Parser {
 			{
 				value &= match(Token.RP);
 				System.out.println("PrimaryExpr: Matching RP: " + value + ", " + token.getLexeme());
-				value &= ActualParams();
-				System.out.println("PrimaryExpr: Matching ActualParams: " + value + ", " + token.getLexeme());
-				value &= match(Token.LP);
-				System.out.println("PrimaryExpr: Matching LP: " + value + ", " + token.getLexeme());
+				
+				
+				// Look ahead to check for epsilon in case of ActualParams
+				// if not LP, then it must be ActualParams, afterwards, match the LP either ways
+				if(token.getTokenType() != Token.LP)
+				{
+					value &= ActualParams();
+					System.out.println("PrimaryExpr: Matching ActualParams: " + value + ", " + token.getLexeme());
+				}
+					value &= match(Token.LP);
+					System.out.println("PrimaryExpr: Matching LP: " + value + ", " + token.getLexeme());
+					
+				
 			}
 			
 			return value;
@@ -555,10 +584,39 @@ public class Parser {
 	}	
 	
 	public boolean ActualParams()
-	{
-		return true;
+	{ 
+		return ProperActualParams();
 	}
 	
+	public boolean ProperActualParams()
+	{
+		boolean value = Expression();
+		System.out.println("ProperActualParams: Matching Expression: " + value + ", " + token.getLexeme());
+		
+		value &= ProperActualParamsPrime();
+		System.out.println("ProperActualParams: Matching Expression: " + value + ", " + token.getLexeme());
+		return value;
+		
+	}
+	
+	public boolean ProperActualParamsPrime()
+	{
+		if(token.getTokenType() == Token.FA)
+		{
+			boolean value = match(Token.FA);// ,
+			System.out.println("ProperActualParamsPrime: Matching FA: " + value + ", " + token.getLexeme());
+
+			value &= Expression();
+			System.out.println("ProperActualParamsPrime: Matching Expression: " + value + ", " + token.getLexeme());
+			value &= ProperActualParamsPrime();
+			System.out.println("ProperActualParamsPrime: Matching ProperActualParamsPrime: " + value + ", " + token.getLexeme());
+
+			return value;
+			
+		}
+		
+		return true;
+	}
 		
 	private boolean expr(){
 		boolean value = term();
