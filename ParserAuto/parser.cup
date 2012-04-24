@@ -1,0 +1,75 @@
+
+import java_cup.runtime.*;
+	
+/* Terminals (tokens returned by the scanner). */
+terminal			SM, PO, MO, TO, DO, NM,FA,LP,RP,RB,LB,AO,MD,EQ,NE,LO,LA,BL,ST,ID,ERROR;
+terminal			KW_class, KW_static, KW_else, KW_if, KW_float, KW_boolean, KW_String, KW_return, KW_while, KW_int;
+ 	
+/* Non-terminals */
+nonterminal	Boolean		ClassDecl;
+nonterminal MethodDecls,MethodDecl,Type,Block,FormalParams,ProperFormalParams,FormalParam,Statements,Statement;
+nonterminal LocalVarDecl,AssignStmt,IfStmt,WhileStmt,ReturnStmt,Expression,ConditionalAndExpr,EqualityExpr;
+nonterminal AdditiveExpr,MultiplicativeExpr,PrimaryExpr,CallExpr,ActualParams,ProperActualParams,StatementsPrime;
+
+
+/* Precedences */
+precedence left PO, MO;
+precedence left TO, DO;
+precedence left KW_else;
+
+/* The grammar */
+
+
+ClassDecl ::= KW_class ID LB MethodDecls  RB
+              {:RESULT = true;:} | ERROR {:RESULT = false;:}  ;
+              
+MethodDecls ::= MethodDecls MethodDecl | ;
+
+MethodDecl  ::= KW_static Type ID LP FormalParams RP Block;
+
+FormalParams ::= ProperFormalParams | ;
+
+ProperFormalParams ::= ProperFormalParams FA FormalParam | FormalParam;
+
+FormalParam ::= Type ID;
+
+Type ::= KW_int | KW_float | KW_boolean | KW_String;
+
+Block ::= LB Statements RB;
+
+Statements ::= StatementsPrime;
+
+StatementsPrime::= Statement StatementsPrime | ;
+
+Statement ::= Block | LocalVarDecl | AssignStmt | IfStmt | WhileStmt | ReturnStmt;
+
+LocalVarDecl ::= Type ID SM ;
+
+AssignStmt ::= ID AO Expression SM ;
+
+IfStmt ::= KW_if LP Expression RP Statement | KW_if LP Expression RP Statement KW_else Statement;
+
+WhileStmt ::= KW_while LP Expression RP Statement;
+
+ReturnStmt ::= KW_return Expression SM ;
+
+Expression ::= ConditionalAndExpr | Expression LO ConditionalAndExpr;
+
+ConditionalAndExpr ::= EqualityExpr | ConditionalAndExpr LA EqualityExpr;
+
+EqualityExpr ::= AdditiveExpr | EqualityExpr EQ AdditiveExpr | EqualityExpr NE AdditiveExpr;
+
+AdditiveExpr ::= MultiplicativeExpr | AdditiveExpr PO MultiplicativeExpr | AdditiveExpr MO MultiplicativeExpr;
+
+MultiplicativeExpr::= PrimaryExpr | MultiplicativeExpr TO PrimaryExpr | MultiplicativeExpr DO PrimaryExpr | MultiplicativeExpr MD PrimaryExpr;
+
+PrimaryExpr ::= NM | BL | ST | ID | CallExpr | LP Expression RP;
+
+CallExpr ::= ID LP ActualParams RP;
+
+ActualParams::= ProperActualParams | ;
+
+ProperActualParams::= ProperActualParams FA Expression | Expression;
+
+
+	
