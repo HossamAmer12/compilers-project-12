@@ -1,0 +1,173 @@
+import java.io.*;
+import java_cup.runtime.Symbol;
+
+%%
+%class Lexer
+%implements java_cup.runtime.Scanner
+%function next_token
+%type java_cup.runtime.Symbol
+
+%eofval{
+return null;
+%eofval}
+
+%{
+  private int comment_count = 0;
+%} 
+%line
+%char
+
+%state COMMENTS
+%state SINGLE_LINE_COMMENTS
+
+ALPHA=[A-Za-z_]
+DIGIT=[0-9]
+NUMBER = {DIGIT}+(\.{DIGIT}+)?
+
+BOOLEAN = true|false
+
+KEYWORD = static|class|else|if|float|boolean|String|return|while|int
+ 
+ALPHA_NUMERIC={ALPHA}|{DIGIT}
+IDENT= {ALPHA}({ALPHA_NUMERIC})*
+
+WHITE_SPACE=([\ \b\n\r\t\f])+
+
+SYMBOLS = ([;,(){}=+-*/%!|&.])+
+
+SPACE=([\ \b\t\f])+
+
+STRINGS_TEXT = \"({ALPHA_NUMERIC}*({SYMBOLS})*({SPACE})*)*\"
+
+WRONG_STRING_ENDINGS = ([\n\r])+
+
+STRINGS_TEXT_ERROR = \"({ALPHA_NUMERIC}*({SYMBOLS})*({SPACE})*)*({WRONG_STRING_ENDINGS})*
+
+COMMENT_TEXT= ({ALPHA_NUMERIC}*({SYMBOLS})*({WHITE_SPACE})*)*
+
+%%
+
+<YYINITIAL> "/*" { yybegin(COMMENTS); comment_count = comment_count + 1; }
+
+<YYINITIAL> class { return new Symbol(sym.KW_class, yytext()); }
+<YYINITIAL> static { return new Symbol(sym.KW_static, yytext()); }
+<YYINITIAL> else { return new Symbol(sym.KW_else, yytext()); }
+<YYINITIAL> if { return new Symbol(sym.KW_if, yytext()); }
+<YYINITIAL> float { return new Symbol(sym.KW_float, yytext()); }
+<YYINITIAL> boolean { return new Symbol(sym.KW_boolean, yytext()); }
+<YYINITIAL> String { return new Symbol(sym.KW_String, yytext()); }
+<YYINITIAL> return { return new Symbol(sym.KW_return, yytext()); }
+<YYINITIAL> while { return new Symbol(sym.KW_while, yytext()); }
+<YYINITIAL> int { return new Symbol(sym.KW_int, yytext()); }
+
+<YYINITIAL> "//" { yybegin(SINGLE_LINE_COMMENTS);}
+
+<SINGLE_LINE_COMMENTS> [^\n] {}
+
+<SINGLE_LINE_COMMENTS> [\n] { yybegin(YYINITIAL); }
+
+
+<COMMENTS> "/*" { comment_count = comment_count + 1; }
+<COMMENTS> "*/" { 
+	comment_count = comment_count - 1; 
+	
+	if (comment_count == 0) {
+    		yybegin(YYINITIAL);
+	}
+}
+<COMMENTS> {COMMENT_TEXT} { }
+
+
+<YYINITIAL> {STRINGS_TEXT_ERROR} { 
+	return new Symbol(sym.ERROR, "Invalid String Literal");
+}
+
+<YYINITIAL> {STRINGS_TEXT} { 
+	return new Symbol(sym.ST, yytext());
+}
+
+
+<YYINITIAL> {NUMBER} { 
+	return new Symbol(sym.NM, yytext());
+}
+
+<YYINITIAL> {BOOLEAN} { 
+	return new Symbol(sym.BL, yytext());
+}
+
+<YYINITIAL> {KEYWORD} { 
+	return new Symbol(sym.KW, yytext());
+}
+
+<YYINITIAL> {IDENT} { 
+	return new Symbol(sym.ID, yytext());
+}
+
+
+<YYINITIAL> {WHITE_SPACE} { }
+
+
+<YYINITIAL> ";" { 
+  return new Symbol(sym.SM, yytext());	
+}
+
+<YYINITIAL> "{" { 
+  return new Symbol(sym.LB, yytext());	
+}
+
+<YYINITIAL> "-" { 
+  return new Symbol(sym.MO, yytext());	
+}
+
+<YYINITIAL> "==" { 
+  return new Symbol(sym.EQ, yytext());	
+}
+
+<YYINITIAL> "," { 
+  return new Symbol(sym.FA, yytext());	
+}
+
+<YYINITIAL> "}" { 
+  return new Symbol(sym.RB, yytext());	
+}
+
+<YYINITIAL> "!=" { 
+  return new Symbol(sym.NE, yytext());	
+}
+
+<YYINITIAL> "(" { 
+  return new Symbol(sym.LP, yytext());	
+}
+
+<YYINITIAL> "=" { 
+  return new Symbol(sym.AO, yytext());	
+}
+
+<YYINITIAL> "/" { 
+  return new Symbol(sym.DO, yytext());	
+}
+
+<YYINITIAL> "||" { 
+  return new Symbol(sym.LO, yytext());	
+}
+
+<YYINITIAL> ")" { 
+  return new Symbol(sym.RP, yytext());	
+}
+
+<YYINITIAL> "+" { 
+  return new Symbol(sym.PO, yytext());
+} 
+
+
+<YYINITIAL> "%" { 
+  return new Symbol(sym.MD, yytext());	
+}
+
+<YYINITIAL> "&&" { 
+  return new Symbol(sym.LA, yytext());
+} 
+
+<YYINITIAL, COMMENTS, SINGLE_LINE_COMMENTS> . {
+        return new Symbol(sym.ERROR, "Invalid Input: " + yytext(	));
+}
