@@ -1,0 +1,5 @@
+class Algebra {
+	static boolean isPrime() // Returns true if c is prime.
+	{}
+	
+}
