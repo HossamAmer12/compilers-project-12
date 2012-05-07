@@ -6,7 +6,12 @@ public class ProperFormalParams
 	public static final int SM = 1;
 	
 	public ProperFormalParams()
+	{}
+	
+	public String toString()
 	{
-		
+		return "";
 	}
+	
+	
 }

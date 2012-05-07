@@ -14,9 +14,9 @@ import java.util.ArrayList;
 
 public class ClassDecl {
 	
-	// public MethodDecls mDecls;
+	public MethodDecls methodDelcs;
 	
-	public ArrayList<MethodDecl> mDecls;
+	// public ArrayList<MethodDecl> mDecls;
 	
 	public static final int LB = 1;
 	public static final int RB = 2;
@@ -26,35 +26,38 @@ public class ClassDecl {
 	
 	public ClassDecl() {
 		
-		this.mDecls = new ArrayList<MethodDecl> ();
+		// this.mDecls = new ArrayList<MethodDecl> ();
 	}
 	
-	// public ClassDecl(MethodDecls mDecls)
-	// {
-	// 	this.mDecls = mDecls;
-	// }
-	
+	public ClassDecl(MethodDecls mDecls)
+	{
+			this.methodDelcs = mDecls;
+	}
+		
 	public String toString() {
+		
+
 		
 		String ret = "Class\n";
 		
 		String s = "";
-		
-		
-		if(mDecls.size() != 0) {
-			s += mDecls.toString();
-			// if(op == PO)
-			// 	s += "+\n";
-			// else
-			// 	s += "-\n";
-		}
-		
-		// s += tr.toString();
-		
-		for(String st: s.split("\n"))
-			ret += "| " + st + "\n";
-		
-		return ret;
+		// if(methodDelcs != null) {
+			
+
+			s += methodDelcs.toString();
+				// if(op == PO)
+				// 	s += "+\n";
+				// 	else
+					// s += "-\n";
+			// }
+
+				// s += tr.toString();
+
+				for(String st: s.split("\n"))
+					ret += "| " + st + "\n";
+
+
+				return ret;
 	
 	}
 	
