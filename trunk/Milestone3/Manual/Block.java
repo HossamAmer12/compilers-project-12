@@ -4,6 +4,17 @@ public class Block
 	
 	public Block()
 	{
-		
+	
 	}
+	
+	public Block(Statements statements)
+	{
+		this.statements = statements;
+	}
+	
+	public String toString()
+	{
+		return "";
+	}
+	
 }

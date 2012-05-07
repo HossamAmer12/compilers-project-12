@@ -1,5 +1,7 @@
 class Algebra {
 	static boolean isPrime(int c) // Returns true if c is prime.
-	{}
+	{
+		int x;
+	}
 	
 }
