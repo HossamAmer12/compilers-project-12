@@ -1,17 +1,32 @@
-public class MethodDecls
+import java.util.ArrayList;
+
+public class MethodDecls extends ArrayList<MethodDecl>
 {
-	
-	public MethodDecl mDecl;
-	public MethodDecls mDecls;
 	
 	public MethodDecls()
 	{
+		super();
 		// this();
 	}
 	
 	public String toString()
 	{
-		return "";
+			String ret = "MethodDecls\n";
+
+			String s = "";
+
+			for(MethodDecl x: this)
+			{
+
+				s += x.toString() + "\n";
+			}
+
+			for(String st: s.split("\n"))
+				ret += "| " + st + "\n";
+
+
+			return ret;		
+
 	}
 	
 	

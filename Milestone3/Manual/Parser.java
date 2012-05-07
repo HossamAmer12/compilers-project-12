@@ -51,43 +51,50 @@ public class Parser {
 		match(Token.ID);
 		match(Token.LB);
 		
-		classRoot.mDecls = methodDecls();
+		classRoot = new ClassDecl(methodDecls());
 
+		// System.out.println("Class Root: "+ classRoot.methodDelcs.size());
+		// System.out.println("====================================");
+		// System.out.println("Class Root: "+ classRoot.methodDelcs);
+				// System.out.println("====================================");
+		
 		match(Token.RB);
 
 		// return new ClassDecl();
 	}
 	
-	private ArrayList<MethodDecl> methodDecls() throws SyntaxException
+	private MethodDecls methodDecls() throws SyntaxException
 	{
-	
 		//Handle Epsilon case
 		if(token.getTokenType()==Token.RB)
-			return new ArrayList<MethodDecl>();
+			return null;
 		
-			ArrayList <MethodDecl> value = new ArrayList<MethodDecl>();
-
+		MethodDecls value = new MethodDecls();
 		while(true)
 		{
 			if(token.getLexeme().equals("static"))
 			{
+				// value &=MethodDecl();
 				value.add(methodDecl());
-				// value&=MethodDecl();
 			}else break;
 		}
 		return value;
+		
 	}
-	
+
 	private MethodDecl methodDecl() throws SyntaxException 
 	{
-		
-		
+	
 		match("static");
-		Type();
 		
+		Type();			
+		
+		String methodID = token.getLexeme();
 		match(Token.ID);
 		match(Token.LP);
 		
+		FormalParams formalParams = formalParams();
+		// value.formalParams = formalParams();
 		
 		// FormalParams formalParams = formalParams();
 		match(Token.RP);
@@ -98,7 +105,8 @@ public class Parser {
 	
 		// value&=Block();
 		
-		return new MethodDecl();
+		// return new MethodDecl();
+		return new MethodDecl(new Type(), formalParams, new Block(), methodID);
 	}
 	
 	private void Type() throws SyntaxException {
@@ -111,35 +119,31 @@ public class Parser {
 				throw new SyntaxException("Cannot Match Tokens");		
 	}
 	
-	// the structure of the formal parameters??S
+	// the structure of the formal parameters
 	private FormalParams formalParams() throws SyntaxException {
 	
+		FormalParams formalParams = new FormalParams();
+
 		//Handle Epsilon case
-		if(token.getTokenType()==Token.RP)
-			return new FormalParams();
+		while(token.getTokenType()!=Token.RP)
+		{
+			formalParams.add(formalParam());
+		}
 		
-		return new FormalParams(properFormalParams());
+		return formalParams;
 		// return true;
 	
 	}
 	
-	private ProperFormalParams properFormalParams() throws SyntaxException{
+	private ArrayList<FormalParam> properFormalParams() throws SyntaxException{
 		
-		formalParam();
-		// boolean value &= ProperFormalParamsPRIME();
-		// return value;
+		ArrayList<FormalParam> value = new ArrayList<FormalParam> ();
 		
-		return new ProperFormalParams();
-	}
-	
-	private boolean ProperFormalParamsPRIME() throws SyntaxException{
-
-			//Handle Epsilon case
-			if(token.getTokenType()==Token.RP)
-				return true;
-
-			boolean value=true;
-
+		value.add(formalParam());
+				
+		if(token.getTokenType()==Token.RP)
+			return value;
+			
 			while(true)
 			{
 				if(token.getLexeme().equals(","))
@@ -147,21 +151,24 @@ public class Parser {
 					// value&=match(",");
 					match(",");
 					// value&=formalParam();
-					formalParam();					
+					// formalParam();					
+					value.add(formalParam());
 				}else break;
 
 			}
-			return value;
-			}
-	
+			
+		return value;
+			
+	}
 	
 	// should we store the id in the formal parameter?
-	private void formalParam() throws SyntaxException{
+	private FormalParam formalParam() throws SyntaxException{
 
 			Type();
+			String idLexeme = token.getLexeme();
 			match(Token.ID);
-
-		}
+			return new FormalParam(idLexeme);//XXXXXPossible bug
+	}
 	
 	
 	
