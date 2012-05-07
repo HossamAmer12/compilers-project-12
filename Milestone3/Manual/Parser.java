@@ -83,18 +83,14 @@ public class Parser {
 		
 		
 		match("static");
-		// System.out.println("Lexeme22222: " + token.getLexeme());
 		Type();
-		// System.out.println("Lexem333333: " + token.getLexeme());
 		
 		match(Token.ID);
 		match(Token.LP);
-		// System.out.println("Lexem3333334444: " + token.getLexeme());
 		
 		
-		FormalParams formalParams = FormalParams();
+		// FormalParams formalParams = formalParams();
 		match(Token.RP);
-		// System.out.println("Lexem33333444434444: " + token.getLexeme());
 
 		// XXXXXXX
 		match(Token.LB);
@@ -112,22 +108,61 @@ public class Parser {
 				match(token.getTokenType());
 			}	
 		else 
-			// {
-				// System.out.println("I throw!");
 				throw new SyntaxException("Cannot Match Tokens");		
-			// }
 	}
 	
-	private boolean FormalParams() throws SyntaxException {
+	// the structure of the formal parameters??S
+	private FormalParams formalParams() throws SyntaxException {
 	
 		//Handle Epsilon case
 		if(token.getTokenType()==Token.RP)
-			return true;
+			return new FormalParams();
 		
-		// return ProperFormalParams();
-		return true;
+		return new FormalParams(properFormalParams());
+		// return true;
 	
 	}
+	
+	private ProperFormalParams properFormalParams() throws SyntaxException{
+		
+		formalParam();
+		// boolean value &= ProperFormalParamsPRIME();
+		// return value;
+		
+		return new ProperFormalParams();
+	}
+	
+	private boolean ProperFormalParamsPRIME() throws SyntaxException{
+
+			//Handle Epsilon case
+			if(token.getTokenType()==Token.RP)
+				return true;
+
+			boolean value=true;
+
+			while(true)
+			{
+				if(token.getLexeme().equals(","))
+				{
+					// value&=match(",");
+					match(",");
+					// value&=formalParam();
+					formalParam();					
+				}else break;
+
+			}
+			return value;
+			}
+	
+	
+	// should we store the id in the formal parameter?
+	private void formalParam() throws SyntaxException{
+
+			Type();
+			match(Token.ID);
+
+		}
+	
 	
 	
 	
