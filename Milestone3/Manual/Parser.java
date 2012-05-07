@@ -100,13 +100,15 @@ public class Parser {
 		match(Token.RP);
 
 		// XXXXXXX
-		match(Token.LB);
-		match(Token.RB);
+		// match(Token.LB);
+		// match(Token.RB);
 	
-		// value&=Block();
+		 // value&=Block();
+		Block block = block();
+		
 		
 		// return new MethodDecl();
-		return new MethodDecl(new Type(), formalParams, new Block(), methodID);
+		return new MethodDecl(new Type(), formalParams, block, methodID);
 	}
 	
 	private void Type() throws SyntaxException {
@@ -126,40 +128,13 @@ public class Parser {
 
 		//Handle Epsilon case
 		while(token.getTokenType()!=Token.RP)
-		{
 			formalParams.add(formalParam());
-		}
 		
 		return formalParams;
 		// return true;
 	
 	}
-	
-	private ArrayList<FormalParam> properFormalParams() throws SyntaxException{
-		
-		ArrayList<FormalParam> value = new ArrayList<FormalParam> ();
-		
-		value.add(formalParam());
-				
-		if(token.getTokenType()==Token.RP)
-			return value;
-			
-			while(true)
-			{
-				if(token.getLexeme().equals(","))
-				{
-					// value&=match(",");
-					match(",");
-					// value&=formalParam();
-					// formalParam();					
-					value.add(formalParam());
-				}else break;
 
-			}
-			
-		return value;
-			
-	}
 	
 	// should we store the id in the formal parameter?
 	private FormalParam formalParam() throws SyntaxException{
@@ -170,7 +145,82 @@ public class Parser {
 			return new FormalParam(idLexeme);//XXXXXPossible bug
 	}
 	
+	private Block block() throws SyntaxException{
+
+
+			match(Token.LB);
+			Statements stats = statements();
+			match(Token.RB);
+			
+			return new Block(stats);
+
+		}
+		
+		private Statements statements() throws SyntaxException{
+			Statements stats = new Statements();	
+			
+			while(token.getTokenType() != Token.RB)
+			{
+				stats.add(statement());
+			}
+					
+			return stats;	
+		}
+		
+		private Statement statement() throws SyntaxException{
+			// boolean value = true;
+			Statement value = new Statement();
+			
+			while(true)
+			{
+				if(isType())
+					value = new Statement(localVarDecl());
+				else if (token.getTokenType() == Token.ID)
+					value = new Statement(assignStmt());
+				// else if(isEqual("if"))
+				// else if(isEqual("while"))
+				// else if (isEqual("return"))	
+				// else if(isEqual(Token.LB))
+				 else if (isEqual(Token.RB))
+					break;
+				else
+					return value;
+					
+
+			}		
+					return new Statement();
+		}
+		
+		private LocalVarDecl localVarDecl() throws SyntaxException{
+
+			Type();
+			String idLexeme = token.getLexeme();
+			match(Token.ID);
+			match(Token.SM);
+
+			return new LocalVarDecl(idLexeme);
+		}
+		
+		private AssignStmt assignStmt() throws SyntaxException{
+
+			String idLexeme = token.getLexeme();
+			match(Token.ID);
+			match(Token.AO);
+			// Expression expr = Expression();		
+			match(Token.SM);
+
+			return new AssignStmt(idLexeme, new Expression());
+		}
+		
 	
+	
+		// checks if current token matches to Type.
+		private boolean isType(){
+			if(token.getLexeme().equals("int") || token.getLexeme().equals("float")
+					|| token.getLexeme().equals("boolean") || token.getLexeme().equals("String"))
+				return true;
+			else return false;
+		}
 	
 	
 	// matches token against lexeme.

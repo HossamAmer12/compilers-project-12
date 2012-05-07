@@ -1,11 +1,15 @@
-public class Statements
+import java.util.ArrayList;
+
+public class Statements extends ArrayList<Statement>
 {
-	public Statement statement;
-	public Statements statements;
-	
 	
 	public Statements()
 	{
-		
+		super();
+	}
+	
+	public String toString()
+	{
+		return "";
 	}
 }
