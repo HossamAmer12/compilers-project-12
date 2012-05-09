@@ -11,7 +11,15 @@ public class Statements extends ArrayList<Statement>
 	public String toString()
 	{
 		
-		String ret = "\n";
+		String ret = "";
+
+		// String ret;
+		// if(this.size() != 0)
+		//  	ret = "\n";
+		// else
+		// 	ret = "";
+		
+		
 
 		String s = "";
 

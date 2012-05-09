@@ -11,7 +11,20 @@ public class ReturnStmt
 	
 	
 	public String toString()
-	{
-		return "Return";
+	{	 
+		String ret = "Return\n";
+		
+		 String s = "";
+		 
+		if(expression !=null)
+		{
+			s += expression.toString();
+		}
+
+		 for(String st: s.split("\n"))
+		 	ret += "| " + st + "\n";
+		 
+		return ret;
+	
 	}
 }

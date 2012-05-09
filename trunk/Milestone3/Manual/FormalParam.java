@@ -16,7 +16,7 @@ public class FormalParam
 	
 	public String toString()
 	{
-		return "Formal Param " + idLexeme;
+		return "Formal Param " + idLexeme + "\n";
 	}
 	
 	

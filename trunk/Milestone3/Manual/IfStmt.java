@@ -25,6 +25,30 @@ public class IfStmt
 	
 	public String toString()
 	{
-		return "";
+		 String ret = "IfStmt\n";
+		
+		 String s = "";
+		 
+		if(expr !=null)
+		{
+			s +=  expr.toString();
+		}
+	 	
+		if(stmt != null)
+		{
+			s += stmt.toString();
+		}
+	
+		if(elseStmt != null)
+		{
+			s += elseStmt.toString();
+		}
+		 
+		 for(String st: s.split("\n"))
+		 	ret += "| " + st + "\n";
+		 
+		// return ret;
+		return ret;
+
 	}
 }
