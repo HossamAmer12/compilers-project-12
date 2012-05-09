@@ -1,57 +1,36 @@
 public class PrimaryExpr extends MultiplicativeExpr
 {
-	
-	public int num;
-	public float number;
+
 	public String bool; // true or false
 	public String string;// string value
 	public String idLexeme;// identifier name
+	public String number;
 	
 	public Expression expr;
 	public CallExpr callExpr;// XX Unused
 	public ActualParams actualParams;
 	public String callerMethodName;
 	
+	public int type;
+	
 	
 	
 	public PrimaryExpr()
 	{
-		num = -1;
-		number = -1;
-		bool = "";
-		string = "";
-		idLexeme = "";
-		callerMethodName = "";
 	}
 	
-	public PrimaryExpr(int num)
+	public PrimaryExpr(String num)
 	{
-		this.num = num;
-			number = -1;
-			bool = "";
-			string = "";
-			idLexeme = "";
-			callerMethodName = "";
+		this.number=num;
 	}
-	
-	public PrimaryExpr(float num)
-	{
-		this.number = num;
-			num = -1;
-			bool = "";
-			string = "";
-			idLexeme = "";
-			callerMethodName = "";
-	}
+
 	
 	public PrimaryExpr(String bool, String string, String idLexeme)
 	{
 		this.bool = bool;
 		this.string = string;
 		this.idLexeme = idLexeme;
-		num = -1;
-		number = -1;
-		callerMethodName = "";
+		//System.out.println("CONSSTTTT"+idLexeme);
 		
 	}
 	
@@ -59,12 +38,7 @@ public class PrimaryExpr extends MultiplicativeExpr
 	{
 		this.expr = expr;
 				
-		num = -1;
-		number = -1;
-		bool = "";
-		string = "";
-		idLexeme = "";
-		callerMethodName = "";
+
 		
 	}
 
@@ -73,12 +47,6 @@ public class PrimaryExpr extends MultiplicativeExpr
 	{
 		this.callExpr = callExpr;
 		
-		num = -1;
-		number = -1;
-		bool = "";
-		string = "";
-		idLexeme = "";
-		callerMethodName = "";
 		
 	}
 	
@@ -87,12 +55,6 @@ public class PrimaryExpr extends MultiplicativeExpr
 		this.actualParams = actualParams;
 		this.callerMethodName = callerMethodName;
 		
-		num = -1;
-		number = -1;
-		bool = "";
-		string = "";
-		idLexeme = "";
-		
 		
 	}
 	
@@ -100,7 +62,7 @@ public class PrimaryExpr extends MultiplicativeExpr
 		 String ret = "\n";
 		
 		 String s = "";
-		
+
 		if(expr !=null)
 		{
 			s += expr.toString();
@@ -110,17 +72,21 @@ public class PrimaryExpr extends MultiplicativeExpr
 			s += callerMethodName  + " " + actualParams.toString();
 		}
 		
-		if(num != -1)
-			s += callerMethodName + bool + string + idLexeme + num;
-		else if(number != -1)
-			s += callerMethodName + bool + string + idLexeme + number;
-		else
-			s += callerMethodName + bool + string + idLexeme;
+
+		else if(number != null)
+			s +=number;
+		else if(bool !=null)
+			s += bool;
+		else if(string !=null)
+			s += string;
+		else if(idLexeme !=null)
+		{
+			s += idLexeme;
+		}
 	 	
 		 for(String st: s.split("\n"))
 		 	ret += "| " + st + "\n";
 		 
-		// return ret;
 		return ret;
 			
 		}
