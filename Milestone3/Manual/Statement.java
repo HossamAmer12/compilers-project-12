@@ -7,9 +7,16 @@ public class Statement
 	public WhileStmt whileStmt;
 	public ReturnStmt returnStmt;
 	
+	int empty;// 0 for full, 1 empty
+	
 	
 	public Statement()
 	{}
+	
+	public Statement(int empty)
+	{
+		this.empty = empty;
+	}
 	
 	public Statement(Block block)
 	{
@@ -43,11 +50,41 @@ public class Statement
 	
 	public String toString()
 	{
-		return block.toString() + ", " + localVarDecl.toString() 
-			+ ", " + 	assignStmt.toString()
-			+ ", " + ifStmt.toString() + ", "
-			+ ", " + whileStmt.toString()
-			+ ", " + returnStmt.toString();
+		
+		 String ret = "";
+		
+		 String s = "";
+		 
+		if(block !=null)
+		{
+			s += block.toString();
+		}
+		else if(localVarDecl != null)
+		{
+			s += localVarDecl.toString();
+		}
+		else if(assignStmt != null)
+		{
+			s += assignStmt.toString();
+		}
+		else if(ifStmt != null)
+		{
+			s += ifStmt.toString();
+		}
+		else if(whileStmt != null)
+		{
+			s += whileStmt.toString();
+		}
+		else
+			s += returnStmt.toString();
+		 
+		 for(String st: s.split("\n"))
+		 	ret += "| " + st + "\n";
+		 
+
+		// return ret;
+		return ret;
+		
 	}
 	
 }

@@ -173,7 +173,7 @@ public class Parser {
 		
 		private Statement statement() throws SyntaxException{
 			// boolean value = true;
-			Statement value = new Statement();
+			Statement value = new Statement(1);
 			
 			while(true)
 			{
@@ -422,13 +422,15 @@ public class Parser {
 			else if(isEqual(Token.ID))
 			{
 				String idLexeme = token.getLexeme();
+				
+				// System.out.println("ID: " + idLexeme);
 				match(Token.ID);
 
 				if(isEqual(Token.LP))
 				{
 					
 					match(Token.LP);
-					value = !isEqual(Token.RP)?new PrimaryExpr(actualParams(), idLexeme):new PrimaryExpr("", "", token.getLexeme());
+					value = !isEqual(Token.RP)?new PrimaryExpr(actualParams(), idLexeme):new PrimaryExpr("", "", idLexeme);
 					match(Token.RP);
 
 				}

@@ -11,7 +11,7 @@ public class MethodDecls extends ArrayList<MethodDecl>
 	
 	public String toString()
 	{
-			String ret = "MethodDecls\n";
+			String ret = "MethodsDecl\n";
 
 			String s = "";
 

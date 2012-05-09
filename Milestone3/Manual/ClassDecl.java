@@ -38,7 +38,7 @@ public class ClassDecl {
 		
 
 		
-		String ret = "Class\n";
+		String ret = "ClassDecl\n";
 		
 		String s = "";
 		// if(methodDelcs != null) {

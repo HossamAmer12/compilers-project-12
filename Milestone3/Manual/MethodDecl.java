@@ -28,7 +28,16 @@ public class MethodDecl
 		
 		 String s = "";
 		 
-		 s += formalParams.toString();
+		 // s += formalParams.toString() + block.toString();
+		if(formalParams != null)
+		{
+			s += formalParams.toString();
+		}	
+		
+		if(block !=null)
+		{
+			s += block.toString();
+		}
 		 
 		 for(String st: s.split("\n"))
 		 	ret += "| " + st + "\n";

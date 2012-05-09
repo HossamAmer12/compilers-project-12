@@ -14,8 +14,19 @@ public class AssignStmt
 	
 	public String toString()
 	{
-		System.out.println("Hello from here");
-		return "AssignStmt " + this.varId 
-		 + ", Expression " + expr.toString();
+		 String ret = "AssignStmt " + this.varId + "\n"; 
+		
+		 String s = "";
+		 
+		if(expr !=null)
+		{
+			s += expr.toString();
+		}
+
+		 for(String st: s.split("\n"))
+		 	ret += "| " + st + "\n";
+		 
+		// return ret;
+		return ret;
 	}
 }
