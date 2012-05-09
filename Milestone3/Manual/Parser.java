@@ -128,7 +128,11 @@ public class Parser {
 
 		//Handle Epsilon case
 		while(token.getTokenType()!=Token.RP)
-			formalParams.add(formalParam());
+			{
+				formalParams.add(formalParam());
+				if(token.getLexeme().equals(","))
+					match(",");
+			}
 		
 		return formalParams;
 		// return true;
@@ -176,11 +180,15 @@ public class Parser {
 				if(isType())
 					value = new Statement(localVarDecl());
 				else if (token.getTokenType() == Token.ID)
-					value = new Statement(assignStmt());
-				// else if(isEqual("if"))
-				// else if(isEqual("while"))
-				// else if (isEqual("return"))	
-				// else if(isEqual(Token.LB))
+						value = new Statement(assignStmt());
+				 else if(isEqual("if"))
+					value = new Statement(ifStmt());
+				 else if(isEqual("while"))
+					value = new Statement(whileStmt());
+				 else if (isEqual("return"))	
+					value = new Statement(returnStmt());
+				 else if(isEqual(Token.LB))
+					value = new Statement(block());
 				 else if (isEqual(Token.RB))
 					break;
 				else
@@ -188,7 +196,7 @@ public class Parser {
 					
 
 			}		
-					return new Statement();
+					return value;
 		}
 		
 		private LocalVarDecl localVarDecl() throws SyntaxException{
@@ -206,13 +214,254 @@ public class Parser {
 			String idLexeme = token.getLexeme();
 			match(Token.ID);
 			match(Token.AO);
+			
+			 Expression expr = expression();		
 			// Expression expr = Expression();		
 			match(Token.SM);
 
-			return new AssignStmt(idLexeme, new Expression());
+			return new AssignStmt(idLexeme, expr);
 		}
 		
-	
+		
+		public WhileStmt whileStmt() throws SyntaxException{
+			
+			match("while");
+			match(Token.LP);
+			Expression expr = expression();
+			match(Token.RP);
+			Statement stmt = statement();
+
+			return new WhileStmt(expr, stmt);
+		}
+		
+		public ReturnStmt returnStmt() throws SyntaxException{
+			 	
+				match("return");
+				Expression expr = expression();
+				match(Token.SM);
+
+				return new ReturnStmt(expr);
+		}
+		
+		public IfStmt ifStmt() throws SyntaxException
+		{
+			match("if");
+			match(Token.LP);	
+			Expression expr = expression();	
+			match(Token.RP);
+			Statement stmt = statement();
+			
+			IfStmt value = new IfStmt(expr, stmt);
+			
+			if(token.getLexeme().equals("else"))
+			{
+				 match("else");
+				 Statement elseStmt = statement();
+				
+				value = new IfStmt(expr, stmt, elseStmt);
+				
+			}
+
+			return value;
+		}
+		
+		
+		
+		private Expression expression() throws SyntaxException{
+			
+			Expression expr = conditionalAndExpr();
+			
+			while (true)
+			{
+				if(isEqual(Token.LO))
+				{
+					match(Token.LO);
+					expr = new Expression(conditionalAndExpr(), expr);
+					break;
+
+				}
+				else
+					return expr;
+				
+			}
+			
+			return expr;
+		}
+		
+		private ConditionalAndExpr conditionalAndExpr() throws SyntaxException{
+			
+			ConditionalAndExpr expr = equalityExpr();
+			
+			while(true)
+			{
+				if(isEqual(Token.LA))
+				{
+					match(Token.LA);
+					expr = new ConditionalAndExpr(equalityExpr(), expr);
+				}
+				else
+				 	return expr;
+				
+			}
+			
+			// return expr;
+
+		}
+		
+		
+		private EqualityExpr equalityExpr() throws SyntaxException{
+			
+			EqualityExpr expr = additiveExpr();
+			
+			while(true)
+			{
+				if(isEqual(Token.EQ) || isEqual(Token.NE))
+				{
+					
+					int op = token.getTokenType();
+				 	match(op);
+					expr = (op == Token.EQ)? 
+								new EqualityExpr(additiveExpr(), EqualityExpr.EQ, expr): 
+								new EqualityExpr(additiveExpr(), EqualityExpr.NE, expr);
+				}
+				else
+					return expr;
+			}
+			
+			// return expr;
+
+		}
+		
+		private AdditiveExpr additiveExpr() throws SyntaxException{
+			
+			AdditiveExpr expr = multiplicativeExpr();
+			
+			while(true)
+			{
+				if(isEqual(Token.PO) || isEqual(Token.MO))
+				{
+					
+					int op = token.getTokenType();
+				 	match(op);
+					expr = (op == Token.PO)? 
+								new AdditiveExpr(multiplicativeExpr(), AdditiveExpr.PO, expr): 
+								new AdditiveExpr(multiplicativeExpr(), AdditiveExpr.MO, expr);
+				}
+				else
+				 	return expr;
+				
+			}
+			
+			// return expr;
+
+		}
+		
+		private MultiplicativeExpr multiplicativeExpr() throws SyntaxException{
+			
+			MultiplicativeExpr expr = primaryExpr();
+			
+			while(true)
+			{
+				if(isEqual(Token.TO) || isEqual(Token.DO) || isEqual(Token.MD))
+				{
+					
+					int op = token.getTokenType();
+					match(op);				
+					expr =	(op == Token.TO)? new MultiplicativeExpr(primaryExpr(), MultiplicativeExpr.TO, expr): 
+							(op == Token.DO)? new MultiplicativeExpr(primaryExpr(), MultiplicativeExpr.DO, expr): 
+											  new MultiplicativeExpr(primaryExpr(), MultiplicativeExpr.MD, expr);
+				}
+				
+				else
+				 	return expr;
+				
+			}
+			
+			// return expr;
+		}
+		
+		public PrimaryExpr primaryExpr() throws SyntaxException
+		{
+			PrimaryExpr value = new PrimaryExpr();
+			
+			if(isEqual(Token.NM))
+			{
+				try
+				{
+					value = new PrimaryExpr(Integer.parseInt(token.getLexeme()));
+				}
+				catch(NumberFormatException e)
+				{
+					value = new PrimaryExpr(Float.parseFloat(token.getLexeme()));
+				}
+				
+				match(Token.NM);
+			}
+			
+			else if(isEqual(Token.BL))
+			{
+				// public PrimaryExpr(String bool, String string, String idLexeme)
+				// One constructor but place the right variable in its order
+				value = new PrimaryExpr(token.getLexeme(), "", "");
+				match(Token.BL);
+				
+			}
+			else if(isEqual(Token.ST))
+			{
+				value = new PrimaryExpr("", token.getLexeme(), "");
+				match(Token.ST);
+			}
+
+			else if(isEqual(Token.LP))
+			{
+				match(Token.LP);
+				value = new PrimaryExpr(expression());
+				match(Token.RP);
+			}
+			
+			else if(isEqual(Token.ID))
+			{
+				String idLexeme = token.getLexeme();
+				match(Token.ID);
+
+				if(isEqual(Token.LP))
+				{
+					
+					match(Token.LP);
+					value = !isEqual(Token.RP)?new PrimaryExpr(actualParams(), idLexeme):new PrimaryExpr("", "", token.getLexeme());
+					match(Token.RP);
+
+				}
+
+			}
+				
+			return value;	
+			
+		}
+		
+		public ActualParams actualParams() throws SyntaxException
+		{ 
+			return new ActualParams(properActualParams());
+		}
+		
+		private ProperActualParams properActualParams() throws SyntaxException
+		{
+			
+			ProperActualParams params = new ProperActualParams();	
+			
+			// Should be at least one expression
+			params.add(expression());
+				
+			
+			while(token.getTokenType() != Token.RP)
+			{
+			 	match(Token.FA);
+				params.add(expression());
+			}
+			
+			return params;
+		}
+		
 	
 		// checks if current token matches to Type.
 		private boolean isType(){

@@ -43,7 +43,11 @@ public class Statement
 	
 	public String toString()
 	{
-		return "";
+		return block.toString() + ", " + localVarDecl.toString() 
+			+ ", " + 	assignStmt.toString()
+			+ ", " + ifStmt.toString() + ", "
+			+ ", " + whileStmt.toString()
+			+ ", " + returnStmt.toString();
 	}
 	
 }
