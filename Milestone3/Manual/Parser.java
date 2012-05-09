@@ -159,41 +159,60 @@ public class Parser {
 			
 			while(token.getTokenType() != Token.RB)
 			{
-				stats.add(statement());
+				Statement g=statement();
+				stats.add(g);
 			}
 					
 			return stats;	
 		}
 		
 		private Statement statement() throws SyntaxException{
-			// boolean value = true;
-			Statement value = new Statement(1);
-			
-			while(true)
-			{
-				if(isType())
-				{
-					value = new Statement(localVarDecl());
-				}
-				else if (token.getTokenType() == Token.ID)
-						value = new Statement(assignStmt());
-				 else if(isEqual("if"))
-					value = new Statement(ifStmt());
-				 else if(isEqual("while"))
-					value = new Statement(whileStmt());
-				 else if (isEqual("return"))	
-					value = new Statement(returnStmt());
-				 else if(isEqual(Token.LB))
-					value = new Statement(block());
-				 else if (isEqual(Token.RB))
-					break;
-				else
-					return value;
-					
+            // boolean value = true;
+            Statement value = new Statement(1);
 
-			}		
-					return value;
-		}
+            while(true)
+            {
+                    if(isType())
+                    {
+                            value = new Statement(localVarDecl());
+                            break;
+                    }
+                    else if (token.getTokenType() == Token.ID)
+                    {
+                                    value = new Statement(assignStmt());
+                                    break;
+                    }
+                     else if(isEqual("if"))
+                            {
+                                    value = new Statement(ifStmt());
+                                    break;
+                            }
+                     else if(isEqual("while"))
+                            {
+                                    value = new Statement(whileStmt());
+                                    break;
+                            }
+                     else if (isEqual("return"))
+                            {
+                                            value = new Statement(returnStmt());
+                                            break;
+                            }
+                     else if(isEqual(Token.LB))
+                            {
+                                    value = new Statement(block());
+                                    break;
+                            }
+                     else if (isEqual(Token.RB))
+                            {
+                                    break;
+                            }
+                    else
+                            return value;
+
+
+            }
+                            return value;
+    }
 		
 		private LocalVarDecl localVarDecl() throws SyntaxException{
 			Type();

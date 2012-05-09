@@ -41,7 +41,7 @@ public class ClassDecl {
 		String ret = "ClassDecl\n";
 		
 		String s = "";
-		// if(methodDelcs != null) {
+		 if(methodDelcs != null) {
 			
 
 			s += methodDelcs.toString();
@@ -49,7 +49,7 @@ public class ClassDecl {
 				// 	s += "+\n";
 				// 	else
 					// s += "-\n";
-			// }
+			 }
 
 				// s += tr.toString();
 

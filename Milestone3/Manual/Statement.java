@@ -50,7 +50,6 @@ public class Statement
 	
 	public String toString()
 	{
-		
 		 String ret = "";
 		
 		 String s = "";
@@ -75,8 +74,9 @@ public class Statement
 		{
 			s += whileStmt.toString();
 		}
-		else
-			s += returnStmt.toString();
+		else{
+			System.out.println("xx");
+			s += returnStmt.toString();}
 		 
 		 for(String st: s.split("\n"))
 		 	ret += "| " + st + "\n";
