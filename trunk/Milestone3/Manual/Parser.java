@@ -52,15 +52,9 @@ public class Parser {
 		match(Token.LB);
 		
 		classRoot = new ClassDecl(methodDecls());
-
-		// System.out.println("Class Root: "+ classRoot.methodDelcs.size());
-		// System.out.println("====================================");
-		// System.out.println("Class Root: "+ classRoot.methodDelcs);
-				// System.out.println("====================================");
 		
 		match(Token.RB);
 
-		// return new ClassDecl();
 	}
 	
 	private MethodDecls methodDecls() throws SyntaxException
@@ -74,7 +68,7 @@ public class Parser {
 		{
 			if(token.getLexeme().equals("static"))
 			{
-				// value &=MethodDecl();
+			
 				value.add(methodDecl());
 			}else break;
 		}
@@ -178,7 +172,9 @@ public class Parser {
 			while(true)
 			{
 				if(isType())
+				{
 					value = new Statement(localVarDecl());
+				}
 				else if (token.getTokenType() == Token.ID)
 						value = new Statement(assignStmt());
 				 else if(isEqual("if"))
@@ -200,9 +196,9 @@ public class Parser {
 		}
 		
 		private LocalVarDecl localVarDecl() throws SyntaxException{
-
 			Type();
 			String idLexeme = token.getLexeme();
+			
 			match(Token.ID);
 			match(Token.SM);
 
@@ -215,8 +211,7 @@ public class Parser {
 			match(Token.ID);
 			match(Token.AO);
 			
-			 Expression expr = expression();		
-			// Expression expr = Expression();		
+			 Expression expr = expression();			
 			match(Token.SM);
 
 			return new AssignStmt(idLexeme, expr);
@@ -235,8 +230,9 @@ public class Parser {
 		}
 		
 		public ReturnStmt returnStmt() throws SyntaxException{
-			 	
+			
 				match("return");
+		
 				Expression expr = expression();
 				match(Token.SM);
 
@@ -386,29 +382,22 @@ public class Parser {
 			
 			if(isEqual(Token.NM))
 			{
-				try
-				{
-					value = new PrimaryExpr(Integer.parseInt(token.getLexeme()));
-				}
-				catch(NumberFormatException e)
-				{
-					value = new PrimaryExpr(Float.parseFloat(token.getLexeme()));
-				}
 				
-				match(Token.NM);
+			   value = new PrimaryExpr(token.getLexeme());
+			   match(Token.NM);
 			}
 			
 			else if(isEqual(Token.BL))
 			{
 				// public PrimaryExpr(String bool, String string, String idLexeme)
 				// One constructor but place the right variable in its order
-				value = new PrimaryExpr(token.getLexeme(), "", "");
+				value = new PrimaryExpr(token.getLexeme(), null, null);
 				match(Token.BL);
 				
 			}
 			else if(isEqual(Token.ST))
 			{
-				value = new PrimaryExpr("", token.getLexeme(), "");
+				value = new PrimaryExpr(null, token.getLexeme(), null);
 				match(Token.ST);
 			}
 
@@ -423,16 +412,28 @@ public class Parser {
 			{
 				String idLexeme = token.getLexeme();
 				
-				// System.out.println("ID: " + idLexeme);
 				match(Token.ID);
 
 				if(isEqual(Token.LP))
 				{
 					
 					match(Token.LP);
-					value = !isEqual(Token.RP)?new PrimaryExpr(actualParams(), idLexeme):new PrimaryExpr("", "", idLexeme);
-					match(Token.RP);
+					
+					if(!isEqual(Token.RP)){
+						value=new PrimaryExpr(actualParams(), idLexeme);
+						match(token.getTokenType());
 
+					}else{
+						//CALL EXPR
+						value=new PrimaryExpr(null, null, idLexeme);
+						match(Token.RP);
+					
+					}
+		
+
+				}else {	
+					value=new PrimaryExpr(null, null, idLexeme);
+				
 				}
 
 			}
