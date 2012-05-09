@@ -1,0 +1,46 @@
+public class MultiplicativeExpr extends AdditiveExpr
+{
+	public PrimaryExpr primaryExpr;
+	public int op;
+	public MultiplicativeExpr expr;
+	
+			
+	public static final int TO = 1;// *
+	public static final int DO = 2;	// /	
+	public static final int MD = 3;// %		
+	
+	public MultiplicativeExpr()
+	{}
+
+	
+	public MultiplicativeExpr(PrimaryExpr t, int o, MultiplicativeExpr e) {
+		primaryExpr = t;
+		op = o;
+		expr = e;
+	}
+	
+	public String toString()
+	{
+		String ret = "MultiplicativeExpr\n";
+		String s = "";
+
+		if(expr !=null) {
+			s += expr.toString();
+			
+			if(op == TO)
+				s += "*\n";
+			else if (op == DO)
+				s += "/\n";
+			else
+				s += "%\n";
+			
+		}
+
+		s += primaryExpr.toString();
+
+		for(String st: s.split("\n"))
+			ret += "| " + st + "\n";
+
+		return ret;	
+	}
+}
