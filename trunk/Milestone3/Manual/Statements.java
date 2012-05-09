@@ -13,14 +13,6 @@ public class Statements extends ArrayList<Statement>
 		
 		String ret = "";
 
-		// String ret;
-		// if(this.size() != 0)
-		//  	ret = "\n";
-		// else
-		// 	ret = "";
-		
-		
-
 		String s = "";
 
 		for(Statement x: this)

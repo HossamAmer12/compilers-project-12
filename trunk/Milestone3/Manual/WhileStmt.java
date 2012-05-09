@@ -16,7 +16,24 @@ public class WhileStmt
 	}
 	
 	public String toString()
-	{
-		return "";
-	}
+    {
+                    String ret = "WhileStmt\n";
+
+                    String s = "";
+
+                    if(expr !=null)
+                    {
+                            s += expr.toString();
+                    }
+
+                    if(stmt != null)
+                    {
+                            s += stmt.toString();
+                    }
+
+                     for(String st: s.split("\n"))
+                            ret += "| " + st + "\n";
+
+                    return ret;
+    }
 }
