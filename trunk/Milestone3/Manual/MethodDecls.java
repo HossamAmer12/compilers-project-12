@@ -24,7 +24,6 @@ public class MethodDecls extends ArrayList<MethodDecl>
 			for(String st: s.split("\n"))
 				ret += "| " + st + "\n";
 
-
 			return ret;		
 
 	}

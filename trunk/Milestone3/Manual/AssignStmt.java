@@ -14,6 +14,8 @@ public class AssignStmt
 	
 	public String toString()
 	{
-		return "AssignStmt " + this.varId;
+		System.out.println("Hello from here");
+		return "AssignStmt " + this.varId 
+		 + ", Expression " + expr.toString();
 	}
 }
