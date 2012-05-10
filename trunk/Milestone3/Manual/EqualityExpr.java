@@ -37,13 +37,14 @@ public class EqualityExpr extends ConditionalAndExpr
 			s += expr.toString();
 			
 			if(op == EQ)
-				s += "==";
+				s += "==\n";
 			else
-				s += "!=";
+				s += "!=\n";
 			
 		}
 
-		s += addExpr.toString();
+		if(addExpr != null)
+			s += addExpr.toString();
 
 		for(String st: s.split("\n"))
 			ret += "| " + st + "\n";
