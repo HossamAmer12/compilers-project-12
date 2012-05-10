@@ -27,6 +27,24 @@ public class MethodDecls extends ArrayList<MethodDecl>
 			return ret;		
 
 	}
-	
+	public void check() throws SemanticException {
+		
+		if(this!=null)
+			SymbolTable.getInstance().add(new Entry("MethodsDecl\n"));
+		
+		for (MethodDecl m: this)
+		{
+			SymbolTable.getInstance().openScope();
+			
+			if(!SymbolTable.getInstance().contains(m.methodID))
+			{
+				SymbolTable.getInstance().add(new Entry(m.methodID));
+				m.check();
+			}
+			else
+				throw new SemanticException("Method identifier cannot be a duplicate.");
+		}
+		
+	}
 	
 }
