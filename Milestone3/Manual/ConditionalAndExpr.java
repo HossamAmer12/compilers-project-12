@@ -21,7 +21,7 @@ public class ConditionalAndExpr extends Expression
 	
 	public String toString()
 	{
-		String ret = "\n";
+		String ret = "";
 
 		String s = "";
 

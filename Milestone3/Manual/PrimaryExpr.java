@@ -59,7 +59,8 @@ public class PrimaryExpr extends MultiplicativeExpr
 	}
 	
 	public String toString() {
-		 String ret = "\n";
+		
+		 String ret = "";
 		
 		 String s = "";
 
@@ -71,8 +72,6 @@ public class PrimaryExpr extends MultiplicativeExpr
 		{
 			s += callerMethodName  + " " + actualParams.toString();
 		}
-		
-
 		else if(number != null)
 			s +=number;
 		else if(bool !=null)

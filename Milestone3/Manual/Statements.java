@@ -5,7 +5,7 @@ public class Statements extends ArrayList<Statement>
 	
 	public Statements()
 	{
-		super();
+		// super();
 	}
 	
 	public String toString()

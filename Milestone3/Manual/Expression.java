@@ -23,15 +23,17 @@ public class Expression
 	
 	public String toString()
 	{
-		String ret = "\n";
+		String ret = "";
 
 		String s = "";
-
+		
 		if(expr !=null) {
 			s += expr.toString();
 		}
+		
+		if(andExpr != null)
+			s += andExpr.toString();
 
-		s += andExpr.toString();
 
 		for(String st: s.split("\n"))
 			ret += "| " + st + "\n";

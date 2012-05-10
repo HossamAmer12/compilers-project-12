@@ -24,6 +24,8 @@ public class MultiplicativeExpr extends AdditiveExpr
 		String ret = "MultiplicativeExpr\n";
 		String s = "";
 
+		
+		
 		if(expr !=null) {
 			s += expr.toString();
 			
@@ -35,8 +37,11 @@ public class MultiplicativeExpr extends AdditiveExpr
 				s += "%\n";
 			
 		}
+			if(primaryExpr != null)
+				s += primaryExpr.toString();
 
-		s += primaryExpr.toString();
+
+	
 
 		for(String st: s.split("\n"))
 			ret += "| " + st + "\n";

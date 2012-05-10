@@ -30,7 +30,7 @@ public class AdditiveExpr extends EqualityExpr
 	
 	public String toString()
 	{
-		String ret = "\nAdditiveExpr";
+		String ret = "AdditiveExpr\n";
 
 		String s = "";
 
@@ -43,8 +43,9 @@ public class AdditiveExpr extends EqualityExpr
 				s += "-\n";
 			
 		}
-
-		s += multiplyExpr.toString();
+		
+		if(multiplyExpr != null)
+			s += multiplyExpr.toString();
 
 		for(String st: s.split("\n"))
 			ret += "| " + st + "\n";
