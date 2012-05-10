@@ -25,7 +25,7 @@ public class MP {
 		ClassDecl cd;
 		try {
 			cd = parser.parse();
-			System.out.println(cd);
+			//System.out.println(cd);
 			
 			cd.check();
 			

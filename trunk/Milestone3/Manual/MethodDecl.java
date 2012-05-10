@@ -45,5 +45,16 @@ public class MethodDecl
 		// return ret;
 		return ret;
 	}
+
+	public void check() throws SemanticException {
+		// TODO Auto-generated method stub
+		if(formalParams!=null)
+		{
+			SymbolTable.getInstance().add(new Entry(methodID, formalParams, type));
+			if(block!=null)
+				block.check();
+		}
+		
+	}
 	
 }

@@ -36,5 +36,12 @@ public class Block
 		return ret;
 
 	}
+
+	public void check() throws SemanticException {
+
+		if(statements!=null)
+			statements.check();
+		
+	}
 	
 }

@@ -1,4 +1,4 @@
-import java.util.ArrayList;
+
 
 /*
  * class Parser
@@ -81,7 +81,7 @@ public class Parser {
 	
 		match("static");
 		
-		Type();			
+		Type type = Type();			
 		
 		String methodID = token.getLexeme();
 		match(Token.ID);
@@ -102,15 +102,17 @@ public class Parser {
 		
 		
 		// return new MethodDecl();
-		return new MethodDecl(new Type(), formalParams, block, methodID);
+		return new MethodDecl(type, formalParams, block, methodID);
 	}
 	
-	private void Type() throws SyntaxException {
+	private Type Type() throws SyntaxException {
 
 		if(isEqual("int") || isEqual("float") || isEqual("boolean") || isEqual("String"))
-			{
+		{
+				String type = token.getLexeme();
 				match(token.getTokenType());
-			}	
+				return new Type(type);
+		}	
 		else 
 				throw new SyntaxException("Cannot Match Tokens");		
 	}
@@ -137,10 +139,10 @@ public class Parser {
 	// should we store the id in the formal parameter?
 	private FormalParam formalParam() throws SyntaxException{
 
-			Type();
+			Type type = Type();
 			String idLexeme = token.getLexeme();
 			match(Token.ID);
-			return new FormalParam(idLexeme);//XXXXXPossible bug
+			return new FormalParam(idLexeme, type);//XXXXXPossible bug
 	}
 	
 	private Block block() throws SyntaxException{
@@ -215,13 +217,13 @@ public class Parser {
     }
 		
 		private LocalVarDecl localVarDecl() throws SyntaxException{
-			Type();
+			Type type = Type();
 			String idLexeme = token.getLexeme();
 			
 			match(Token.ID);
 			match(Token.SM);
 
-			return new LocalVarDecl(idLexeme);
+			return new LocalVarDecl(idLexeme, type);
 		}
 		
 		private AssignStmt assignStmt() throws SyntaxException{

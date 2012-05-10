@@ -48,6 +48,29 @@ public class Statement
 		this.returnStmt = returnStmt;
 	}
 	
+	public String getType(){
+		if(block !=null)
+		{
+			return "Block";
+		}
+		else if(localVarDecl != null)
+		{
+			return "LocalVarDecl";
+		}
+		else if(assignStmt != null)
+		{
+			return "AssignStmt";
+		}
+		else if(ifStmt != null)
+		{
+			return "IfStmt";
+		}
+		else if(whileStmt != null)
+		{
+			return "WhileStmt";
+		}
+		else{return "ReturnStmt";}
+	}
 	public String toString()
 	{
 		 String ret = "";
@@ -75,7 +98,6 @@ public class Statement
 			s += whileStmt.toString();
 		}
 		else{
-			System.out.println("xx");
 			s += returnStmt.toString();}
 		 
 		 for(String st: s.split("\n"))
@@ -84,6 +106,11 @@ public class Statement
 
 		// return ret;
 		return ret;
+		
+	}
+
+	public void check() throws SemanticException  {
+		// TODO Auto-generated method stub
 		
 	}
 	

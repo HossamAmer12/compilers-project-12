@@ -9,9 +9,10 @@ public class FormalParam
 	{
 	}
 	
-	public FormalParam(String idLexeme)
+	public FormalParam(String idLexeme, Type type)
 	{
 		this.idLexeme = idLexeme;
+		this.type = type;
 	}
 	
 	public String toString()
