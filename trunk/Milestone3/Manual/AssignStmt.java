@@ -17,6 +17,7 @@ public class AssignStmt
 		 String ret = "AssignStmt " + this.varId + "\n"; 
 		
 		 String s = "";
+
 		 
 		if(expr !=null)
 		{
@@ -25,8 +26,21 @@ public class AssignStmt
 
 		 for(String st: s.split("\n"))
 		 	ret += "| " + st + "\n";
-		 
-		// return ret;
+
 		return ret;
+	}
+
+	public void check() throws SemanticException{
+
+		if(SymbolTable.getInstance().contains(varId))
+		{
+			Entry e=SymbolTable.getInstance().get(varId);
+			if(e.type!=null){
+			if(!e.type.type.toString().equals(expr.check()) || expr.check()==null)
+					throw new SemanticException(varId,SemanticException.TYPE_MISMATCH);
+				
+			}
+		}else throw new SemanticException(varId,SemanticException.VAR_DECLARATION);
+		
 	}
 }

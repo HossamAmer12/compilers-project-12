@@ -10,15 +10,10 @@
  * tree for semantic errors.
  */
 
-import java.io.ObjectInputStream.GetField;
-import java.util.ArrayList;
 
 public class ClassDecl {
 	
 	public MethodDecls methodDelcs;
-	
-	// public ArrayList<MethodDecl> mDecls;
-	
 	
 	public static final int LB = 1;
 	public static final int RB = 2;
@@ -28,7 +23,6 @@ public class ClassDecl {
 	
 	public ClassDecl() {
 		
-		// this.mDecls = new ArrayList<MethodDecl> ();
 	}
 	
 	public ClassDecl(MethodDecls mDecls)
@@ -47,13 +41,9 @@ public class ClassDecl {
 			
 
 			s += methodDelcs.toString();
-				// if(op == PO)
-				// 	s += "+\n";
-				// 	else
-					// s += "-\n";
 			 }
 
-				// s += tr.toString();
+				
 
 				for(String st: s.split("\n"))
 					ret += "| " + st + "\n";
@@ -65,14 +55,10 @@ public class ClassDecl {
 	
 	public void check() throws SemanticException {
 		
-		SymbolTable.getInstance().add(new Entry("ClassDecl\n"));
-		
 		if(methodDelcs!=null)
 		{
 			methodDelcs.check();
 		}
 		
-
-//		throw new SemanticException("");
 	}
 }

@@ -28,7 +28,7 @@ public class MethodDecl
 		
 		 String s = "";
 		 
-		 // s += formalParams.toString() + block.toString();
+
 		if(formalParams != null)
 		{
 			s += formalParams.toString();
@@ -42,18 +42,17 @@ public class MethodDecl
 		 for(String st: s.split("\n"))
 		 	ret += "| " + st + "\n";
 		 
-		// return ret;
 		return ret;
 	}
 
 	public void check() throws SemanticException {
-		// TODO Auto-generated method stub
-		if(formalParams!=null)
-		{
-			SymbolTable.getInstance().add(new Entry(methodID, formalParams, type));
+
+		SymbolTable.getInstance().openScope();
+	
 			if(block!=null)
-				block.check();
-		}
+			block.check();
+		
+		SymbolTable.getInstance().closeScope();
 		
 	}
 	

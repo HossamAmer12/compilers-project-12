@@ -36,4 +36,22 @@ public class WhileStmt
 
                     return ret;
     }
+
+	public void check() throws SemanticException {
+		
+		if(stmt!=null)
+			stmt.check();
+		
+		if(expr!=null)
+		{
+			expr.check();
+
+			// Semantic Check: For Condition Mismatch
+				if(!expr.isBoolean()){
+						throw new SemanticException("If Statement",SemanticException.CONDITION_MISMATCH);
+					}
+				
+		}
+		
+	}
 }

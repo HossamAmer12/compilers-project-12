@@ -27,4 +27,9 @@ public class ReturnStmt
 		return ret;
 	
 	}
+
+	public void check()  throws SemanticException{
+	
+		
+	}
 }

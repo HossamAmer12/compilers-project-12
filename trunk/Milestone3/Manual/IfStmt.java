@@ -47,8 +47,48 @@ public class IfStmt
 		 for(String st: s.split("\n"))
 		 	ret += "| " + st + "\n";
 		 
-		// return ret;
+			 
+		 
 		return ret;
 
+	}
+	
+	public Boolean isBooleanStatement(Expression expr){
+		boolean result=true;
+	
+		if(expr!=null){
+			if(expr.andExpr!=null){
+				if(expr.andExpr.equalityExpr!=null){
+					if(expr.andExpr.equalityExpr.addExpr!=null)
+						result=false;
+				}
+			}
+		}
+		
+		return result;
+
+	}
+
+	public void check() throws SemanticException{
+	
+		if(stmt!=null)
+			stmt.check();
+		
+		if(expr!=null)
+		{
+
+			expr.check();
+			
+			// Semantic Check: For Condition Mismatch
+				if(!expr.isBoolean()){
+						throw new SemanticException("If Statement",SemanticException.CONDITION_MISMATCH);
+					}
+				
+		}
+		
+		if(elseStmt!=null)
+			elseStmt.check();
+	
+		
 	}
 }
