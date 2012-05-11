@@ -30,7 +30,6 @@ public class PrimaryExpr extends MultiplicativeExpr
 		this.bool = bool;
 		this.string = string;
 		this.idLexeme = idLexeme;
-		//System.out.println("CONSSTTTT"+idLexeme);
 		
 	}
 	
@@ -42,19 +41,18 @@ public class PrimaryExpr extends MultiplicativeExpr
 		
 	}
 
-	//XX Unused constructor with //XX Unused var
+
 	public PrimaryExpr(CallExpr callExpr)
 	{
 		this.callExpr = callExpr;
 		
 		
 	}
-	
+
 	public PrimaryExpr(ActualParams actualParams, String callerMethodName)
 	{
 		this.actualParams = actualParams;
 		this.callerMethodName = callerMethodName;
-		
 		
 	}
 	
@@ -89,5 +87,108 @@ public class PrimaryExpr extends MultiplicativeExpr
 		return ret;
 			
 		}
+	
+	private String getTypeOfExpr() {
+		// Get Type of Expression
+		String result="";
+		if(expr !=null)
+			result= "Expression";
+		
+		else if(actualParams != null)
+		{
+
+			Entry e=SymbolTable.getInstance().get(callerMethodName);
+
+			if(e!=null)
+			if(e.type.type!=null){
+				return e.type.type;
+			}
+		}
+		
+		else if(number != null)
+		{
+			if(!number.contains("."))
+				result= "int";
+			else
+				result="float";
+		}
+		
+		else if(bool !=null)
+			result= "boolean";
+		
+		else if(string !=null)
+			result= "String";
+		
+		else if(idLexeme !=null)
+		{
+			Entry en=SymbolTable.getInstance().get(idLexeme);
+			if(en!=null)
+			if(en.type.type!=null)
+				return en.type.type;
+		}
+		return result;
+	}
+	public Boolean isBoolean(){
+
+		Boolean result=false;
+		if(getTypeOfExpr().equals("boolean"))
+			result=true;
+	
+		return result ;
+	}
+	public String check() throws SemanticException{
+
+		// Semantic Check: Variable must be declared first.
+		if(idLexeme!=null){
+		if(!SymbolTable.getInstance().contains(idLexeme)){
+		
+			throw new SemanticException(idLexeme,SemanticException.VAR_DECLARATION);
+		}
+		}
+		
+		// Semantic Check: Check for Calling methods
+		if(callerMethodName!=null){
+	
+			if(!SymbolTable.getInstance().contains(callerMethodName))
+			{
+				throw new SemanticException(callerMethodName,SemanticException.METHOD_UNDEFINED);
+			}else{
+				
+				Entry e=SymbolTable.getInstance().get(callerMethodName);
+
+				if(e!=null)
+					
+					// Make sure it's a method
+				if(!e.isMethod)
+					throw new SemanticException(callerMethodName,SemanticException.METHOD_UNDEFINED);
+				else
+				{
+				
+					// Check that parameters
+					if(e.params!=null){
+						if(actualParams!=null)
+						{
+							if(e.params.size()!=actualParams.actualParmas.size())
+								throw new SemanticException(callerMethodName,SemanticException.METHOD_UNDEFINED);
+						
+							for(int i=0;i<e.params.size();i++){
+								Expression actual=actualParams.actualParmas.get(i);
+								if(!e.params.get(i).type.type.equals(actual.check()))
+									throw new SemanticException(callerMethodName,SemanticException.METHOD_MISSING_ARGUMENTS);
+								
+							}
+						}else throw new SemanticException(callerMethodName,SemanticException.METHOD_MISSING_ARGUMENTS);
+					}
+				}
+				
+			}
+		}
+		
+	
+		if(getTypeOfExpr().equals("Expression"))
+				return expr.check();
+		else
+			return getTypeOfExpr();
+	}
 	
 }

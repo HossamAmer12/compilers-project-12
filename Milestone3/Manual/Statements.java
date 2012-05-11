@@ -26,66 +26,15 @@ public class Statements extends ArrayList<Statement>
 
 		return ret;		
 
+
 	}
 
 	public void check() throws SemanticException  {
-		// TODO Auto-generated method stub
-		
-		if(this!=null)
-			SymbolTable.getInstance().add(new Entry("Statements\n"));
 		
 		for (Statement stmt: this)
 		{
-			Entry en;
-			
-			if(stmt.getType().equals("LocalVarDecl"))
-			{
-				en = new Entry(stmt.localVarDecl.varId);
-			}
-			else
-			{
-				 en = new Entry(stmt.getType());
-			}
-			
-//			if(stmt.getType() == "ReturnStmt")
-//			{
-//				//String returnVar = stmt.returnStmt.toString();
-//				
-//				/*if(SymbolTable.getInstance().contains(id))
-//				{
-//					
-//				}*/
-//			}
-			if(stmt.getType().equals("IfStmt"))
-			{
-				SymbolTable.getInstance().openScope();
-				SymbolTable.getInstance().add(en);
-				stmt.check();
-				
-			}
-			
-			else if(stmt.getType().equals("WhileStmt"))
-			{
-				SymbolTable.getInstance().openScope();
-				SymbolTable.getInstance().add(en);
-				stmt.check();
-			}			
-			else if(stmt.getType()=="AssignStmt" && SymbolTable.getInstance().contains(stmt.assignStmt.varId))
-			{
-				SymbolTable.getInstance().add(en);
-				stmt.check();
-			}
-			else if(stmt.getType() != "AssignStmt")
-			{
-				SymbolTable.getInstance().add(en);
-				stmt.check();
-			}
-			
-			else
-				throw new SemanticException("Statements are not valid");
-			
-			
-			System.out.println(SymbolTable.getInstance().toString());
+			stmt.check();
+
 		}
 		
 	}

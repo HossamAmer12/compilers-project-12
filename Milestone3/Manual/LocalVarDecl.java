@@ -18,4 +18,15 @@ public class LocalVarDecl
 	{
 		return "LocalVarDecl " + this.varId;
 	}
+	
+	public void check() throws SemanticException{
+		
+		if(SymbolTable.getInstance().contains(varId)){
+			
+			throw new SemanticException(varId,SemanticException.DUPLICATE_VAR);
+		} else {
+			SymbolTable.getInstance().add(new Entry(varId,type));
+			
+		}
+	}
 }

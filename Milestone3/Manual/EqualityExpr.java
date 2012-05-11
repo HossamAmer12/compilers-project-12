@@ -13,11 +13,6 @@ public class EqualityExpr extends ConditionalAndExpr
 	public EqualityExpr()
 	{}
 	
-	// public Expression(String idLexeme, Expression expr)
-	// {
-	// 	this.varId = idLexeme;
-	// 	this.expr = expr;
-	// }
 	
 	
 	public EqualityExpr(AdditiveExpr t, int o, EqualityExpr e) {
@@ -50,5 +45,32 @@ public class EqualityExpr extends ConditionalAndExpr
 			ret += "| " + st + "\n";
 
 		return ret;
+	}
+	public Boolean isBoolean(){
+		Boolean result=true;
+		if(addExpr!=null)
+			result&=addExpr.isBoolean();
+		
+		if(expr!=null)
+			result=true;
+		
+		return result ;
+	}
+	public String check() throws SemanticException{
+
+		String expr1="";
+		String expr2="";
+
+		if(addExpr!=null)
+			expr1=addExpr.check();
+		if(expr!=null)
+			expr2=expr.check();
+		
+	
+		if(expr1.equals(expr2))
+			return expr1;
+		else
+			throw new SemanticException("Type mismatch in Expression.");
+
 	}
 }

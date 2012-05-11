@@ -48,4 +48,31 @@ public class MultiplicativeExpr extends AdditiveExpr
 
 		return ret;	
 	}
+	public Boolean isBoolean() {
+		Boolean result=true;
+		if(primaryExpr!=null)
+			result&=primaryExpr.isBoolean();
+		
+		if(expr!=null)
+			result&=false;
+		
+		return result ;
+	}
+	public String check() throws SemanticException{
+		String expr1="";
+		String expr2="";
+		System.out.println("LOL");
+		if(primaryExpr!=null)
+			expr1=primaryExpr.check();
+		
+		if(expr!=null)
+			expr2= expr.check();
+		
+		if(expr1.equals(expr2))
+			return expr1;
+		else
+			return null;
+		
+
+	}
 }

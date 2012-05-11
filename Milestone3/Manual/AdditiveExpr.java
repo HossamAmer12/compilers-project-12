@@ -13,13 +13,6 @@ public class AdditiveExpr extends EqualityExpr
 	public AdditiveExpr()
 	{}
 	
-	// public Expression(String idLexeme, Expression expr)
-	// {
-	// 	this.varId = idLexeme;
-	// 	this.expr = expr;
-	// }
-	
-	
 	public AdditiveExpr(MultiplicativeExpr t, int o, AdditiveExpr e) {
 		multiplyExpr = t;
 		op = o;
@@ -51,6 +44,40 @@ public class AdditiveExpr extends EqualityExpr
 			ret += "| " + st + "\n";
 
 		return ret;
+
+	}
+	public Boolean isBoolean(){
+		Boolean result=true;
+		if(multiplyExpr!=null)
+			result&=multiplyExpr.isBoolean();
+		
+		if(expr!=null)
+			result&=false;
+		
+		return result ;
+	}
+	
+	public String check() throws SemanticException{
+		String expr1="";
+		String expr2="";
+		
+		// Check for children types
+		
+		
+		if(multiplyExpr!=null)
+			expr1=multiplyExpr.check();
+		
+		if(expr!=null)
+			expr2=expr.check();
+		
+		if(expr1.equals(expr2) && (expr1.equals("int") || expr1.equals("float")))
+			return expr1;
+		else
+			// Case where an expression contains expressions with different types
+			return null;
+
+		
+	
 
 	}
 }

@@ -25,7 +25,7 @@ public class Parser {
 		
 		token = lexer.nextToken();
 
-		// System.out.println("Token: " + token.getLexeme());
+
 
 		//Check for Empty input file
 		if(token.getTokenType()==Token.EOF)
@@ -321,8 +321,6 @@ public class Parser {
 				
 			}
 			
-			// return expr;
-
 		}
 		
 		
@@ -345,7 +343,6 @@ public class Parser {
 					return expr;
 			}
 			
-			// return expr;
 
 		}
 		
@@ -400,10 +397,8 @@ public class Parser {
 		public PrimaryExpr primaryExpr() throws SyntaxException
 		{
 			PrimaryExpr value = new PrimaryExpr();
-			
 			if(isEqual(Token.NM))
 			{
-				
 			   value = new PrimaryExpr(token.getLexeme());
 			   match(Token.NM);
 			}
@@ -446,7 +441,7 @@ public class Parser {
 
 					}else{
 						//CALL EXPR
-						value=new PrimaryExpr(null, null, idLexeme);
+						value=new PrimaryExpr(null, idLexeme);
 						match(Token.RP);
 					
 					}
