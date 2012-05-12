@@ -172,7 +172,7 @@ public class PrimaryExpr extends MultiplicativeExpr
 						if(actualParams!=null)
 						{
 							if(e.params.size()!=actualParams.actualParmas.size())
-								throw new SemanticException(callerMethodName,SemanticException.METHOD_UNDEFINED);
+								throw new SemanticException(callerMethodName,SemanticException.METHOD_MISSING_ARGUMENTS);
 						
 							for(int i=0;i<e.params.size();i++){
 								Expression actual=actualParams.actualParmas.get(i);
