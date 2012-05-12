@@ -70,53 +70,51 @@ MethodDecls ::= MethodDecls:el MethodDecl:e
 			  :} 
 			  |  
 			  {: 
-			     RESULT = null;
+			     RESULT = new MethodDecls();
 			  :};              
 
 MethodDecl  ::= KW_static Type: t ID: id LP FormalParams: f RP Block: b
 				 {:
-				 	RESULT = new MethodDecl(t, f, b, id);
+				 	RESULT = new MethodDecl(t, f, b, id.toString());
 				 :};
 
 FormalParams ::= FormalParams:f1 FA FormalParam:f 
 				{: 
-					f1 = new FormalParams();
 					f1.add(f);
 					RESULT = f1;
 				:} 
 				| FormalParam: f
 				{: 
-					f1 = new FormalParams();
+					FormalParams f1 = new FormalParams();
 					f1.add(f);
 					RESULT = f1;
 				:}
 				| 
 				{: 
-					f1 = new FormalParams();
-					RESULT = f1;
+					RESULT = new FormalParams();
 				:};
 
 
 FormalParam ::= Type: t ID: id
 				{: 
-					RESULT = new FormalParam(t, id);
+					RESULT = new FormalParam(id.toString(), t);
 				:};
 
 Type ::= KW_int:a
 		{: 
-			RESULT = new Type(a); 
+			RESULT = new Type(a.toString()); 
 		:} 
 		| KW_float: b 
 		{: 
-			RESULT = new Type(b); 
+			RESULT = new Type(b.toString()); 
 		:}  
 		| KW_boolean: c 
 		{: 
-			RESULT = new Type(c); 
+			RESULT = new Type(c.toString()); 
 		:}  
 		| KW_String: d 
 		{: 
-			RESULT = new Type(d); 
+			RESULT = new Type(d.toString()); 
 		:};
 
 Block ::= LB Statements: st RB
@@ -126,14 +124,14 @@ Block ::= LB Statements: st RB
 
 Statements ::= Statements: stats Statement: st
 			{: 
+				stats = new Statements();
 				stats.add(st);
 				RESULT = stats;
 				
 			:}
 			| 
 			{:
-				stats = new Statements();
-				RESULT = stats;
+				RESULT = new Statements();
 			:};
 
 Statement ::= Block: block
@@ -163,12 +161,12 @@ Statement ::= Block: block
 
 LocalVarDecl ::= Type: t ID: id SM
 			{:
-				RESULT = new LocalVarDecl(t, id);
+				RESULT = new LocalVarDecl(id.toString(), t);
 			:};	 
 
 AssignStmt ::= ID: id AO Expression: e SM 
 			{:	
-				RESULT = new AssignStmt(id, e)
+				RESULT = new AssignStmt(id.toString(), e);
 			:};
 
 IfStmt ::= KW_if LP Expression: e RP Statement: stmt
@@ -192,7 +190,7 @@ ReturnStmt ::= KW_return Expression: exp SM
 
 Expression ::= ConditionalAndExpr: andExp
 			{:
-				RESULT = andExp
+				RESULT = andExp;
 			:} 
 			| Expression: exp LO ConditionalAndExpr: andExp
 			{: 
@@ -229,7 +227,7 @@ AdditiveExpr ::= MultiplicativeExpr: multiply
 				{:
 					RESULT = new AdditiveExpr(multiply, AdditiveExpr.PO, add);
 				:}		
-				 | AdditiveExpr MO MultiplicativeExpr
+				 | AdditiveExpr: add MO MultiplicativeExpr: multiply
 				 {:
 					RESULT = new AdditiveExpr(multiply, AdditiveExpr.MO, add);
 				:};
@@ -254,23 +252,23 @@ MultiplicativeExpr ::= PrimaryExpr: primary
 
 PrimaryExpr ::= NM: nm
 				{:
-					RESULT = new PrimaryExpr(nm);
+					RESULT = new PrimaryExpr(nm.toString());
 				:} 
 				| BL: bl
 				{:
-				 	RESULT = new PrimaryExpr(bl, null, null);
+				 	RESULT = new PrimaryExpr(bl.toString(), null, null);
 				:}
 				| ST: st
 				{:
-				 	RESULT = new PrimaryExpr(null, st, null);;
+				 	RESULT = new PrimaryExpr(null, st.toString(), null);;
 				:}
-				| ID LP ActualParams: act RP
+				| ID: idLexeme LP ActualParams: act RP
 				{:
-					 RESULT = new PrimaryExpr(act, idLexeme);
+					 RESULT = new PrimaryExpr(act, idLexeme.toString());
 				:}	 
 				| ID: idLexeme
 				{:
-				 	RESULT = new PrimaryExpr(null, null, idLexeme);
+				 	RESULT = new PrimaryExpr(null, null, idLexeme.toString());
 				:}  
 				| LP Expression: exp RP
 				{:
@@ -293,9 +291,6 @@ ProperActualParams::= ProperActualParams: pAs FA Expression: exp
 					:}	 
 					| Expression: exp
 					{:
-						pAs = new ProperActualParams();
+						ProperActualParams pAs = new ProperActualParams();
 						pAs.add(exp);
 					:};
-
-
-	
