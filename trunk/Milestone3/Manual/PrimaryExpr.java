@@ -57,36 +57,41 @@ public class PrimaryExpr extends MultiplicativeExpr
 	}
 	
 	public String toString() {
-		
-		 String ret = "";
-		
-		 String s = "";
 
-		if(expr !=null)
-		{
-			s += expr.toString();
-		}
-		else if(actualParams != null)
-		{
-			s += callerMethodName  + " " + actualParams.toString();
-		}
-		else if(number != null)
-			s +=number;
-		else if(bool !=null)
-			s += bool;
-		else if(string !=null)
-			s += string;
-		else if(idLexeme !=null)
-		{
-			s += idLexeme;
-		}
-	 	
-		 for(String st: s.split("\n"))
-		 	ret += "| " + st + "\n";
-		 
-		return ret;
-			
-		}
+			 String ret = "";
+
+			 String s = "";
+
+			if(expr !=null)
+			{
+				s += expr.toString();
+			}
+			else if(actualParams != null)
+			{
+				s += "CallExpr "+ callerMethodName  + " " + actualParams.toString();
+			}
+			else if(number != null)
+				s +=number;
+			else if(bool !=null)
+				s += bool;
+			else if(string !=null)
+				s += string;
+			else if(idLexeme !=null)
+			{
+				s += idLexeme;
+			}
+
+			// System.out.println("S before: " + s);
+
+
+			 for(String st: s.split("\n"))
+			 	 ret += "| " + st + "\n";
+					 	// ret += " " + st + "\";
+
+			// System.out.println("S after: " + ret);
+			return ret;
+
+			}
 	
 	private String getTypeOfExpr() {
 		// Get Type of Expression
