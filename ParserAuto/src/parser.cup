@@ -293,5 +293,4 @@ ProperActualParams::= ProperActualParams: pAs FA Expression: exp
 					{:
 						ProperActualParams pAs = new ProperActualParams();
 						pAs.add(exp);
-						RESULT = pAs;
 					:};

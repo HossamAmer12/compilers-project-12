@@ -16,6 +16,19 @@ public class ActualParams // extends ArrayList<ProperActualParams>
 	
 	public String toString()
 	{
-		return "";
+		String ret = "\n";
+		
+		String s = "";
+		 
+		if(actualParmas != null) 
+			s += actualParmas.toString();
+			
+//		System.out.println("Actual Parasms: " + actualParmas);
+		
+		for(String st: s.split("\n"))
+			ret += "| " + st + "\n";
+
+
+		return ret;	
 	}
 }
