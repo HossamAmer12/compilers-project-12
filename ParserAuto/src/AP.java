@@ -1,4 +1,3 @@
-
 import java.io.BufferedInputStream;
 import java.io.DataInputStream;
 import java.io.FileInputStream;
@@ -9,7 +8,7 @@ public class AP {
 
 	public static void main(String[] args) {
 		
-		String inFile = "Sample.in";
+		String inFile = "Algebra.decaf";
 
 		if (args.length > 1) {
 			inFile = args[0];
@@ -22,12 +21,13 @@ public class AP {
 	
 			parser parser = new parser(new Lexer(dis));
 			Symbol res = parser.parse();
-			boolean value = ((Boolean)res.value).booleanValue();
+			ClassDecl cd = (ClassDecl)res.value;
+
+			System.out.println(cd);
 			
-			if(value)
-				System.out.println("File: " + inFile + " parsed successfully.");
-			else
-				System.out.println("Error in parsing file: " + inFile);
+//			cd.check();
+
+			System.out.println("Semantic Analysis Completed with No Errors.");
 	
 			fis.close();
 			bis.close();

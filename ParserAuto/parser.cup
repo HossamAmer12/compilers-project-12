@@ -1,15 +1,48 @@
 
 import java_cup.runtime.*;
+import java.util.ArrayList;
 	
 /* Terminals (tokens returned by the scanner). */
 terminal			SM, PO, MO, TO, DO, NM,FA,LP,RP,RB,LB,AO,MD,EQ,NE,LO,LA,BL,ST,ID,ERROR;
 terminal			KW_class, KW_static, KW_else, KW_if, KW_float, KW_boolean, KW_String, KW_return, KW_while, KW_int;
  	
 /* Non-terminals */
-nonterminal	Boolean		ClassDecl;
-nonterminal MethodDecls,MethodDecl,Type,Block,FormalParams,ProperFormalParams,FormalParam,Statements,Statement;
-nonterminal LocalVarDecl,AssignStmt,IfStmt,WhileStmt,ReturnStmt,Expression,ConditionalAndExpr,EqualityExpr;
-nonterminal AdditiveExpr,MultiplicativeExpr,PrimaryExpr,CallExpr,ActualParams,ProperActualParams,StatementsPrime;
+nonterminal	ClassDecl		ClassDecl;
+nonterminal	MethodDecls		MethodDecls;
+nonterminal	MethodDecl		MethodDecl;
+
+nonterminal	Type		Type;
+nonterminal	Block		Block;
+nonterminal	FormalParams		FormalParams;
+nonterminal	ProperFormalParams		ProperFormalParams;
+nonterminal	FormalParam		FormalParam;
+nonterminal	Statements		Statements;
+nonterminal	Statement		Statement;
+
+nonterminal	LocalVarDecl		LocalVarDecl;
+nonterminal	AssignStmt		AssignStmt;
+nonterminal	IfStmt		IfStmt;
+nonterminal	WhileStmt		WhileStmt;
+nonterminal	ReturnStmt		ReturnStmt;
+
+nonterminal	Expression		Expression;
+nonterminal	ConditionalAndExpr		ConditionalAndExpr;
+nonterminal	EqualityExpr		EqualityExpr;
+nonterminal	AdditiveExpr		AdditiveExpr;
+nonterminal	MultiplicativeExpr		MultiplicativeExpr;
+nonterminal	PrimaryExpr		PrimaryExpr;
+nonterminal	CallExpr		CallExpr;
+
+nonterminal	ActualParams		ActualParams;
+nonterminal	ProperActualParams		ProperActualParams;
+/*nonterminal	StatementsPrime		StatementsPrime;*/
+
+
+
+
+/*nonterminal MethodDecls,MethodDecl,Type,Block,FormalParams,ProperFormalParams,FormalParam,Statements,Statement;*?
+/*nonterminal LocalVarDecl,AssignStmt,IfStmt,WhileStmt,ReturnStmt,Expression,ConditionalAndExpr,EqualityExpr;*/
+/*nonterminal AdditiveExpr,MultiplicativeExpr,PrimaryExpr,CallExpr,ActualParams,ProperActualParams,StatementsPrime;*/
 
 
 /* Precedences */
@@ -20,56 +53,249 @@ precedence left KW_else;
 /* The grammar */
 
 
-ClassDecl ::= KW_class ID LB MethodDecls  RB
-              {:RESULT = true;:} | ERROR {:RESULT = false;:}  ;
-              
-MethodDecls ::= MethodDecls MethodDecl | ;
+ClassDecl ::= KW_class ID LB MethodDecls: m  RB
+              {:
+              	RESULT = new ClassDecl(m);
+              :} 
+              | error 
+              {:
+              	RESULT = new ClassDecl();
+              :};
 
-MethodDecl  ::= KW_static Type ID LP FormalParams RP Block;
 
-FormalParams ::= ProperFormalParams | ;
+MethodDecls ::= MethodDecls:el MethodDecl:e
+			  {:
+			  	 el.add(e);
+			     RESULT = el;
+			  :} 
+			  |  
+			  {: 
+			     RESULT = null;
+			  :};              
 
-ProperFormalParams ::= ProperFormalParams FA FormalParam | FormalParam;
+MethodDecl  ::= KW_static Type: t ID: id LP FormalParams: f RP Block: b
+				 {:
+				 	RESULT = new MethodDecl(t, f, b, id);
+				 :};
 
-FormalParam ::= Type ID;
+FormalParams ::= FormalParams:f1 FA FormalParam:f 
+				{: 
+					f1 = new FormalParams();
+					f1.add(f);
+					RESULT = f1;
+				:} 
+				| FormalParam: f
+				{: 
+					f1 = new FormalParams();
+					f1.add(f);
+					RESULT = f1;
+				:}
+				| 
+				{: 
+					f1 = new FormalParams();
+					RESULT = f1;
+				:};
 
-Type ::= KW_int | KW_float | KW_boolean | KW_String;
 
-Block ::= LB Statements RB;
+FormalParam ::= Type: t ID: id
+				{: 
+					RESULT = new FormalParam(t, id);
+				:};
 
-Statements ::= StatementsPrime;
+Type ::= KW_int:a
+		{: 
+			RESULT = new Type(a); 
+		:} 
+		| KW_float: b 
+		{: 
+			RESULT = new Type(b); 
+		:}  
+		| KW_boolean: c 
+		{: 
+			RESULT = new Type(c); 
+		:}  
+		| KW_String: d 
+		{: 
+			RESULT = new Type(d); 
+		:};
 
-StatementsPrime::= Statement StatementsPrime | ;
+Block ::= LB Statements: st RB
+		{: 
+			RESULT = new Block(st); 
+		:};
 
-Statement ::= Block | LocalVarDecl | AssignStmt | IfStmt | WhileStmt | ReturnStmt;
+Statements ::= Statements: stats Statement: st
+			{: 
+				stats.add(st);
+				RESULT = stats;
+				
+			:}
+			| 
+			{:
+				stats = new Statements();
+				RESULT = stats;
+			:};
 
-LocalVarDecl ::= Type ID SM ;
+Statement ::= Block: block
+			{:
+				RESULT = new Statement(block);
+			:}	
+			| LocalVarDecl: lv
+			{:
+				RESULT = new Statement(lv);
+			:}
+			| AssignStmt: ass
+			{:
+				RESULT = new Statement(ass);
+			:} 
+			| IfStmt: ifstmt
+			{:
+				RESULT = new Statement(ifstmt);
+			:} 
+			| WhileStmt: whilestmt
+			{:
+				RESULT = new Statement(whilestmt);
+			:} 
+			| ReturnStmt: returnstmt
+			{:
+				RESULT = new Statement(returnstmt);
+			:};
 
-AssignStmt ::= ID AO Expression SM ;
+LocalVarDecl ::= Type: t ID: id SM
+			{:
+				RESULT = new LocalVarDecl(t, id);
+			:};	 
 
-IfStmt ::= KW_if LP Expression RP Statement | KW_if LP Expression RP Statement KW_else Statement;
+AssignStmt ::= ID: id AO Expression: e SM 
+			{:	
+				RESULT = new AssignStmt(id, e)
+			:};
 
-WhileStmt ::= KW_while LP Expression RP Statement;
+IfStmt ::= KW_if LP Expression: e RP Statement: stmt
+			{:
+				RESULT = new IfStmt(e, stmt); 
+			:}
+			| KW_if LP Expression: e RP Statement: stmt KW_else Statement: elsestmt
+			{:
+				RESULT = new IfStmt(e, stmt, elsestmt);
+			:};
 
-ReturnStmt ::= KW_return Expression SM ;
+WhileStmt ::= KW_while LP Expression: exp RP Statement: stmt
+			{:
+				RESULT = new WhileStmt(exp, stmt);
+			:};
 
-Expression ::= ConditionalAndExpr | Expression LO ConditionalAndExpr;
+ReturnStmt ::= KW_return Expression: exp SM 
+			{:
+				RESULT = new ReturnStmt(exp);
+			:};
 
-ConditionalAndExpr ::= EqualityExpr | ConditionalAndExpr LA EqualityExpr;
+Expression ::= ConditionalAndExpr: andExp
+			{:
+				RESULT = andExp
+			:} 
+			| Expression: exp LO ConditionalAndExpr: andExp
+			{: 
+				RESULT = new Expression(andExp, exp);
+			:};	
 
-EqualityExpr ::= AdditiveExpr | EqualityExpr EQ AdditiveExpr | EqualityExpr NE AdditiveExpr;
+ConditionalAndExpr ::= EqualityExpr: equality
+					{:
+						RESULT = equality;
+					:}
+					| ConditionalAndExpr: andExp LA EqualityExpr: equality
+					{:
+						RESULT = new ConditionalAndExpr(equality, andExp);
+					:};
 
-AdditiveExpr ::= MultiplicativeExpr | AdditiveExpr PO MultiplicativeExpr | AdditiveExpr MO MultiplicativeExpr;
+EqualityExpr ::= AdditiveExpr: add
+				{:
+					RESULT = add;
+				:} 
+				| EqualityExpr: equality EQ AdditiveExpr: add
+				{:
+				RESULT = new EqualityExpr(add, EqualityExpr.EQ, equality);
+				:} 
+				| EqualityExpr: equality NE AdditiveExpr: add
+				{:
+					RESULT = new EqualityExpr(add, EqualityExpr.EQ, equality);
+				:};
 
-MultiplicativeExpr::= PrimaryExpr | MultiplicativeExpr TO PrimaryExpr | MultiplicativeExpr DO PrimaryExpr | MultiplicativeExpr MD PrimaryExpr;
+AdditiveExpr ::= MultiplicativeExpr: multiply
+				{:
+					 RESULT = multiply;
+				:} 
+				| AdditiveExpr: add PO MultiplicativeExpr: multiply
+				{:
+					RESULT = new AdditiveExpr(multiply, AdditiveExpr.PO, add);
+				:}		
+				 | AdditiveExpr MO MultiplicativeExpr
+				 {:
+					RESULT = new AdditiveExpr(multiply, AdditiveExpr.MO, add);
+				:};
 
-PrimaryExpr ::= NM | BL | ST | ID | CallExpr | LP Expression RP;
 
-CallExpr ::= ID LP ActualParams RP;
+MultiplicativeExpr ::= PrimaryExpr: primary
+				{:
+					 RESULT = primary;
+				:} 
+				| MultiplicativeExpr: multiply TO PrimaryExpr: primary
+				{:
+					RESULT = new MultiplicativeExpr(primary,MultiplicativeExpr.TO, multiply);
+				:}		
+				 | MultiplicativeExpr: multiply DO PrimaryExpr: primary
+				 {:
+					RESULT = new MultiplicativeExpr(primary, MultiplicativeExpr.DO, multiply);
+				:}
+				| MultiplicativeExpr: multiply MD PrimaryExpr: primary
+				{:
+					RESULT = new MultiplicativeExpr(primary, MultiplicativeExpr.MD, multiply);
+				:};
 
-ActualParams::= ProperActualParams | ;
+PrimaryExpr ::= NM: nm
+				{:
+					RESULT = new PrimaryExpr(nm);
+				:} 
+				| BL: bl
+				{:
+				 	RESULT = new PrimaryExpr(bl, null, null);
+				:}
+				| ST: st
+				{:
+				 	RESULT = new PrimaryExpr(null, st, null);;
+				:}
+				| ID LP ActualParams: act RP
+				{:
+					 RESULT = new PrimaryExpr(act, idLexeme);
+				:}	 
+				| ID: idLexeme
+				{:
+				 	RESULT = new PrimaryExpr(null, null, idLexeme);
+				:}  
+				| LP Expression: exp RP
+				{:
+				 	RESULT = new PrimaryExpr(exp);
+				:};
 
-ProperActualParams::= ProperActualParams FA Expression | Expression;
+ActualParams::= ProperActualParams: pAs
+				{:
+					RESULT = new ActualParams(pAs);
+				:} 
+				| 
+				{:
+					RESULT = null;
+				:};
+
+ProperActualParams::= ProperActualParams: pAs FA Expression: exp
+					{:
+						pAs.add(exp);
+						RESULT = pAs;
+					:}	 
+					| Expression: exp
+					{:
+						pAs = new ProperActualParams();
+						pAs.add(exp);
+					:};
 
 
 	
