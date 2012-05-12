@@ -10,6 +10,20 @@ public class ProperActualParams extends ArrayList<Expression>
 	
 	public String toString()
 	{
-		return "";
+		String ret = "ProperActualParams\n";
+
+		String s = "";
+
+		for(Expression x: this)
+		{
+
+			s += x.toString() + "\n";
+		}
+
+		for(String st: s.split("\n"))
+			ret += "| " + st + "\n";
+
+		return ret;		
+
 	}
 }
