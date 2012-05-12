@@ -12,7 +12,7 @@ public class ReturnStmt
 	
 	public String toString()
 	{	 
-		String ret = "then Return\n";
+		String ret = "Return\n";
 		
 		 String s = "";
 		 
