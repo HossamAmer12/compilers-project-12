@@ -30,6 +30,8 @@ public class ReturnStmt
 
 	public void check()  throws SemanticException{
 	
-		
+		if(expression!=null){
+			expression.check();
+		}
 	}
 }

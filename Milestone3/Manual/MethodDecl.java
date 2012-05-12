@@ -49,9 +49,44 @@ public class MethodDecl
 
 		SymbolTable.getInstance().openScope();
 	
-			if(block!=null)
-			block.check();
+		if(formalParams!=null)
+			formalParams.check();
 		
+			if(block!=null){
+			block.check();
+			
+			boolean containsReturnStmt=false;
+		// Check for Return Stmts
+			if(block.statements!=null){
+				for(Statement stmt:block.statements){
+					if(stmt.getType().equals("ReturnStmt")){
+						containsReturnStmt=true;
+						if(!stmt.returnStmt.expression.check().equals(type.type))
+							throw new SemanticException("Type mismatch in return statement for method "+methodID);
+					}
+				}
+			}
+			
+		// Check for Method Return Stmt exists
+			if(!containsReturnStmt){
+				if(block.statements!=null){
+					boolean containsIfStmt=false;
+					for(Statement stmt:block.statements){
+						if(stmt.getType()=="IfStmt"){
+							containsIfStmt=true;
+							if(!stmt.ifStmt.HasReachableReturns())
+								throw new SemanticException(String.format("Method %s must have a return statement.",methodID));
+							
+								
+						}
+					}
+					if(!containsIfStmt)
+						throw new SemanticException(String.format("Method %s must have a return statement.",methodID));
+				}
+			
+			}
+			}
+			
 		SymbolTable.getInstance().closeScope();
 		
 	}

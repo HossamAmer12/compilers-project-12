@@ -91,4 +91,60 @@ public class IfStmt
 	
 		
 	}
+
+	public boolean HasReachableReturns() {
+		boolean ifStmtReturn=false;
+		boolean elseStmtReturn=false;
+		
+		// Contains a Block
+		if(stmt!=null)
+		if(stmt.block!=null){
+			
+			if(stmt.block.statements!=null){
+				for(Statement st:stmt.block.statements){
+					
+					if(st.returnStmt!=null)
+						ifStmtReturn=true;
+					
+					if(st.ifStmt!=null)
+						ifStmtReturn=st.ifStmt.HasReachableReturns();
+						
+				}
+			}
+			
+		}else{
+			if(stmt.returnStmt!=null)
+				ifStmtReturn=true;
+			if(stmt.ifStmt!=null)
+				ifStmtReturn=stmt.ifStmt.HasReachableReturns();
+		}
+		
+		
+		
+		// Contains a Block
+		if(elseStmt!=null)
+		if(elseStmt.block!=null){
+			
+			if(elseStmt.block.statements!=null){
+				for(Statement st:elseStmt.block.statements){
+					
+					if(st.returnStmt!=null)
+						elseStmtReturn=true;
+					
+					if(st.ifStmt!=null)
+						elseStmtReturn=st.ifStmt.HasReachableReturns();
+						
+				}
+			}
+			
+		}else{
+			if(elseStmt.returnStmt!=null)
+				elseStmtReturn=true;
+			if(elseStmt.ifStmt!=null)
+				elseStmtReturn=elseStmt.ifStmt.HasReachableReturns();
+		}
+		
+		
+		return ifStmtReturn && elseStmtReturn;
+	}
 }

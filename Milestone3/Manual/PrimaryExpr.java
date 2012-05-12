@@ -133,6 +133,9 @@ public class PrimaryExpr extends MultiplicativeExpr
 		Boolean result=false;
 		if(getTypeOfExpr().equals("boolean"))
 			result=true;
+		
+		if(getTypeOfExpr().equals("Expression"))
+			result=expr.isBoolean();
 	
 		return result ;
 	}
@@ -185,8 +188,8 @@ public class PrimaryExpr extends MultiplicativeExpr
 		}
 		
 	
-		if(getTypeOfExpr().equals("Expression"))
-				return expr.check();
+		if(getTypeOfExpr().equals("Expression")){
+				return expr.check();}
 		else
 			return getTypeOfExpr();
 	}
