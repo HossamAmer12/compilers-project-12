@@ -6,7 +6,7 @@ public class MethodDecls extends ArrayList<MethodDecl>
 	public MethodDecls()
 	{
 		super();
-		// this();
+
 	}
 	
 	public String toString()

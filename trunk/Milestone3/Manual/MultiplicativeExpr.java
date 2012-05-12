@@ -61,7 +61,6 @@ public class MultiplicativeExpr extends AdditiveExpr
 	public String check() throws SemanticException{
 		String expr1="";
 		String expr2="";
-		System.out.println("LOL");
 		if(primaryExpr!=null)
 			expr1=primaryExpr.check();
 		

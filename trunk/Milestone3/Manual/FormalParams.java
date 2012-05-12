@@ -4,19 +4,12 @@ import java.util.ArrayList;
 public class FormalParams extends ArrayList<FormalParam>
 {
 	
-	// public ProperFormalParams properFormalParams;
-	
-	// public ArrayList<FormalParam> properFormalParams;
 	
 	public FormalParams()
 	{
 		super();
 	}
 	
-	// public FormalParams(ArrayList<FormalParam> properFormalParams)
-	// {
-	// 	this.properFormalParams = properFormalParams;
-	// }
 	
 	public String toString()
 	{
@@ -36,4 +29,9 @@ public class FormalParams extends ArrayList<FormalParam>
 			return ret;
 	}
 	
+	public void check() throws SemanticException{
+		for(FormalParam f:this){
+			f.check();
+		}
+	}
 }
