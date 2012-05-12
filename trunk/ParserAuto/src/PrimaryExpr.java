@@ -68,7 +68,7 @@ public class PrimaryExpr extends MultiplicativeExpr
 		}
 		else if(actualParams != null)
 		{
-			s += callerMethodName  + " " + actualParams.toString();
+			s += "CallExpr "+ callerMethodName  + " " + actualParams.toString();
 		}
 		else if(number != null)
 			s +=number;
