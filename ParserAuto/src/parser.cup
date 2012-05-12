@@ -35,14 +35,7 @@ nonterminal	CallExpr		CallExpr;
 
 nonterminal	ActualParams		ActualParams;
 nonterminal	ProperActualParams		ProperActualParams;
-/*nonterminal	StatementsPrime		StatementsPrime;*/
 
-
-
-
-/*nonterminal MethodDecls,MethodDecl,Type,Block,FormalParams,ProperFormalParams,FormalParam,Statements,Statement;*?
-/*nonterminal LocalVarDecl,AssignStmt,IfStmt,WhileStmt,ReturnStmt,Expression,ConditionalAndExpr,EqualityExpr;*/
-/*nonterminal AdditiveExpr,MultiplicativeExpr,PrimaryExpr,CallExpr,ActualParams,ProperActualParams,StatementsPrime;*/
 
 
 /* Precedences */
