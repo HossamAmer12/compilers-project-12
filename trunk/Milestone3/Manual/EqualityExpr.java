@@ -66,10 +66,18 @@ public class EqualityExpr extends ConditionalAndExpr
 		if(expr!=null)
 			expr2=expr.check();
 		
-	
+	if(expr1!=null)
+	{
+		if(expr2!=null)
 		if(expr1.equals(expr2))
 			return expr1;
-		else
+	}
+	if(expr2!=null)
+	{
+		if(expr1!=null)
+		if(expr2.equals(expr1))
+			return expr1;
+	}
 			throw new SemanticException("Type mismatch in Expression.");
 
 	}
