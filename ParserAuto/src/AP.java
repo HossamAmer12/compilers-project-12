@@ -25,7 +25,7 @@ public class AP {
 
 			System.out.println(cd);
 			
-//			cd.check();
+			cd.check();
 			
 		
 			System.out.println("Semantic Analysis Completed with No Errors.");

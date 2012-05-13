@@ -37,11 +37,11 @@ public class Block
 
 	}
 
-//	public void check() throws SemanticException {
-//
-//		if(statements!=null)
-//			statements.check();
-//		
-//	}
+	public void check(MethodDecl method) throws SemanticException {
+
+		if(statements!=null)
+			statements.check(method);
+		
+	}
 	
 }

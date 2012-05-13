@@ -22,8 +22,6 @@ public class ActualParams // extends ArrayList<ProperActualParams>
 		 
 		if(actualParmas != null) 
 			s += actualParmas.toString();
-			
-//		System.out.println("Actual Parasms: " + actualParmas);
 		
 		for(String st: s.split("\n"))
 			ret += "| " + st + "\n";

@@ -29,9 +29,9 @@ public class FormalParams extends ArrayList<FormalParam>
 			return ret;
 	}
 	
-//	public void check() throws SemanticException{
-//		for(FormalParam f:this){
-//			f.check();
-//		}
-//	}
+	public void check() throws SemanticException{
+		for(FormalParam f:this){
+			f.check();
+		}
+	}
 }
