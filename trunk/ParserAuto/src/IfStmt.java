@@ -20,6 +20,7 @@ public class IfStmt
 		this.expr = expr;
 		this.stmt = stmt;
 		this.elseStmt = elseStmt;
+
 	}
 	
 	
@@ -69,34 +70,39 @@ public class IfStmt
 
 	}
 
-//	public void check() throws SemanticException{
-//	
-//		if(stmt!=null)
-//			stmt.check();
-//		
-//		if(expr!=null)
-//		{
-//
-//			expr.check();
-//			
-//			// Semantic Check: For Condition Mismatch
-//				if(!expr.isBoolean()){
-//						throw new SemanticException("If Statement",SemanticException.CONDITION_MISMATCH);
-//					}
-//				
-//		}
-//		
-//		if(elseStmt!=null)
-//			elseStmt.check();
-//	
-//		
-//	}
+	public void check(MethodDecl method) throws SemanticException{
+	
+		if(expr!=null)
+		{
+
+			expr.check();
+			
+			// Semantic Check: For Condition Mismatch
+				if(!expr.isBoolean()){
+						throw new SemanticException("If Statement",SemanticException.CONDITION_MISMATCH);
+					}
+				
+		}
+
+		SymbolTable.getInstance().openScope();
+		if(stmt!=null)
+			stmt.check(method);
+		SymbolTable.getInstance().closeScope();
+		
+		SymbolTable.getInstance().openScope();
+		if(elseStmt!=null)
+			elseStmt.check(method);
+		SymbolTable.getInstance().closeScope();
+	
+		
+	}
 
 	public boolean HasReachableReturns() {
 		boolean ifStmtReturn=false;
 		boolean elseStmtReturn=false;
 		
 		// Contains a Block
+		
 		if(stmt!=null)
 		if(stmt.block!=null){
 			
@@ -124,7 +130,7 @@ public class IfStmt
 		// Contains a Block
 		if(elseStmt!=null)
 		if(elseStmt.block!=null){
-			
+		
 			if(elseStmt.block.statements!=null){
 				for(Statement st:elseStmt.block.statements){
 					

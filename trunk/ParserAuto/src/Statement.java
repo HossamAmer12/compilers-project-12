@@ -109,40 +109,40 @@ public class Statement
 		
 	}
 
-//	public void check() throws SemanticException  {
-//		
-//		if(getType().equals("LocalVarDecl")){
-//			localVarDecl.check();
-//			return;
-//		} 
-//		
-//		if(getType().equals("WhileStmt")){
-//			whileStmt.check();
-//			return;
-//		}
-//		
-//		if(getType().equals("AssignStmt")){
-//			assignStmt.check();
-//			return;
-//		}
-//		
-//		if(getType().equals("ReturnStmt")){
-//			returnStmt.check();
-//			return;
-//		}
-//		
-//		if(getType().equals("Block")){
-//			block.check();
-//			return;
-//		}
-//		
-//		if(getType().equals("IfStmt")){
-//			ifStmt.check();
-//			return;
-//			
-//		}
-//		
-//		
-//	}
+	public void check(MethodDecl method) throws SemanticException  {
+		
+		if(getType().equals("LocalVarDecl")){
+			localVarDecl.check();
+			return;
+		} 
+		
+		if(getType().equals("WhileStmt")){
+			whileStmt.check(method);
+			return;
+		}
+		
+		if(getType().equals("AssignStmt")){
+			assignStmt.check();
+			return;
+		}
+		
+		if(getType().equals("ReturnStmt")){
+			returnStmt.check(method);
+			return;
+		}
+		
+		if(getType().equals("Block")){
+			block.check(method);
+			return;
+		}
+		
+		if(getType().equals("IfStmt")){
+			ifStmt.check(method);
+			return;
+			
+		}
+		
+		
+	}
 	
 }

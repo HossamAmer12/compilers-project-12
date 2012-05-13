@@ -36,11 +36,11 @@ class Algebra {
 			return fibonacci(n - 1) + fibonacci(n - 2);
 	}
 	
-	static float average(int n1, int n2, int n3)
+	static int average(int n1, int n2, int n3)
 	{
-		float sum;
+		int sum;
 		sum = n1 + n2 + n3;
-		return sum / 3.0;
+		return sum / 3;
 	}
 	
 }

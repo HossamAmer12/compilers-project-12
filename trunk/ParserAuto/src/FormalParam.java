@@ -20,9 +20,9 @@ public class FormalParam
 		return "Formal Param " + idLexeme + "\n";
 	}
 	
-//	public void check() throws SemanticException{
-//		SymbolTable.getInstance().add(new Entry(idLexeme,type));
-//	}
+	public void check() throws SemanticException{
+		SymbolTable.getInstance().add(new Entry(idLexeme,type));
+	}
 	
 	
 }

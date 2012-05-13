@@ -32,7 +32,7 @@ public class EqualityExpr extends ConditionalAndExpr
 			s += expr.toString();
 			
 			if(op == EQ)
-				s += "==\n\n";
+				s += "==\n";
 			else
 				s += "!=\n";
 			
@@ -56,21 +56,29 @@ public class EqualityExpr extends ConditionalAndExpr
 		
 		return result ;
 	}
-//	public String check() throws SemanticException{
-//
-//		String expr1="";
-//		String expr2="";
-//
-//		if(addExpr!=null)
-//			expr1=addExpr.check();
-//		if(expr!=null)
-//			expr2=expr.check();
-//		
-//	
-//		if(expr1.equals(expr2))
-//			return expr1;
-//		else
-//			throw new SemanticException("Type mismatch in Expression.");
-//
-//	}
+	public String check() throws SemanticException{
+
+		String expr1="";
+		String expr2="";
+
+		if(addExpr!=null)
+			expr1=addExpr.check();
+		if(expr!=null)
+			expr2=expr.check();
+		
+	if(expr1!=null)
+	{
+		if(expr2!=null)
+		if(expr1.equals(expr2))
+			return expr1;
+	}
+	if(expr2!=null)
+	{
+		if(expr1!=null)
+		if(expr2.equals(expr1))
+			return expr1;
+	}
+			throw new SemanticException("Type mismatch in Expression.");
+
+	}
 }

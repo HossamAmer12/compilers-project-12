@@ -41,20 +41,20 @@ public class ConditionalAndExpr extends Expression
 
 		return result ;
 	}
-//	public String check() throws SemanticException{
-//		String expr1="";
-//		String expr2="";
-//		if(equalityExpr!=null)
-//			expr1=equalityExpr.check();
-//		if(expr!=null)
-//			expr2=expr.check();
-//
-//
-//		if(expr1.equals(expr2) && (expr1.equals("boolean") || expr2.equals("boolean")))
-//			return expr1;
-//		else
-//			return null;
-//		
-//
-//	}
+	public String check() throws SemanticException{
+		String expr1="";
+		String expr2="";
+		if(equalityExpr!=null)
+			expr1=equalityExpr.check();
+		if(expr!=null)
+			expr2=expr.check();
+
+
+		if(expr1.equals(expr2) && (expr1.equals("boolean") || expr2.equals("boolean")))
+			return expr1;
+		else
+			return null;
+		
+
+	}
 }

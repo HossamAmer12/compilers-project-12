@@ -53,12 +53,12 @@ public class ClassDecl {
 	
 	}
 	
-//	public void check() throws SemanticException {
-//		
-//		if(methodDelcs!=null)
-//		{
-//			methodDelcs.check();
-//		}
-//		
-//	}
+	public void check() throws SemanticException {
+		
+		if(methodDelcs!=null)
+		{
+			methodDelcs.check();
+		}
+		
+	}
 }

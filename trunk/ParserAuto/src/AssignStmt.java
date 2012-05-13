@@ -30,17 +30,17 @@ public class AssignStmt
 		return ret;
 	}
 
-//	public void check() throws SemanticException{
-//
-//		if(SymbolTable.getInstance().contains(varId))
-//		{
-//			Entry e=SymbolTable.getInstance().get(varId);
-//			if(e.type!=null){
-//			if(!e.type.type.toString().equals(expr.check()) || expr.check()==null)
-//					throw new SemanticException(varId,SemanticException.TYPE_MISMATCH);
-//				
-//			}
-//		}else throw new SemanticException(varId,SemanticException.VAR_DECLARATION);
-//		
-//	}
+	public void check() throws SemanticException{
+
+		if(SymbolTable.getInstance().contains(varId))
+		{
+			Entry e=SymbolTable.getInstance().get(varId);
+			if(e.type!=null){
+			if(!e.type.type.toString().equals(expr.check()) || expr.check()==null)
+					throw new SemanticException(varId,SemanticException.TYPE_MISMATCH);
+				
+			}
+		}else throw new SemanticException(varId,SemanticException.VAR_DECLARATION);
+		
+	}
 }
