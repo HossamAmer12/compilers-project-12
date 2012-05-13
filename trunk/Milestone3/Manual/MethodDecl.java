@@ -45,6 +45,16 @@ public class MethodDecl
 		return ret;
 	}
 
+	public boolean hasDirectReturn(){
+		boolean result=false;
+		for(Statement stmt:block.statements){
+			if(stmt.getType()=="ReturnStmt"){
+				result=true;
+				break;
+			}
+		}
+		return result;
+	}
 	public void check() throws SemanticException {
 
 		SymbolTable.getInstance().openScope();
@@ -53,21 +63,10 @@ public class MethodDecl
 			formalParams.check();
 		
 			if(block!=null){
-			block.check();
+			block.check(this);
 			
-			boolean containsReturnStmt=false;
-		// Check for Return Stmts
-			if(block.statements!=null){
-				for(Statement stmt:block.statements){
-					if(stmt.getType().equals("ReturnStmt")){
-						containsReturnStmt=true;
-						if(!stmt.returnStmt.expression.check().equals(type.type))
-							throw new SemanticException("Type mismatch in return statement for method "+methodID);
-					}
-				}
-			}
+			boolean containsReturnStmt=hasDirectReturn();
 			
-		// Check for Method Return Stmt exists
 			if(!containsReturnStmt){
 				if(block.statements!=null){
 					boolean containsIfStmt=false;
@@ -77,7 +76,6 @@ public class MethodDecl
 							if(!stmt.ifStmt.HasReachableReturns())
 								throw new SemanticException(String.format("Method %s must have a return statement.",methodID));
 							
-								
 						}
 					}
 					if(!containsIfStmt)

@@ -109,7 +109,7 @@ public class Statement
 		
 	}
 
-	public void check() throws SemanticException  {
+	public void check(MethodDecl method) throws SemanticException  {
 		
 		if(getType().equals("LocalVarDecl")){
 			localVarDecl.check();
@@ -117,7 +117,7 @@ public class Statement
 		} 
 		
 		if(getType().equals("WhileStmt")){
-			whileStmt.check();
+			whileStmt.check(method);
 			return;
 		}
 		
@@ -127,17 +127,17 @@ public class Statement
 		}
 		
 		if(getType().equals("ReturnStmt")){
-			returnStmt.check();
+			returnStmt.check(method);
 			return;
 		}
 		
 		if(getType().equals("Block")){
-			block.check();
+			block.check(method);
 			return;
 		}
 		
 		if(getType().equals("IfStmt")){
-			ifStmt.check();
+			ifStmt.check(method);
 			return;
 			
 		}
