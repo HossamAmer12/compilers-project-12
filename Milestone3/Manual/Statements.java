@@ -29,11 +29,11 @@ public class Statements extends ArrayList<Statement>
 
 	}
 
-	public void check() throws SemanticException  {
+	public void check(MethodDecl method) throws SemanticException  {
 		
 		for (Statement stmt: this)
 		{
-			stmt.check();
+			stmt.check(method);
 
 		}
 		

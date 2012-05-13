@@ -37,10 +37,10 @@ public class WhileStmt
                     return ret;
     }
 
-	public void check() throws SemanticException {
+	public void check(MethodDecl method) throws SemanticException {
 		
 		if(stmt!=null)
-			stmt.check();
+			stmt.check(method);
 		
 		if(expr!=null)
 		{

@@ -75,6 +75,7 @@ public class Lexer {
 	//Removes all trailing zeros
 	private String removeTrailingZeors(String floatBuffer)
 	{
+
 		String result="";
 		if(!floatBuffer.contains("."))
 			return floatBuffer;
@@ -557,7 +558,7 @@ public class Lexer {
 				case STATE_EQUALITY:
 					if(curr!='=')
 					{
-						curr=read();
+						//curr=read();
 						return getTokenByOperator('=');
 					}else {curr=read();return new Token(Token.EQ,"==");}
 				//////////////////////////////////////////////////////////////

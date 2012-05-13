@@ -511,7 +511,7 @@ public class Parser {
 		if (token.getTokenType() == t) {
 			token = lexer.nextToken();
 		} else { 
-			throw new SyntaxException("Cannot Match Tokens");
+			throw new SyntaxException("Syntax error: Cannot match tokens.");
 		}
 	}
 	
@@ -522,6 +522,6 @@ public class Parser {
 			token = lexer.nextToken();
 			// return true;
 		}else 
-			throw new SyntaxException("Cannot Match Tokens");
+			throw new SyntaxException("Syntax error: Cannot match tokens.");
 	}
 }

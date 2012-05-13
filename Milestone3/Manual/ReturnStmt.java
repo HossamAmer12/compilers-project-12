@@ -28,8 +28,11 @@ public class ReturnStmt
 	
 	}
 
-	public void check()  throws SemanticException{
+	public void check(MethodDecl method)  throws SemanticException{
 	
+		if(!expression.check().equals(method.type.type))
+			throw new SemanticException("Type mismatch in return statement for method "+method.methodID);
+		
 		if(expression!=null){
 			expression.check();
 		}
