@@ -177,13 +177,13 @@ public class Parser {
 						
                     if(isType())
                     {
-							System.out.println("Hello");
+							// System.out.println("Hello");
                             value = new Statement(localVarDecl());
                             break;
                     }
                     else if (token.getTokenType() == Token.ID)
                     {
-								System.out.println("Hello1");
+								// System.out.println("Hello1");
                                     value = new Statement(assignStmt());
                                     break;
                     }
