@@ -12,7 +12,8 @@ class Algebra {
 			d = d + 2;
 		}
 		String s;
-        s = "This is a useless string literal";
+        s = "This is a useless string literal
+		;
 		return true;
 	}
 
