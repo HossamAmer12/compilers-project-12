@@ -174,46 +174,61 @@ public class Parser {
 
             while(true)
             {
+						
                     if(isType())
                     {
+							System.out.println("Hello");
                             value = new Statement(localVarDecl());
                             break;
                     }
                     else if (token.getTokenType() == Token.ID)
                     {
+								System.out.println("Hello1");
                                     value = new Statement(assignStmt());
                                     break;
                     }
                      else if(isEqual("if"))
                             {
+	// System.out.println("Hello2");
                                     value = new Statement(ifStmt());
                                     break;
                             }
                      else if(isEqual("while"))
                             {
+	// System.out.println("Hello3");
                                     value = new Statement(whileStmt());
                                     break;
                             }
                      else if (isEqual("return"))
                             {
+	// System.out.println("Hello4");
                                             value = new Statement(returnStmt());
                                             break;
                             }
                      else if(isEqual(Token.LB))
                             {
+	// System.out.println("Hello5");
                                     value = new Statement(block());
                                     break;
                             }
                      else if (isEqual(Token.RB))
                             {
+	// System.out.println("Hello6");
                     	 		Report.syntaxErrorGrammer(token.line, token.at, "A statement or a block is expected.", lines.get(token.line-1));
                                 break;
                             }
                     else
-                            return value;
+                            {
+	// System.out.println("Hello7");
+							// break;
+							 return value;
+								
+							}
 
 
             }
+
+			// System.out.println("Hello8");
                             return value;
     }
 		
@@ -286,6 +301,7 @@ public class Parser {
 		
 	private Expression expression() throws SyntaxException{
 			
+			 // System.out.println("expression: " + token.getLexeme());
 			Expression expr = conditionalAndExpr();
 			
 			while (true)
@@ -297,8 +313,22 @@ public class Parser {
 					break;
 
 				}
+				else if(isEqual(Token.ERROR))
+				{
+					// displayWarning(int line,int at,String message,String in){
+						// Report.displayWarning(token.line, token.at, "| converted to ||", "",  lines.get(token.line-1));
+						Report.displayWarning(token.line, token.at, "String message","String in");
+						token = lexer.nextToken();
+						expr = new Expression(conditionalAndExpr(), expr);
+						
+						
+						
+						return expr;
+				}
 				else
-					return expr;
+					{
+						return expr;
+					}
 				
 			}
 			
@@ -316,8 +346,23 @@ public class Parser {
 					match(Token.LA);
 					expr = new ConditionalAndExpr(equalityExpr(), expr);
 				}
+				
+				else if(isEqual(Token.ERROR))
+				{
+					
+					Report.displayWarning(token.line, token.at, "& converted to &&", lines.get(token.line-1));
+					// Report.displayWarning(token.line, token.at, "& converted to &&",token.getLexeme(), lines.get(token.line-1));
+					token = lexer.nextToken();
+					expr = new ConditionalAndExpr(equalityExpr(), expr);
+					
+					return expr;
+				}
+				
 				else
-				 	return expr;
+				{
+					return expr;
+				}
+				 	
 				
 			}
 			
