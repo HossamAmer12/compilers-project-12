@@ -459,6 +459,14 @@ public class Parser {
 				value = new PrimaryExpr(null, token.getLexeme(), null);
 				match(Token.ST);
 			}
+			else if(isEqual(Token.ERROR))
+			{
+				// System.out.println("Hello from string case22222222: " + token.getLexeme());
+				Report.displayWarning(token.line, token.at, "A string should be ended \" literal", lines.get(token.line-1));
+				token = lexer.nextToken();
+				
+				value = new PrimaryExpr(null, token.getLexeme(), null);
+			}
 
 			else if(isEqual(Token.LP))
 			{

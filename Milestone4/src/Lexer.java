@@ -631,11 +631,14 @@ public class Lexer {
 					{
 						//TODO case one qoute at end of file no breaks
 						state=STATE_CONTROLLER;
+						
+						// System.out.println("WordBuffer:  " + wordBuffer);
 						readCharacter();
-						return new Token(Token.ERROR,"Invalid String Literal",line,at);
+						return new Token(Token.ERROR,wordBuffer,line,at);
 					}
 					else
 					{
+						// System.out.println("WordBuffer22222:  " + wordBuffer);
 						wordBuffer+=curr;
 						readCharacter();
 						
