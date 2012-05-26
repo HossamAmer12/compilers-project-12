@@ -3,14 +3,19 @@ public class Expression
 	public ConditionalAndExpr andExpr;
 	public Expression expr;
 	
-	
+	public int lineNo;
+	public String line;
+	public int at;
 	public Expression()
 	{}
 	
 	
-	public Expression(ConditionalAndExpr t, Expression e) {
+	public Expression(ConditionalAndExpr t, Expression e,int lineNo,int at,String line) {
 		this.andExpr = t;
 		this.expr = e;
+		this.line=line;
+		this.lineNo=lineNo;
+		this.at=at;
 	}
 	
 	
@@ -69,8 +74,8 @@ public class Expression
 		if(expr1.equals(expr2))
 			return expr1;
 		else
-			throw new SemanticException("Type mismatch in expression");
-		
+			Report.semanticError(lineNo, at,"Type mismatch in Expression", line);
+		return null;
 		
 
 	}

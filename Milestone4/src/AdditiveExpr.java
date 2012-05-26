@@ -8,12 +8,14 @@ public class AdditiveExpr extends EqualityExpr
 	
 	public static final int PO = 1;// +
 	public static final int MO = 2;// -
-		
+	public int lineNo;
+	public int at;
+	public String line;
 	
 	public AdditiveExpr()
 	{}
 	
-	public AdditiveExpr(MultiplicativeExpr t, int o, AdditiveExpr e) {
+	public AdditiveExpr(MultiplicativeExpr t, int o, AdditiveExpr e,int lineNo,int at,String line) {
 		multiplyExpr = t;
 		op = o;
 		expr = e;
@@ -57,7 +59,7 @@ public class AdditiveExpr extends EqualityExpr
 		return result ;
 	}
 	
-	public String check() throws SemanticException{
+	public String check() throws SemanticException {
 		String expr1="";
 		String expr2="";
 		
@@ -74,7 +76,8 @@ public class AdditiveExpr extends EqualityExpr
 			return expr1;
 		else
 			// Case where an expression contains expressions with different types
-			throw new SemanticException("Type mismatch in expression");
+			{Report.semanticError(lineNo, at,"Type mismatch in Expression", line);
+		return null;}
 
 		
 	
