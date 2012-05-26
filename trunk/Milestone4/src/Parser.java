@@ -249,8 +249,10 @@ public class Parser {
 	private LocalVarDecl localVarDecl() throws SyntaxException{
 			Type type = Type();
 			String idLexeme = token.getLexeme();
+
+			// while(Token.getTokenType() != Token.SM)
 			
-			match(Token.ID);
+			match(Token.ID);			
 			match(Token.SM);
 
 			return new LocalVarDecl(idLexeme, type);
@@ -326,6 +328,19 @@ public class Parser {
 					break;
 
 				}
+				
+				else if(isEqual(Token.ERROR))
+				{
+					// displayWarning(int line,int at,String message,String in){
+						// Report.displayWarning(token.line, token.at, "| converted to ||", "",  lines.get(token.line-1));
+						Report.displayWarning(token.line, token.at, "String message","String in");
+						token = lexer.nextToken();
+						expr = new Expression(conditionalAndExpr(), expr);
+						
+						
+						
+						return expr;
+				}
 				else
 					return expr;
 				
@@ -345,6 +360,18 @@ public class Parser {
 					match(Token.LA);
 					expr = new ConditionalAndExpr(equalityExpr(), expr);
 				}
+				
+				else if(isEqual(Token.ERROR))
+				{
+					
+					Report.displayWarning(token.line, token.at, "& converted to &&", lines.get(token.line-1));
+					// Report.displayWarning(token.line, token.at, "& converted to &&",token.getLexeme(), lines.get(token.line-1));
+					token = lexer.nextToken();
+					expr = new ConditionalAndExpr(equalityExpr(), expr);
+					
+					return expr;
+				}
+				
 				else
 				 	return expr;
 				
@@ -450,7 +477,7 @@ public class Parser {
 									token = lexer.nextToken();
 					
 									value = new PrimaryExpr(null, token.getLexeme(), null);
-							}
+			}
 			else if(isEqual(Token.LP))
 			{
 				match(Token.LP);
