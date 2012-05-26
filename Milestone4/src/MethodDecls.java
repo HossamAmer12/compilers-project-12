@@ -31,7 +31,7 @@ public class MethodDecls extends ArrayList<MethodDecl>
 
 	}
 	public void check() throws SemanticException {
-		
+	
 		for (MethodDecl m: this)
 		{
 			if(!SymbolTable.getInstance().contains(m.methodID))
