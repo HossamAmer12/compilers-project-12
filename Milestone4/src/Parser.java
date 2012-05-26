@@ -119,6 +119,7 @@ public class Parser {
 		Type type = Type();			
 		
 		String methodID = token.getLexeme();
+		Token t=token;
 		match(Token.ID);
 		match(Token.LP);
 		
@@ -131,7 +132,7 @@ public class Parser {
 		
 		
 
-		return new MethodDecl(type, formalParams, block, methodID);
+		return new MethodDecl(type, formalParams, block, methodID,t.line,t.at,lines.get(t.line-1));
 	}
 	
 	private Type Type() throws SyntaxException {
@@ -178,6 +179,7 @@ public class Parser {
 
 
 			match(Token.LB);
+
 			Statements stats = statements();
 			match(Token.RB);
 			
@@ -188,17 +190,44 @@ public class Parser {
 	private Statements statements() throws SyntaxException{
 			Statements stats = new Statements();	
 			
-			while(token.getTokenType() != Token.RB)
+			while(token.getTokenType() != Token.RB && isStatement() )
 			{
+		
 				Statement g=statement();
 				stats.add(g);
 			}
 					
 			return stats;	
 		}
-	
-	
 		
+	private boolean isStatement(){
+		if(isType())
+        {
+                return true;
+        }
+        else if (token.getTokenType() == Token.ID)
+        {
+                        return true;
+        }
+         else if(isEqual("if"))
+                {
+                       return true;
+                }
+         else if(isEqual("while"))
+                {
+                        return true;
+                }
+         else if (isEqual("return"))
+                {
+                     return true;
+                }
+         else if(isEqual(Token.LB))
+                {
+        	 	return true;
+                }
+        return false;
+
+	}
 	private Statement statement() throws SyntaxException{
            
          	Statement value = new Statement();
@@ -251,13 +280,13 @@ public class Parser {
 	private LocalVarDecl localVarDecl() throws SyntaxException{
 			Type type = Type();
 			String idLexeme = token.getLexeme();
-			
-			// System.out.println("ID WRONG: " + idLexeme);
-			
+
+			// while(Token.getTokenType() != Token.SM)
+			Token t=token;
 			match(Token.ID);			
 			match(Token.SM);
 
-			return new LocalVarDecl(idLexeme, type);
+			return new LocalVarDecl(idLexeme, type,t.line,t.at,lines.get(t.line-1));
 		}
 		
 	private AssignStmt assignStmt() throws SyntaxException{
@@ -288,11 +317,11 @@ public class Parser {
 	private ReturnStmt returnStmt() throws SyntaxException{
 			
 				match("return");
-		
+				Token t=token;
 				Expression expr = expression();
 				match(Token.SM);
 
-				return new ReturnStmt(expr);
+				return new ReturnStmt(expr,t.line,t.at,lines.get(t.line-1));
 		}
 		
 	private IfStmt ifStmt() throws SyntaxException
@@ -571,22 +600,21 @@ public class Parser {
 		if (token.getTokenType() == t) {
 			token = lexer.nextToken();
 		} 
-		else if(token.getTokenType() == Token.ERROR)
+		else if(token.getTokenType()==Token.ERROR)
 		{
-			
 			Report.displayWarning(token.line, token.at, "Invalid Input", lines.get(token.line-1));
-			token = lexer.nextToken();
+			token=lexer.nextToken();
 			
 		}
 		else { 
 			Report.syntaxErrorToken(token.line, token.at, Token.getLexemeByType(t),token.getLexeme(), lines.get(token.line-1));
+			
 		}
 	}
 	
 	private void match(String lexeme) throws SyntaxException {
 		if(token.getLexeme().equals(lexeme)){
 			token = lexer.nextToken();
-			
 		}else 
 			Report.syntaxErrorToken(token.line, token.at, lexeme,token.getLexeme(), lines.get(token.line-1));
 	}

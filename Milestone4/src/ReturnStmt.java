@@ -1,12 +1,18 @@
 public class ReturnStmt
 {
 	Expression expression;
+	int lineNo;
+	String line;
+	int at;
 	public ReturnStmt()
 	{}
 	
-	public ReturnStmt(Expression expression)
+	public ReturnStmt(Expression expression,int lineNo,int at,String line)
 	{
 		this.expression = expression;
+		this.line=line;
+		this.lineNo=lineNo;
+		this.line=line;
 	}
 	
 	
@@ -31,7 +37,8 @@ public class ReturnStmt
 	public void check(MethodDecl method)  throws SemanticException{
 	
 		if(!expression.check().equals(method.type.type))
-			throw new SemanticException("Type mismatch in return statement for method "+method.methodID);
+			Report.semanticError(lineNo, at, "Type mismatch in return statement for method "+method.methodID,line);
+		
 		
 		if(expression!=null){
 			expression.check();
