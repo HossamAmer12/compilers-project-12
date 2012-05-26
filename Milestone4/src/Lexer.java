@@ -45,7 +45,6 @@ public class Lexer {
 	private static int line=1;
 	private static int at=1;
 	
-	public ArrayList<String> lines=new ArrayList<String>();
 
 	// End of file character
 
@@ -323,7 +322,6 @@ public class Lexer {
 	
 	private void readCharacter(){
 		curr=read();
-		lines.set(line-1, lines.get(line-1)+curr);
 		at++;
 	}
 	public Token nextToken() {
@@ -333,7 +331,6 @@ public class Lexer {
 		String floatBuffer="";
 		String wordBuffer="";
 		
-		lines.add("");
 		while (true) {
 	
 			
@@ -360,7 +357,6 @@ public class Lexer {
 					if(curr=='\n'){
 						at=1;
 						line++;
-						lines.add("");
 						readCharacter();
 						continue;
 					}

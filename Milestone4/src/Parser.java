@@ -1,3 +1,9 @@
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /*
@@ -20,9 +26,30 @@ public class Parser {
 	
 	public Parser(Lexer lex) {
 		lexer = lex;
-		lines=lexer.lines;
+		
+		lines=readLines();
 	
+		
 
+	}
+	public ArrayList<String> readLines(){
+		ArrayList<String> lines=new ArrayList<String>();
+		try{
+			  FileInputStream fstream = new FileInputStream("Algebra.decaf");
+
+			  DataInputStream in = new DataInputStream(fstream);
+			  BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			  String strLine;
+
+			  while ((strLine = br.readLine()) != null)   {
+				  lines.add(strLine);
+			  }
+			
+			  in.close();
+			    }catch (Exception e){
+			  System.err.println("Error: " + e.getMessage());
+			  }
+		return lines;
 	}
 	
 	public ClassDecl parse() throws SyntaxException {
@@ -47,6 +74,7 @@ public class Parser {
 	
 	private void classDecl() throws SyntaxException
 	{
+
 		match("class");
 		match(Token.ID);
 		if(isEqual(Token.LB))
@@ -68,8 +96,8 @@ public class Parser {
 		//Handle Epsilon case
 		if(token.getTokenType()==Token.RB)
 			return null;
-		
-		MethodDecls value = new MethodDecls();
+
+		MethodDecls value = new MethodDecls(token.line,lines.get(token.line-1));
 		while(true)
 		{
 			if(token.getLexeme().equals("static"))
@@ -78,6 +106,7 @@ public class Parser {
 				value.add(methodDecl());
 			}else break;
 		}
+
 		return value;
 		
 	}
@@ -174,61 +203,46 @@ public class Parser {
 
             while(true)
             {
-						
                     if(isType())
                     {
-							// System.out.println("Hello");
                             value = new Statement(localVarDecl());
                             break;
                     }
                     else if (token.getTokenType() == Token.ID)
                     {
-								// System.out.println("Hello1");
                                     value = new Statement(assignStmt());
                                     break;
                     }
                      else if(isEqual("if"))
                             {
-	// System.out.println("Hello2");
                                     value = new Statement(ifStmt());
                                     break;
                             }
                      else if(isEqual("while"))
                             {
-	// System.out.println("Hello3");
                                     value = new Statement(whileStmt());
                                     break;
                             }
                      else if (isEqual("return"))
                             {
-	// System.out.println("Hello4");
                                             value = new Statement(returnStmt());
                                             break;
                             }
                      else if(isEqual(Token.LB))
                             {
-	// System.out.println("Hello5");
                                     value = new Statement(block());
                                     break;
                             }
                      else if (isEqual(Token.RB))
                             {
-	// System.out.println("Hello6");
                     	 		Report.syntaxErrorGrammer(token.line, token.at, "A statement or a block is expected.", lines.get(token.line-1));
                                 break;
                             }
                     else
-                            {
-	// System.out.println("Hello7");
-							// break;
-							 return value;
-								
-							}
+                            return value;
 
 
             }
-
-			// System.out.println("Hello8");
                             return value;
     }
 		
@@ -301,7 +315,6 @@ public class Parser {
 		
 	private Expression expression() throws SyntaxException{
 			
-			 // System.out.println("expression: " + token.getLexeme());
 			Expression expr = conditionalAndExpr();
 			
 			while (true)
@@ -313,22 +326,8 @@ public class Parser {
 					break;
 
 				}
-				else if(isEqual(Token.ERROR))
-				{
-					// displayWarning(int line,int at,String message,String in){
-						// Report.displayWarning(token.line, token.at, "| converted to ||", "",  lines.get(token.line-1));
-						Report.displayWarning(token.line, token.at, "String message","String in");
-						token = lexer.nextToken();
-						expr = new Expression(conditionalAndExpr(), expr);
-						
-						
-						
-						return expr;
-				}
 				else
-					{
-						return expr;
-					}
+					return expr;
 				
 			}
 			
@@ -346,23 +345,8 @@ public class Parser {
 					match(Token.LA);
 					expr = new ConditionalAndExpr(equalityExpr(), expr);
 				}
-				
-				else if(isEqual(Token.ERROR))
-				{
-					
-					Report.displayWarning(token.line, token.at, "& converted to &&", lines.get(token.line-1));
-					// Report.displayWarning(token.line, token.at, "& converted to &&",token.getLexeme(), lines.get(token.line-1));
-					token = lexer.nextToken();
-					expr = new ConditionalAndExpr(equalityExpr(), expr);
-					
-					return expr;
-				}
-				
 				else
-				{
-					return expr;
-				}
-				 	
+				 	return expr;
 				
 			}
 			
@@ -461,13 +445,12 @@ public class Parser {
 			}
 			else if(isEqual(Token.ERROR))
 			{
-				// System.out.println("Hello from string case22222222: " + token.getLexeme());
-				Report.displayWarning(token.line, token.at, "A string should be ended \" literal", lines.get(token.line-1));
-				token = lexer.nextToken();
-				
-				value = new PrimaryExpr(null, token.getLexeme(), null);
-			}
-
+							// System.out.println("Hello from string case22222222: " + token.getLexeme());
+							Report.displayWarning(token.line, token.at, "A string should be ended \" literal", lines.get(token.line-1));
+									token = lexer.nextToken();
+					
+									value = new PrimaryExpr(null, token.getLexeme(), null);
+							}
 			else if(isEqual(Token.LP))
 			{
 				match(Token.LP);

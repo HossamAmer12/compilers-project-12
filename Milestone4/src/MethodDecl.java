@@ -10,6 +10,7 @@ public class MethodDecl
 	public static final int ID = 3; // for id
 	public static final int KW = 4; // for static
 	
+
 	public MethodDecl()
 	{	
 	}
