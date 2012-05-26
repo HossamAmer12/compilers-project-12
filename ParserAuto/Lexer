@@ -147,6 +147,11 @@ COMMENT_TEXT= ({ALPHA_NUMERIC}*({SYMBOLS})*({WHITE_SPACE})*)*
   return new Symbol(sym.DO, yytext());	
 }
 
+<YYINITIAL> "*" { 
+  return new Symbol(sym.TO, yytext());	
+}
+
+
 <YYINITIAL> "||" { 
   return new Symbol(sym.LO, yytext());	
 }
