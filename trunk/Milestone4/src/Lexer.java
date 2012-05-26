@@ -123,7 +123,6 @@ public class Lexer {
 	
 	private Token getErrorToken(char curr)
 	{
-		System.out.println("HELLO LINE: " + curr);
 		return new Token(Token.ERROR,"Invalid input: "+curr,line,at);
 	}
 	
@@ -489,7 +488,6 @@ public class Lexer {
 		    		//Case: ID not starting with letter
 		    		else
 		    		{
-						// System.out.println("hello: " + wordBuffer);
 		    			return new Token(Token.ID,wordBuffer,line,at);
 		    		}
 		    		
@@ -505,7 +503,7 @@ public class Lexer {
 					
 					floatBuffer = "" + numBuffer;
 
-					System.out.println("floatBUffer1: " + floatBuffer);
+
 					state = STATE_NUMERIC_BODY;
 					curr = read();
 				} else {
@@ -523,7 +521,7 @@ public class Lexer {
 					floatBuffer = "" + numBuffer;
 					curr = read();
 					
-					System.out.println("floatBUffer2: " + floatBuffer);
+
 				} 
 				else if (curr == '.')
 				{
@@ -532,7 +530,7 @@ public class Lexer {
 					floatBuffer += ".";
 					curr = read();
 					
-					System.out.println("floatBUffer3: " + floatBuffer);					
+				
 					
 					// Go back to handle "3."
 					if (!isNumeric(curr)) {
@@ -542,13 +540,13 @@ public class Lexer {
 						// 	readCharacter();
 						// }
 						
-						System.out.println("floatBUffer33333: " + floatBuffer);					
+			
 						state = STATE_CONTROLLER;
 					}
 				}
 				else 
 				{
-					System.out.println("floatBUfferNew: " + floatBuffer);					
+				
 					return new Token(Token.NM, "" + floatBuffer,line,at);
 				}
 				continue;
@@ -560,7 +558,7 @@ public class Lexer {
 					
 					floatBuffer += curr;
 					readCharacter();
-					System.out.println("floatBUffer4: " + floatBuffer);					
+			
 				}
 				else {
 					
@@ -603,8 +601,7 @@ public class Lexer {
 					{
 						readCharacter();
 						return new Token(Token.NE,"!=",line,at);
-					}else{
-						readCharacter(); return getErrorToken('!');}
+					}else{readCharacter(); return getErrorToken('!');}
 				///////////////////////////////////////////////////////////////
 				case STATE_LOGICAL_AND:
 					if(curr=='&')
