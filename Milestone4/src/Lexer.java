@@ -295,7 +295,7 @@ public class Lexer {
 				if(wordBuffer.charAt(wordBuffer.length()-1)=='\"')
 					return new Token(Token.ST,wordBuffer,line,at);
 				else
-					return new Token(Token.ERROR,"Invalid String Literatl",line,at);
+					return new Token(Token.ERROR,wordBuffer,line,at);
 			}
 			else
 				return new Token(Token.ID,wordBuffer,line,at);
@@ -503,6 +503,7 @@ public class Lexer {
 					
 					floatBuffer = "" + numBuffer;
 
+					System.out.println("floatBUffer1: " + floatBuffer);
 					state = STATE_NUMERIC_BODY;
 					curr = read();
 				} else {
@@ -519,6 +520,8 @@ public class Lexer {
 
 					floatBuffer = "" + numBuffer;
 					curr = read();
+					
+					System.out.println("floatBUffer2: " + floatBuffer);
 				} 
 				else if (curr == '.')
 				{
@@ -527,13 +530,23 @@ public class Lexer {
 					floatBuffer += ".";
 					curr = read();
 					
+					System.out.println("floatBUffer3: " + floatBuffer);					
+					
 					// Go back to handle "3."
 					if (!isNumeric(curr)) {
+						
+						// if (curr == '.')
+						// {
+						// 	readCharacter();
+						// }
+						
+						System.out.println("floatBUffer33333: " + floatBuffer);					
 						state = STATE_CONTROLLER;
 					}
 				}
 				else 
 				{
+					System.out.println("floatBUfferNew: " + floatBuffer);					
 					return new Token(Token.NM, "" + floatBuffer,line,at);
 				}
 				continue;
@@ -545,8 +558,10 @@ public class Lexer {
 					
 					floatBuffer += curr;
 					readCharacter();
+					System.out.println("floatBUffer4: " + floatBuffer);					
 				}
 				else {
+					
 					return new Token(Token.NM, "" + removeTrailingZeors(floatBuffer),line,at);
 				}
 				
