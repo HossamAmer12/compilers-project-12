@@ -1,31 +1,11 @@
 class Algebra {
 	static boolean isPrime(int c) // Returns true if c is prime.
 	{
-		float hashas;
-	//	hashas = 123.;
+//		String @!;
+		String @###;
+		
+		// int %;
 	
-	int 3 x;
-	
-		
-	//	float bb;
-	//	bb = .12;
-	
-		String s;
-		
-//		s = "hashas
-//		;
-		
-		
-		int x;
-		x = 1;
-		
-		int y;
-		y = 2;
-		
-	/*	if((x==1) || (y==2) )
-			return false;
-	*/		
-		
 		return true;
 	}
 

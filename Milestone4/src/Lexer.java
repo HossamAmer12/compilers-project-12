@@ -123,6 +123,7 @@ public class Lexer {
 	
 	private Token getErrorToken(char curr)
 	{
+		System.out.println("HELLO LINE: " + curr);
 		return new Token(Token.ERROR,"Invalid input: "+curr,line,at);
 	}
 	
@@ -488,6 +489,7 @@ public class Lexer {
 		    		//Case: ID not starting with letter
 		    		else
 		    		{
+						// System.out.println("hello: " + wordBuffer);
 		    			return new Token(Token.ID,wordBuffer,line,at);
 		    		}
 		    		
@@ -601,7 +603,8 @@ public class Lexer {
 					{
 						readCharacter();
 						return new Token(Token.NE,"!=",line,at);
-					}else{readCharacter(); return getErrorToken('!');}
+					}else{
+						readCharacter(); return getErrorToken('!');}
 				///////////////////////////////////////////////////////////////
 				case STATE_LOGICAL_AND:
 					if(curr=='&')

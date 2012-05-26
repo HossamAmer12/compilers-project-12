@@ -196,6 +196,8 @@ public class Parser {
 					
 			return stats;	
 		}
+	
+	
 		
 	private Statement statement() throws SyntaxException{
            
@@ -249,8 +251,8 @@ public class Parser {
 	private LocalVarDecl localVarDecl() throws SyntaxException{
 			Type type = Type();
 			String idLexeme = token.getLexeme();
-
-			// while(Token.getTokenType() != Token.SM)
+			
+			// System.out.println("ID WRONG: " + idLexeme);
 			
 			match(Token.ID);			
 			match(Token.SM);
@@ -568,7 +570,15 @@ public class Parser {
 	private void match(int t) throws SyntaxException {
 		if (token.getTokenType() == t) {
 			token = lexer.nextToken();
-		} else { 
+		} 
+		else if(token.getTokenType() == Token.ERROR)
+		{
+			
+			Report.displayWarning(token.line, token.at, "Invalid Input", lines.get(token.line-1));
+			token = lexer.nextToken();
+			
+		}
+		else { 
 			Report.syntaxErrorToken(token.line, token.at, Token.getLexemeByType(t),token.getLexeme(), lines.get(token.line-1));
 		}
 	}
