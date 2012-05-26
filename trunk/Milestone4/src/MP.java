@@ -28,7 +28,7 @@ public class MP {
 			//System.out.println(cd);
 			
 			cd.check();
-			
+			if(!cd.error)
 			System.out.println("Semantic Analysis Completed with No Errors.");
 		} catch (SyntaxException e) {
 			e.printStackTrace();

@@ -31,12 +31,14 @@ public class MLA {
 			BufferedWriter writer = new BufferedWriter(new FileWriter(outFile));
 
 			Token t;
-
-			while ((t = lexer.nextToken()) != null) {
+			t=lexer.nextToken();
+			while (t.getTokenType() != Token.EOF) {
 				writer.write(t.toString());
 				writer.newLine();
+				t=lexer.nextToken();
+				
 			}
-
+			
 			writer.close(); 
 			
 			System.out.println("Done tokenizing file: " + inFile);
