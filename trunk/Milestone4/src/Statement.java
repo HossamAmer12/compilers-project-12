@@ -130,7 +130,7 @@ public class Statement
 		}
 		
 		if(getType().equals("ReturnStmt")){
-			if(assignStmt!=null)
+			if(returnStmt!=null)
 			returnStmt.check(method);
 			return;
 		}

@@ -239,12 +239,14 @@ public class Parser {
 	}
 
 	private LocalVarDecl localVarDecl() throws SyntaxException {
+	
 		Type type = Type();
 		String idLexeme = token.getLexeme();
 		Token t = token;
+		
 
-		while (token.getTokenType() != Token.SM) {
-
+		while (token.getTokenType() != Token.SM && token.getTokenType()==Token.ID) {
+		
 			match(Token.ID);
 
 		}
@@ -287,6 +289,7 @@ public class Parser {
 		match("return");
 		Token t = token;
 		Expression expr = expression();
+		
 		match(Token.SM);
 
 		return new ReturnStmt(expr, t.line, t.at, lines.get(t.line - 1));
@@ -297,7 +300,7 @@ public class Parser {
 		match(Token.LP);
 		Expression expr = expression();
 		Token t = token;
-		;
+		
 		match(Token.RP);
 		Statement stmt = statement();
 
@@ -446,7 +449,9 @@ public class Parser {
 	}
 
 	private PrimaryExpr primaryExpr() throws SyntaxException {
+		
 		PrimaryExpr value = new PrimaryExpr();
+		
 		if (isEqual(Token.NM)) {
 			value = new PrimaryExpr(token.getLexeme());
 			match(Token.NM);
@@ -460,6 +465,7 @@ public class Parser {
 		} else if (isEqual(Token.ST)) {
 			value = new PrimaryExpr(null, token.getLexeme(), null);
 			match(Token.ST);
+			
 		} else if (isEqual(Token.ERROR)) {
 			Report.displayWarning(token.line, token.at,
 					"A string should be ended \" literal",
@@ -467,6 +473,7 @@ public class Parser {
 			token = lexer.nextToken();
 
 			value = new PrimaryExpr(null, token.getLexeme(), null);
+			
 		} else if (isEqual(Token.LP)) {
 			match(Token.LP);
 			value = new PrimaryExpr(expression());
@@ -487,18 +494,23 @@ public class Parser {
 					match(token.getTokenType());
 
 				} else {
+					
 					value = new PrimaryExpr(null, idLexeme);
 					match(Token.RP);
 
 				}
 
 			} else {
+			
 				value = new PrimaryExpr(null, null, idLexeme);
 
 			}
 
+		}	else{
+			Report.syntaxErrorGrammer(token.line, token.at, "A Primay Expression was expected in:", lines.get(token.line-1));
+			
 		}
-
+		
 		value.token = token;
 		value.line = lines.get(token.line - 1);
 
@@ -568,12 +580,24 @@ public class Parser {
 			} else
 				Report.syntaxErrorToken(token.line, token.at,
 						Token.getLexemeByType(t), token.getLexeme(),
-						lines.get(token.line - 1));
+						lines.get(token.line-1));
 
 			token = lexer.nextToken();
 		}
 	}
 
+	private String getPreviousLine(int lineNo){
+	
+		String line="";
+		for(int i=lineNo-1;i>=0;i--){
+			
+			if(!lines.get(i).trim().isEmpty()){
+				line=lines.get(i);
+				break;
+			}
+		}
+		return line;
+	}
 	private void match(String lexeme) throws SyntaxException {
 		if (token.getLexeme().equals(lexeme)) {
 			token = lexer.nextToken();
