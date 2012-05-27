@@ -1,5 +1,7 @@
 import java.io.*;
 import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+
 
 %%
 %class Lexer
@@ -7,12 +9,61 @@ import java_cup.runtime.Symbol;
 %function next_token
 %type java_cup.runtime.Symbol
 
+
+%init{ 
+	// initialize the warning list will be printed each new line and cleared.
+	// warnings= new ArrayList<Warning>();
+%init} 
+
+
 %eofval{
-return null;
+	if (state== 2)
+	{
+	
+		Report.displayWarning(yyline, yychar, "Missing \" at the end of the string", currentLine);
+		// warnings.add(new Warning("Missing \" at the end of the string", yyline, yychar));
+		currentLine = "";
+		return new Symbol(sym.ST, new Token(sym.ST, sb, yyline, yychar));
+	}
+	   if(state == 1){
+		state = 0;
+		
+		System.out.println("Hello from state1");
+		// this.showWarnings();
+		System.out.println();
+		return null;
+	}
+	
+//	System.out.println("Hello from state2 warnings");
+//		this.showWarnings();
+		System.out.println();
+		return null;
 %eofval}
 
 %{
   private int comment_count = 0;
+
+  	private int state = 0; // 0 normal , 1 CommentM, 3 string
+	private String sb = "";
+	private String currentLine="";
+
+/*
+	private ArrayList<Warning> warnings;
+	
+	private void showWarnings(){
+	
+		for (Warning w : warnings) {
+		
+			Report.displayWarning(yyline, yychar, "Printing warnings", currentLine);
+//			w.setLineText(currentLine);
+//			System.out.println(w);
+		}
+		
+//		warnings.clear();
+	
+	}
+*/
+
 %} 
 %line
 %char
@@ -49,26 +100,133 @@ COMMENT_TEXT= ({ALPHA_NUMERIC}*({SYMBOLS})*({WHITE_SPACE})*)*
 
 <YYINITIAL> "/*" { yybegin(COMMENTS); comment_count = comment_count + 1; }
 
-<YYINITIAL> class { return new Symbol(sym.KW_class, yytext()); }
-<YYINITIAL> static { return new Symbol(sym.KW_static, yytext()); }
-<YYINITIAL> else { return new Symbol(sym.KW_else, yytext()); }
-<YYINITIAL> if { return new Symbol(sym.KW_if, yytext()); }
-<YYINITIAL> float { return new Symbol(sym.KW_float, yytext()); }
-<YYINITIAL> boolean { return new Symbol(sym.KW_boolean, yytext()); }
-<YYINITIAL> String { return new Symbol(sym.KW_String, yytext()); }
-<YYINITIAL> return { return new Symbol(sym.KW_return, yytext()); }
-<YYINITIAL> while { return new Symbol(sym.KW_while, yytext()); }
-<YYINITIAL> int { return new Symbol(sym.KW_int, yytext()); }
+<YYINITIAL> class 
+{ 
+
+currentLine+=yytext();
+return new Symbol(sym.KW_class, new Token(sym.KW_class,yytext(), yyline, yychar));
+
+// return new Symbol(sym.KW_class, yytext(), yyline)); 
+
+
+}
+<YYINITIAL> static 
+{ 
+
+currentLine+=yytext();
+return new Symbol(sym.KW_static, new Token(sym.KW_static,yytext(), yyline, yychar));
+
+// return new Symbol(sym.KW_static, yytext());
+
+}
+<YYINITIAL> else { 
+
+currentLine+=yytext();
+return new Symbol(sym.KW_else, new Token(sym.KW_else,yytext(), yyline, yychar));
+
+// return new Symbol(sym.KW_else, yytext()); 
+
+}
+<YYINITIAL> if { 
+
+currentLine+=yytext();
+return new Symbol(sym.KW_if, new Token(sym.KW_if,yytext(), yyline, yychar));
+
+// return new Symbol(sym.KW_if, yytext()); 
+
+}
+
+<YYINITIAL> float { 
+
+currentLine+=yytext();
+return new Symbol(sym.KW_float, new Token(sym.KW_float,yytext(), yyline, yychar));
+
+// return new Symbol(sym.KW_float, yytext()); 
+
+}
+<YYINITIAL> boolean { 
+
+
+currentLine+=yytext();
+return new Symbol(sym.KW_boolean, new Token(sym.KW_boolean,yytext(), yyline, yychar));
+
+// return new Symbol(sym.KW_boolean, yytext()); 
+
+}
+<YYINITIAL> String {
+
+currentLine+=yytext();
+return new Symbol(sym.KW_String, new Token(sym.KW_String,yytext(), yyline, yychar));
+
+// return new Symbol(sym.KW_String, yytext()); 
+
+}
+
+<YYINITIAL> return { 
+
+
+currentLine+=yytext();
+return new Symbol(sym.KW_return, new Token(sym.KW_return,yytext(), yyline, yychar));
+
+// return new Symbol(sym.KW_return, yytext()); 
+
+}
+<YYINITIAL> while { 
+
+
+currentLine+=yytext();
+return new Symbol(sym.KW_while, new Token(sym.KW_while,yytext(), yyline, yychar));
+
+// return new Symbol(sym.KW_while, yytext()); 
+
+}
+
+<YYINITIAL> int { 
+
+currentLine+=yytext();
+return new Symbol(sym.KW_int, new Token(sym.KW_int,yytext(), yyline, yychar));
+
+//return new Symbol(sym.KW_int, yytext()); 
+
+}
 
 <YYINITIAL> "//" { yybegin(SINGLE_LINE_COMMENTS);}
 
+<YYINITIAL> [\n] { 
+
+//	this.showWarnings();
+	
+	currentLine="";
+	yychar=0;
+}
+
+<YYINITIAL> {WHITE_SPACE} { 
+	currentLine+=yytext();
+}
+
+
+
 <SINGLE_LINE_COMMENTS> [^\n] {}
 
-<SINGLE_LINE_COMMENTS> [\n] { yybegin(YYINITIAL); }
+<SINGLE_LINE_COMMENTS> [\n] 
+{ 
+
+yychar=0;
+currentLine="";
+yybegin(YYINITIAL); 
+
+}
 
 
-<COMMENTS> "/*" { comment_count = comment_count + 1; }
+<COMMENTS> "/*" { 
+
+state = 1;
+comment_count = comment_count + 1; 
+
+}
 <COMMENTS> "*/" { 
+
+	state = 0;
 	comment_count = comment_count - 1; 
 	
 	if (comment_count == 0) {
@@ -79,7 +237,13 @@ COMMENT_TEXT= ({ALPHA_NUMERIC}*({SYMBOLS})*({WHITE_SPACE})*)*
 
 
 <YYINITIAL> {STRINGS_TEXT_ERROR} { 
-	return new Symbol(sym.ERROR, "Invalid String Literal");
+
+	currentLine += yytext();
+	Report.displayWarning(yyline, yychar, "Missing \" at the end of the string" + yychar, yytext());
+
+//	Report.displayWarning(yyline, yychar, "Invalid character \" " + yytext(), yyline);	
+
+	// return new Symbol(sym.ERROR, "Invalid String Literal");
 }
 
 <YYINITIAL> {STRINGS_TEXT} { 
@@ -88,91 +252,251 @@ COMMENT_TEXT= ({ALPHA_NUMERIC}*({SYMBOLS})*({WHITE_SPACE})*)*
 
 
 <YYINITIAL> {NUMBER} { 
-	return new Symbol(sym.NM, yytext());
+
+	String num = yytext();
+	String part1 = "";
+	String part2 = "";
+	int dotIndex = -1;
+	boolean nonZeroFound = false;
+	
+	
+	for (int i = 0; i<num.length(); i++)
+	{
+		if(num.charAt(i) == '.')
+		{
+			dotIndex = i;
+			break;
+		}
+	
+		if(nonZeroFound)
+		{
+				part1 += num.charAt(i);
+		}
+	
+		if(num.charAt(i) != '0' && !nonZeroFound)
+		{
+			part1 += num.charAt(i);
+			nonZeroFound = true;
+		}
+	}
+	
+	if(!nonZeroFound)
+		part1 = "0";
+	
+	boolean stopRemovingZeros = false;
+	int zerosCount = 0;
+	String numRev = "";
+	
+	if(dotIndex != -1)
+	{
+		for(int i = num.length() - 1; i>dotIndex; i--)
+		{		
+			if(num.charAt(i) != '0')	stopRemovingZeros = true;
+			
+			if(stopRemovingZeros)	numRev += num.charAt(i);
+			
+			if(num.charAt(i) == '0' && !stopRemovingZeros) zerosCount++;
+
+		}
+		
+		for(int i = numRev.length() - 1; i >= 0; i--)
+		{
+			part2 += numRev.charAt(i);
+		}
+		
+		part2 = (zerosCount==1)? ".0": "." + part2;
+	}
+
+	currentLine+=yytext();
+	return new Symbol(sym.NM, new Token(sym.KW_class,"" + part1 + part2, yyline, yychar));
+
+
+//	return new Token("NM", numRev);	
+//	return new Token("NM", part1 + part2);
+//	return new Symbol(sym.NM, yytext());
 }
 
 <YYINITIAL> {BOOLEAN} { 
-	return new Symbol(sym.BL, yytext());
+
+	currentLine+=yytext();
+	return new Symbol(sym.BL, new Token(sym.BL,yytext(), yyline, yychar));
+
+//	return new Symbol(sym.BL, yytext());
 }
 
 <YYINITIAL> {KEYWORD} { 
-	return new Symbol(sym.KW, yytext());
+
+	currentLine+=yytext();
+	return new Symbol(sym.KW, new Token(sym.KW,yytext(), yyline, yychar));
+
+//	return new Symbol(sym.KW, yytext());
 }
 
 <YYINITIAL> {IDENT} { 
-	return new Symbol(sym.ID, yytext());
+
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+
+	// return new Symbol(sym.ID, yytext());
 }
-
-
-<YYINITIAL> {WHITE_SPACE} { }
 
 
 <YYINITIAL> ";" { 
-  return new Symbol(sym.SM, yytext());	
+
+	currentLine+=yytext();
+	return new Symbol(sym.SM, new Token(sym.SM,yytext(), yyline, yychar));
+
+//   return new Symbol(sym.SM, yytext());	
 }
 
 <YYINITIAL> "{" { 
-  return new Symbol(sym.LB, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.LB, new Token(sym.LB,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.LB, yytext());	
 }
 
 <YYINITIAL> "-" { 
-  return new Symbol(sym.MO, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.MO, new Token(sym.MO,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.MO, yytext());	
 }
 
 <YYINITIAL> "==" { 
-  return new Symbol(sym.EQ, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.EQ, new Token(sym.EQ,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.EQ, yytext());	
 }
 
 <YYINITIAL> "," { 
-  return new Symbol(sym.FA, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.FA, new Token(sym.FA,yytext(), yyline, yychar));
+
+ // return new Symbol(sym.FA, yytext());	
 }
 
 <YYINITIAL> "}" { 
-  return new Symbol(sym.RB, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.RB, new Token(sym.RB,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.RB, yytext());	
 }
 
 <YYINITIAL> "!=" { 
-  return new Symbol(sym.NE, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.NE, new Token(sym.NE,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.NE, yytext());	
 }
 
 <YYINITIAL> "(" { 
-  return new Symbol(sym.LP, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.LP, new Token(sym.LP,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.LP, yytext());	
 }
 
 <YYINITIAL> "=" { 
-  return new Symbol(sym.AO, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.AO, new Token(sym.AO,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.AO, yytext());	
 }
 
 <YYINITIAL> "/" { 
-  return new Symbol(sym.DO, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.DO, new Token(sym.DO,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.DO, yytext());	
 }
 
 <YYINITIAL> "*" { 
-  return new Symbol(sym.TO, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.TO, new Token(sym.TO,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.TO, yytext());	
 }
 
 
 <YYINITIAL> "||" { 
-  return new Symbol(sym.LO, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.LO, new Token(sym.LO,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.LO, yytext());	
+}
+
+<YYINITIAL> "|" { 
+
+  	currentLine += yytext();
+  	// Single | and ||: to be converted to && and ||.
+	Report.displayWarning(yyline, yychar, "Single | to be converted into ||", yytext());
+  	
+//	warnings.add(new Warning("| converted to ||",yyline,yychar));
+  	return new Symbol(sym.LO, new Token(sym.LO,yytext()+"|", yyline, yychar));
 }
 
 <YYINITIAL> ")" { 
-  return new Symbol(sym.RP, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.RP, new Token(sym.RP,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.RP, yytext());	
 }
 
 <YYINITIAL> "+" { 
-  return new Symbol(sym.PO, yytext());
+
+currentLine+=yytext();
+return new Symbol(sym.PO, new Token(sym.PO,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.PO, yytext());
 } 
 
 
 <YYINITIAL> "%" { 
-  return new Symbol(sym.MD, yytext());	
+
+currentLine+=yytext();
+return new Symbol(sym.MD, new Token(sym.MD,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.MD, yytext());	
 }
 
 <YYINITIAL> "&&" { 
-  return new Symbol(sym.LA, yytext());
+
+currentLine+=yytext();
+return new Symbol(sym.LA, new Token(sym.LA,yytext(), yyline, yychar));
+
+//  return new Symbol(sym.LA, yytext());
 } 
 
+<YYINITIAL> "&" { 
+  
+  	currentLine+=yytext();
+  	//Single &: to be converted to && and &&.
+  	
+	Report.displayWarning(yyline, yychar, "Single & to be converted into &&", yytext());
+  	return new Symbol(sym.LA, new Token(sym.LA,yytext()+"&", yyline, yychar));
+}
+
 <YYINITIAL, COMMENTS, SINGLE_LINE_COMMENTS> . {
-        return new Symbol(sym.ERROR, "Invalid Input: " + yytext(	));
+
+currentLine += yytext();
+
+Report.displayWarning(yyline, yychar, "Invalid character " + yychar, yytext());
+
+
+// warnings.add(new Warning("Invalid character "+yytext(),yyline,yychar));
+//        return new Symbol(sym.ERROR, "Invalid Input: " + yytext(	));
 }
