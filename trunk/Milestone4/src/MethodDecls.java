@@ -11,6 +11,9 @@ public class MethodDecls extends ArrayList<MethodDecl>
 		this.lineNo=lineNo;
 		this.line=line;
 	}
+	public MethodDecls(){
+		super();
+	}
 	
 	public String toString()
 	{
