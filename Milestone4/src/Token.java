@@ -59,69 +59,69 @@ public class Token {
 	}
 
 	public static String getLexemeByType(int type) {
-		String lexeme="";
+		String lex="";
+
 		switch(type){
 		case SM:
-			lexeme=";";
+			lex=";";
 			break;
 		case PO:
-			lexeme="+";
+			lex="+";
 			break;
 		case MO:
-			lexeme="-";
+			lex="-";
 			break;
 		case TO:
-			lexeme="*";
+			lex="*";
 			break;
 		case DO:
-			lexeme="/";
+			lex="/";
 			break;
 		case FA:
-			lexeme=",";
+			lex=",";
 			break;
 		case LB:
-			lexeme="{";
+			lex="{";
 			break;
 		case RB:
-			lexeme="}";
+			lex="}";
 			break;
 		case LP:
-			lexeme="(";
+			lex="(";
 			break;
 		case RP:
-			lexeme=")";
+			lex=")";
 			break;
 		case AO:
-			lexeme="=";
+			lex="=";
 			break;
 		case MD:
-			lexeme="%";
+			lex="%";
 			break;
 		case EQ:
-			lexeme="==";
+			lex="==";
 			break;
 		case NE:
-			lexeme="!=";
+			lex="!=";
 			break;
 		case LO:
-			lexeme="||";
+			lex="||";
 			break;
 		case LA:
-			lexeme="&&";
+			lex="&&";
 			break;
 		case ID:
-			lexeme="ID";
+			lex="ID";
 			break;
 		case KW:
-			lexeme="KW";
+			lex="KW";
 			break;
 		default:
-			System.out.println(type);
-			lexeme=null;
+			lex=null;
 			break;
 			
 		}
-		return lexeme;
+		return lex;
 	}
 	// Returns a string representation of the token
 	public String toString() {

@@ -51,9 +51,9 @@ public class Parser {
 
 		classRoot = new ClassDecl();
 
-		while (token.getTokenType() != Token.EOF) {
+		//while (token.getTokenType() != Token.EOF) {
 			classDecl();
-		}
+		//}
 
 		return classRoot;
 	}
@@ -65,16 +65,20 @@ public class Parser {
 		if (isEqual(Token.LB))
 			match(Token.LB);
 		else
-			Report.syntaxErrorToken(token.line, token.at, "{",
+			Report.syntaxErrorToken(token.line, token.at-token.getLexeme().length(), "{",
 					token.getLexeme(), lines.get(token.line - 1));
 
 		classRoot = new ClassDecl(methodDecls());
 
-		if (isEqual(Token.RB))
+		if (isEqual(Token.RB)){
 			match(Token.RB);
+			}
 		else
-			Report.syntaxErrorGrammer(token.line, token.at,"Expected } but found end of file.",lines.get(lines.size()-1));
+			Report.syntaxErrorGrammer(token.line, token.at-token.getLexeme().length(),"Expected } but found end of file.",lines.get(lines.size()-1));
 
+		if(token.getTokenType()!=Token.EOF ){
+			Report.syntaxErrorGrammer(token.line, token.at, "Expected end of file in:", lines.get(token.line-1));
+		}
 	}
 
 	private MethodDecls methodDecls() throws SyntaxException {
@@ -125,7 +129,7 @@ public class Parser {
 			match(token.getTokenType());
 			return new Type(type);
 		} else {
-			Report.syntaxErrorGrammer(token.line, token.at,
+			Report.syntaxErrorGrammer(token.line, token.at-token.getLexeme().length(),
 					"Cannot match token '" + token.getLexeme()
 							+ "' to a type in:", lines.get(token.line - 1));
 			return null;
@@ -141,6 +145,8 @@ public class Parser {
 			formalParams.add(formalParam());
 			if (token.getLexeme().equals(","))
 				match(",");
+			else if(isType())
+				Report.syntaxErrorGrammer(token.line, token.at-token.getLexeme().length(), "A comma is expected in:", lines.get(token.line-1));
 		}
 
 		return formalParams;
@@ -222,12 +228,12 @@ public class Parser {
 				break;
 			} else if (isEqual(Token.ERROR)) {
 
-				Report.displayWarning(token.line, token.at, "Invalid Input",
+				Report.displayWarning(token.line, token.at-token.getLexeme().length(), "Invalid Input",
 						lines.get(token.line - 1));
 				token = lexer.nextToken();
 				break;
 			} else if (isEqual(Token.RB)) {
-				Report.syntaxErrorGrammer(token.line, token.at,
+				Report.syntaxErrorGrammer(token.line, token.at-token.getLexeme().length(),
 						"A statement or a block is expected.",
 						lines.get(token.line - 1));
 				break;
@@ -245,12 +251,20 @@ public class Parser {
 		Token t = token;
 		
 
-		while (token.getTokenType() != Token.SM && token.getTokenType()==Token.ID) {
+		while (token.getTokenType() != Token.SM) {
 		
-			match(Token.ID);
+			if( token.getTokenType()==Token.ID){
+				match(Token.ID);
+				break;
+				}
+				else
+				{
+					Report.syntaxErrorGrammer(token.line, token.at-token.getLexeme().length(), "An identifier was expected  in:",lines.get(token.line-1));
+					break;
+				}
 
 		}
-
+	
 		match(Token.SM);
 
 		return new LocalVarDecl(idLexeme, type, t.line, t.at,
@@ -262,7 +276,7 @@ public class Parser {
 		String idLexeme = token.getLexeme();
 		Token t;
 		t = token;
-
+		
 		match(Token.ID);
 		match(Token.AO);
 
@@ -327,17 +341,17 @@ public class Parser {
 			if (isEqual(Token.LO)) {
 				match(Token.LO);
 				expr = new Expression(conditionalAndExpr(), expr, token.line,
-						token.at, lines.get(token.line - 1));
+						token.at-token.getLexeme().length(), lines.get(token.line - 1));
 				break;
 
 			}
 
 			else if (isEqual(Token.ERROR)) {
-				Report.displayWarning(token.line, token.at, "String message",
+				Report.displayWarning(token.line, token.at-token.getLexeme().length(), "String message",
 						"String in");
 				token = lexer.nextToken();
 				expr = new Expression(conditionalAndExpr(), expr, token.line,
-						token.at, lines.get(token.line - 1));
+						token.at-token.getLexeme().length(), lines.get(token.line - 1));
 
 				return expr;
 			} else
@@ -360,9 +374,9 @@ public class Parser {
 
 			else if (isEqual(Token.ERROR)) {
 
-				Report.displayWarning(token.line, token.at,
+				Report.displayWarning(token.line, token.at-token.getLexeme().length(),
 						"& converted to &&", lines.get(token.line - 1));
-				// Report.displayWarning(token.line, token.at,
+				// Report.displayWarning(token.line, token.at-token.getLexeme().length(),
 				// "& converted to &&",token.getLexeme(),
 				// lines.get(token.line-1));
 				token = lexer.nextToken();
@@ -388,10 +402,10 @@ public class Parser {
 				int op = token.getTokenType();
 				match(op);
 				expr = (op == Token.EQ) ? new EqualityExpr(additiveExpr(),
-						EqualityExpr.EQ, expr, token.line, token.at,
+						EqualityExpr.EQ, expr, token.line, token.at-token.getLexeme().length(),
 						lines.get(token.line - 1)) : new EqualityExpr(
 						additiveExpr(), EqualityExpr.NE, expr, token.line,
-						token.at, lines.get(token.line - 1));
+						token.at-token.getLexeme().length(), lines.get(token.line - 1));
 			} else
 				return expr;
 		}
@@ -409,9 +423,9 @@ public class Parser {
 				match(op);
 				expr = (op == Token.PO) ? new AdditiveExpr(
 						multiplicativeExpr(), AdditiveExpr.PO, expr,
-						token.line, token.at, lines.get(token.line - 1))
+						token.line, token.at-token.getLexeme().length(), lines.get(token.line - 1))
 						: new AdditiveExpr(multiplicativeExpr(),
-								AdditiveExpr.MO, expr, token.line, token.at,
+								AdditiveExpr.MO, expr, token.line, token.at-token.getLexeme().length(),
 								lines.get(token.line - 1));
 			} else
 				return expr;
@@ -430,14 +444,14 @@ public class Parser {
 				int op = token.getTokenType();
 				match(op);
 				expr = (op == Token.TO) ? new MultiplicativeExpr(primaryExpr(),
-						MultiplicativeExpr.TO, expr, token.line, token.at,
+						MultiplicativeExpr.TO, expr, token.line, token.at-token.getLexeme().length(),
 						lines.get(token.line - 1))
 						: (op == Token.DO) ? new MultiplicativeExpr(
 								primaryExpr(), MultiplicativeExpr.DO, expr,
-								token.line, token.at, lines.get(token.line - 1))
+								token.line, token.at-token.getLexeme().length(), lines.get(token.line - 1))
 								: new MultiplicativeExpr(primaryExpr(),
 										MultiplicativeExpr.MD, expr,
-										token.line, token.at,
+										token.line, token.at-token.getLexeme().length(),
 										lines.get(token.line - 1));
 			}
 
@@ -467,7 +481,7 @@ public class Parser {
 			match(Token.ST);
 			
 		} else if (isEqual(Token.ERROR)) {
-			Report.displayWarning(token.line, token.at,
+			Report.displayWarning(token.line, token.at-token.getLexeme().length(),
 					"A string should be ended \" literal",
 					lines.get(token.line - 1));
 			token = lexer.nextToken();
@@ -507,7 +521,7 @@ public class Parser {
 			}
 
 		}	else{
-			Report.syntaxErrorGrammer(token.line, token.at, "A Primay Expression was expected in:", lines.get(token.line-1));
+			Report.syntaxErrorGrammer(token.line, token.at-token.getLexeme().length(), "A Primay Expression was expected in:", lines.get(token.line-1));
 			
 		}
 		
@@ -565,20 +579,20 @@ public class Parser {
 		if (token.getTokenType() == t) {
 			token = lexer.nextToken();
 		} else if (token.getTokenType() == Token.ERROR) {
-			Report.displayWarning(token.line, token.at, "Invalid Input "
+			Report.displayWarning(token.line, token.at-token.getLexeme().length(), "Invalid Input "
 					+ token.getLexeme(), lines.get(token.line - 1));
 			token = lexer.nextToken();
 
 		} else {
 			if (Token.getLexemeByType(t) == "ID") {
-				Report.syntaxErrorGrammer(token.line, token.at,
-						"An identifier was expected", lines.get(token.line - 1));
+				Report.syntaxErrorGrammer(token.line, token.at-token.getLexeme().length(),
+						"An identifier was expected in:", lines.get(token.line - 1));
 
 			} else if (Token.getLexemeByType(t) == "KW") {
-				Report.syntaxErrorGrammer(token.line, token.at,
-						"A keyword was expected", lines.get(token.line - 1));
+				Report.syntaxErrorGrammer(token.line, token.at-token.getLexeme().length(),
+						"A keyword was expected in:", lines.get(token.line - 1));
 			} else
-				Report.syntaxErrorToken(token.line, token.at,
+				Report.syntaxErrorToken(token.line, token.at-token.getLexeme().length(),
 						Token.getLexemeByType(t), token.getLexeme(),
 						lines.get(token.line-1));
 
@@ -598,11 +612,12 @@ public class Parser {
 		}
 		return line;
 	}
+	
 	private void match(String lexeme) throws SyntaxException {
 		if (token.getLexeme().equals(lexeme)) {
 			token = lexer.nextToken();
 		} else
-			Report.syntaxErrorToken(token.line, token.at, lexeme,
+			Report.syntaxErrorToken(token.line, token.at-token.getLexeme().length(), lexeme,
 					token.getLexeme(), lines.get(token.line - 1));
 	}
 }

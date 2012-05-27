@@ -1,7 +1,10 @@
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 /*
@@ -45,12 +48,13 @@ public class Lexer {
 	private static int line=1;
 	private static int at=1;
 	
-
+	public ArrayList<String> lines;
 	// End of file character
 
 	public Lexer(String file) {
 		try {
 			reader = new BufferedReader(new FileReader(file));
+			lines=readLines();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -59,6 +63,25 @@ public class Lexer {
 	
 	}
 
+	public ArrayList<String> readLines() {
+		ArrayList<String> lines = new ArrayList<String>();
+		try {
+			FileInputStream fstream = new FileInputStream("Algebra.decaf");
+
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String strLine;
+
+			while ((strLine = br.readLine()) != null) {
+				lines.add(strLine);
+			}
+
+			in.close();
+		} catch (Exception e) {
+			System.err.println("Error: " + e.getMessage());
+		}
+		return lines;
+	}
 	private char read() {
 		try {
 			return (char) (reader.read());
@@ -324,6 +347,7 @@ public class Lexer {
 		curr=read();
 		at++;
 	}
+
 	public Token nextToken() {
 
 		int state = 1; // Initial state
@@ -420,6 +444,16 @@ public class Lexer {
 							return token;
 						}
 
+					}
+					else if(curr=='.')
+					{
+						readCharacter();
+						if(isNumeric(curr)){
+							Report.displayWarning(line, at, "Number started with . was ignored in:",lines.get(line-1));
+							state=STATE_NUMERIC_START;
+						}
+						continue;
+						
 					}
 					//Case: NUMBER
 					else if(isNumeric(curr))
@@ -530,18 +564,16 @@ public class Lexer {
 					floatBuffer += ".";
 					curr = read();
 					
+					
 				
 					
 					// Go back to handle "3."
 					if (!isNumeric(curr)) {
 						
-						// if (curr == '.')
-						// {
-						// 	readCharacter();
-						// }
-						
-			
-						state = STATE_CONTROLLER;
+
+						Report.displayWarning(line,at, "Number "+floatBuffer+" was treated as "+floatBuffer.replace(".",""), lines.get(line-1));
+						return new Token(Token.NM, "" + floatBuffer.replace(".",""),line,at);
+						//state = STATE_CONTROLLER;
 					}
 				}
 				else 
@@ -643,13 +675,12 @@ public class Lexer {
 						//TODO case one qoute at end of file no breaks
 						state=STATE_CONTROLLER;
 						
-						// System.out.println("WordBuffer:  " + wordBuffer);
 						readCharacter();
 						return new Token(Token.ERROR,wordBuffer,line,at);
 					}
 					else
 					{
-						// System.out.println("WordBuffer22222:  " + wordBuffer);
+
 						wordBuffer+=curr;
 						readCharacter();
 						
