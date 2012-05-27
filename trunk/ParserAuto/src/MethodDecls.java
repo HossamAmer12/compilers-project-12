@@ -11,12 +11,10 @@ public class MethodDecls extends ArrayList<MethodDecl>
 		this.lineNo=lineNo;
 		this.line=line;
 	}
-	
-	public MethodDecls() {
-		// TODO Auto-generated constructor stub
+	public MethodDecls(){
 		super();
 	}
-
+	
 	public String toString()
 	{
 			String ret = "MethodsDecl\n";
@@ -45,7 +43,7 @@ public class MethodDecls extends ArrayList<MethodDecl>
 			}
 			else{
 				ClassDecl.error=true;
-				Report.semanticError(lineNo, line.toString().length(), "Duplicate method declaration "+m.methodID, line.toString());
+				Report.semanticError(m.lineNo, m.line.toString().length(), "Duplicate method declaration "+m.methodID, m.line.toString());
 			}
 		}
 		

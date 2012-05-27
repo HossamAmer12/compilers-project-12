@@ -1,7 +1,9 @@
-class Algebra {
+class isPrimed {
+// static boolean isPrime(int c) {return true;}
+
 	static boolean isPrime(int c) // Returns true if c is prime.
 	{
-	
+			
 	if (((c % 2)) == 0)
 			return false;
 			
@@ -9,10 +11,11 @@ class Algebra {
 		d = 3.; 
 		
 		
-		int beh;
+		float beh;
 		int emy;
 		
-		beh = 1;
+		beh = 1.11111;
+		
 		emy = 2;
 		
 		
@@ -59,6 +62,7 @@ class Algebra {
 		
 	static int fibonacci(int n) // Find n-th Fibonacci number.
 	{
+		
 		if ((n == 1) || (n == 2))
 			return 1;
 		else
@@ -72,8 +76,6 @@ class Algebra {
 		sum = 3.0;
 		return sum / 3.0;
 	}
-	
-	
 	
 	
 
