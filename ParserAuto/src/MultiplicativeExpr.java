@@ -20,6 +20,9 @@ public class MultiplicativeExpr extends AdditiveExpr
 		primaryExpr = t;
 		op = o;
 		expr = e;
+		this.line=line;
+		this.lineNo=lineNo;
+		this.at=at;
 	}
 	
 	public String toString()

@@ -123,6 +123,8 @@ public class Token {
 		}
 		return lexeme;
 	}
+	
+	
 	// Returns a string representation of the token
 	public String toString() {
 		return token + "\t" + lexeme;
