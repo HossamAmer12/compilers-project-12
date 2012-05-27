@@ -7,6 +7,7 @@ public class SemanticException extends Exception {
 	public static final int METHOD_UNDEFINED=6;
 	public static final int METHOD_MISSING_ARGUMENTS=7;
 	public static final int VAR_INITIALIZATION=8;
+	public static String fileName;
 	
 	
 	public SemanticException(String s) {

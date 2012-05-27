@@ -12,6 +12,11 @@ public class MethodDecls extends ArrayList<MethodDecl>
 		this.line=line;
 	}
 	
+	public MethodDecls() {
+		// TODO Auto-generated constructor stub
+		super();
+	}
+
 	public String toString()
 	{
 			String ret = "MethodsDecl\n";

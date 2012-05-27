@@ -1,5 +1,6 @@
 import java.io.*;
 import java_cup.runtime.Symbol;
+import java.util.ArrayList;
 
 
 class Lexer implements java_cup.runtime.Scanner {
@@ -14,6 +15,20 @@ class Lexer implements java_cup.runtime.Scanner {
 	private final int YY_EOF = 129;
 
   private int comment_count = 0;
+  	private int state = 0; // 0 normal , 1 CommentM, 3 string
+	private String sb = "";
+	private String currentLine="";
+/*
+	private ArrayList<Warning> warnings;
+	private void showWarnings(){
+		for (Warning w : warnings) {
+			Report.displayWarning(yyline, yychar, "Printing warnings", currentLine);
+//			w.setLineText(currentLine);
+//			System.out.println(w);
+		}
+//		warnings.clear();
+	}
+*/
 	private java.io.BufferedReader yy_reader;
 	private int yy_buffer_index;
 	private int yy_buffer_read;
@@ -51,6 +66,9 @@ class Lexer implements java_cup.runtime.Scanner {
 		yyline = 0;
 		yy_at_bol = true;
 		yy_lexical_state = YYINITIAL;
+ 
+	// initialize the warning list will be printed each new line and cleared.
+	// warnings= new ArrayList<Warning>();
 	}
 
 	private boolean yy_eof_done = false;
@@ -59,8 +77,8 @@ class Lexer implements java_cup.runtime.Scanner {
 	private final int COMMENTS = 1;
 	private final int yy_state_dtrans[] = {
 		0,
-		36,
-		47
+		40,
+		51
 	};
 	private void yybegin (int state) {
 		yy_lexical_state = state;
@@ -254,17 +272,17 @@ class Lexer implements java_cup.runtime.Scanner {
 		/* 38 */ YY_NO_ANCHOR,
 		/* 39 */ YY_NO_ANCHOR,
 		/* 40 */ YY_NO_ANCHOR,
-		/* 41 */ YY_NOT_ACCEPT,
+		/* 41 */ YY_NO_ANCHOR,
 		/* 42 */ YY_NO_ANCHOR,
 		/* 43 */ YY_NO_ANCHOR,
 		/* 44 */ YY_NO_ANCHOR,
-		/* 45 */ YY_NO_ANCHOR,
+		/* 45 */ YY_NOT_ACCEPT,
 		/* 46 */ YY_NO_ANCHOR,
-		/* 47 */ YY_NOT_ACCEPT,
+		/* 47 */ YY_NO_ANCHOR,
 		/* 48 */ YY_NO_ANCHOR,
 		/* 49 */ YY_NO_ANCHOR,
 		/* 50 */ YY_NO_ANCHOR,
-		/* 51 */ YY_NO_ANCHOR,
+		/* 51 */ YY_NOT_ACCEPT,
 		/* 52 */ YY_NO_ANCHOR,
 		/* 53 */ YY_NO_ANCHOR,
 		/* 54 */ YY_NO_ANCHOR,
@@ -307,43 +325,45 @@ class Lexer implements java_cup.runtime.Scanner {
 		/* 91 */ YY_NO_ANCHOR,
 		/* 92 */ YY_NO_ANCHOR,
 		/* 93 */ YY_NO_ANCHOR,
-		/* 94 */ YY_NO_ANCHOR
+		/* 94 */ YY_NO_ANCHOR,
+		/* 95 */ YY_NO_ANCHOR,
+		/* 96 */ YY_NO_ANCHOR
 	};
 	private int yy_cmap[] = unpackFromString(1,130,
-"20:8,27:2,21,20,27,25,20:18,27,35,26,20:2,40,24,20,36,38,2,39,33,31,28,1,23" +
-":10,20,29,20,32,20:3,22:18,14,22:7,20:4,22,20,5,12,3,22,9,10,16,19,8,22:2,4" +
-",22,13,11,22:2,15,6,7,17,22,18,22:3,30,37,34,20:2,0:2")[0];
+"22:8,27:2,20,22,27,21,22:18,27,35,26,22:2,40,25,22,36,38,2,39,33,31,28,1,24" +
+":10,22,29,22,32,22:3,23:18,14,23:7,22:4,23,22,5,12,3,23,9,10,16,19,8,23:2,4" +
+",23,13,11,23:2,15,6,7,17,23,18,23:3,30,37,34,22:2,0:2")[0];
 
-	private int yy_rmap[] = unpackFromString(1,95,
-"0,1,2,1,3,4,5,6,1:3,7,1:8,8,1:5,8:10,9,1:4,10,11,12,10,13,14,15,16,17,18,19" +
-",20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,8,43," +
-"44,45,46,47,48,49,50,51,52,53,54,8,55,56,57,58,59,60")[0];
+	private int yy_rmap[] = unpackFromString(1,97,
+"0,1,2,1,3,4:2,1,5,6,7,1:3,8,1:3,9,1:5,10,1:5,10:10,11,1:4,12,13,14,12,15,16" +
+",17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41" +
+",42,10,43,44,45,46,47,48,49,50,51,52,53,54,10,55,56,57,58,59,60")[0];
 
 	private int yy_nxt[][] = unpackFromString(61,41,
-"1,2,3,4,88:2,89,72,43,73,90,88,91,88,92,93,88:2,94,88,3,5,88,6,42,5,7,5,3,8" +
-",9,10,11,12,13,48,14,51,15,16,17,-1:42,18,19,-1:41,88,74,88:15,-1:2,88,75,-" +
-"1:38,5,-1:3,5,-1,5,-1:36,6,-1:4,41,-1:13,7,-1,7:17,-1,45,7:3,45,22,7:4,-1,7" +
-":9,-1:32,23,-1:11,88:17,-1:2,88,75,-1:17,1,46,53,50:17,3,50:5,3,50:4,3,50:9" +
-",-1:23,44,-1:41,21,-1:19,88:7,20,88:2,49,88:6,-1:2,88,75,-1:38,45,-1:3,45,-" +
-"1:16,50,37,50:17,-1,50:5,-1,50:4,-1,50:9,1,39:20,40,39:19,-1:32,24,-1:11,88" +
-":4,26,88:12,-1:2,88,75,-1:18,50,-1,50:17,-1,50:5,-1,50:4,-1,50:9,-1:37,25,-" +
-"1:6,88:6,27,88:10,-1:2,88,75,-1:18,38,-1:42,88:6,28,88:10,-1:2,88,75,-1:20," +
-"88:3,29,88:13,-1:2,88,75,-1:20,88:4,30,88:12,-1:2,88,75,-1:20,88:6,31,88:10" +
-",-1:2,88,75,-1:20,32,88:16,-1:2,88,75,-1:20,88:13,33,88:3,-1:2,88,75,-1:20," +
-"88:10,34,88:6,-1:2,88,75,-1:20,88:10,35,88:6,-1:2,88,75,-1:20,88:14,52,88:2" +
-",-1:2,88,75,-1:20,88:3,54,88:13,-1:2,88,75,-1:20,88:3,55,88:13,-1:2,88,75,-" +
-"1:20,88:2,56,88:14,-1:2,88,75,-1:20,88:3,52,88:13,-1:2,88,75,-1:20,88,57,88" +
-":15,-1:2,88,75,-1:20,88:5,58,88:11,-1:2,88,75,-1:20,88:10,59,88:6,-1:2,88,7" +
-"5,-1:20,88:12,60,88:4,-1:2,88,75,-1:20,88:2,61,88:14,-1:2,88,75,-1:20,88:12" +
-",62,88:4,-1:2,88,75,-1:20,88,63,88:15,-1:2,88,75,-1:20,88:2,64,88:14,-1:2,8" +
-"8,75,-1:20,88:2,83,88:14,-1:2,88,75,-1:20,88:8,65,88:8,-1:2,88,75,-1:20,88," +
-"66,88:15,-1:2,88,75,-1:20,88:8,84,88:8,-1:2,88,75,-1:20,88:12,85,88:4,-1:2," +
-"88,75,-1:20,88:4,86,88:12,-1:2,88,75,-1:20,88:5,67,88:11,-1:2,88,75,-1:20,8" +
-"8:4,68,88:12,-1:2,88,75,-1:20,88,87,88:15,-1:2,88,75,-1:20,88:5,69,88:11,-1" +
-":2,88,75,-1:20,88:14,70,88:2,-1:2,88,75,-1:20,88:6,71,88:10,-1:2,88,75,-1:2" +
-"0,88:4,76,88:12,-1:2,88,75,-1:20,88,77,78,88:14,-1:2,88,75,-1:20,88:8,79,88" +
-":8,-1:2,88,75,-1:20,88:4,80,88:12,-1:2,88,75,-1:20,88:6,81,88:10,-1:2,88,75" +
-",-1:20,88:16,82,-1:2,88,75,-1:17");
+"1,2,3,4,90:2,91,74,46,75,92,90,93,90,94,95,90:2,96,90,5,6,7,90,8,9,10,6,7,1" +
+"1,12,13,14,15,16,47,17,18,19,20,21,-1:42,22,23,-1:41,90,76,90:15,-1:3,90,77" +
+",-1:36,6:2,-1:5,6,-1:37,8,-1:3,45,-1:37,25,-1:16,10,-1,10:17,49:2,-1,10:3,2" +
+"6,10:4,-1,10:9,-1:32,27,-1:45,29,-1:6,90:17,-1:3,90,77,-1:16,1,50,53,54:19," +
+"7,54:3,7,54:4,7,54:9,-1:24,48,-1:19,90:7,24,90:2,52,90:6,-1:3,90,77,-1:48,2" +
+"8,-1:28,49:2,-1:20,54,41,54:19,-1,54:3,-1,54:4,-1,54:9,1,43:19,44,43:20,-1:" +
+"3,90:4,30,90:12,-1:3,90,77,-1:17,42,-1:40,54,-1,54:19,-1,54:3,-1,54:4,-1,54" +
+":9,-1:3,90:6,31,90:10,-1:3,90,77,-1:19,90:6,32,90:10,-1:3,90,77,-1:19,90:3," +
+"33,90:13,-1:3,90,77,-1:19,90:4,34,90:12,-1:3,90,77,-1:19,90:6,35,90:10,-1:3" +
+",90,77,-1:19,36,90:16,-1:3,90,77,-1:19,90:13,37,90:3,-1:3,90,77,-1:19,90:10" +
+",38,90:6,-1:3,90,77,-1:19,90:10,39,90:6,-1:3,90,77,-1:19,90:14,55,90:2,-1:3" +
+",90,77,-1:19,90:3,56,90:13,-1:3,90,77,-1:19,90:3,57,90:13,-1:3,90,77,-1:19," +
+"90:2,58,90:14,-1:3,90,77,-1:19,90:3,55,90:13,-1:3,90,77,-1:19,90,59,90:15,-" +
+"1:3,90,77,-1:19,90:5,60,90:11,-1:3,90,77,-1:19,90:10,61,90:6,-1:3,90,77,-1:" +
+"19,90:12,62,90:4,-1:3,90,77,-1:19,90:2,63,90:14,-1:3,90,77,-1:19,90:12,64,9" +
+"0:4,-1:3,90,77,-1:19,90,65,90:15,-1:3,90,77,-1:19,90:2,66,90:14,-1:3,90,77," +
+"-1:19,90:2,85,90:14,-1:3,90,77,-1:19,90:8,67,90:8,-1:3,90,77,-1:19,90,68,90" +
+":15,-1:3,90,77,-1:19,90:8,86,90:8,-1:3,90,77,-1:19,90:12,87,90:4,-1:3,90,77" +
+",-1:19,90:4,88,90:12,-1:3,90,77,-1:19,90:5,69,90:11,-1:3,90,77,-1:19,90:4,7" +
+"0,90:12,-1:3,90,77,-1:19,90,89,90:15,-1:3,90,77,-1:19,90:5,71,90:11,-1:3,90" +
+",77,-1:19,90:14,72,90:2,-1:3,90,77,-1:19,90:6,73,90:10,-1:3,90,77,-1:19,90:" +
+"4,78,90:12,-1:3,90,77,-1:19,90,79,80,90:14,-1:3,90,77,-1:19,90:8,81,90:8,-1" +
+":3,90,77,-1:19,90:4,82,90:12,-1:3,90,77,-1:19,90:6,83,90:10,-1:3,90,77,-1:1" +
+"9,90:16,84,-1:3,90,77,-1:16");
 
 	public java_cup.runtime.Symbol next_token ()
 		throws java.io.IOException {
@@ -368,7 +388,24 @@ class Lexer implements java_cup.runtime.Scanner {
 			yy_next_state = yy_nxt[yy_rmap[yy_state]][yy_cmap[yy_lookahead]];
 			if (YY_EOF == yy_lookahead && true == yy_initial) {
 
-return null;
+	if (state== 2)
+	{
+		Report.displayWarning(yyline, yychar, "Missing \" at the end of the string", currentLine);
+		// warnings.add(new Warning("Missing \" at the end of the string", yyline, yychar));
+		currentLine = "";
+		return new Symbol(sym.ST, new Token(sym.ST, sb, yyline, yychar));
+	}
+	   if(state == 1){
+		state = 0;
+		System.out.println("Hello from state1");
+		// this.showWarnings();
+		System.out.println();
+		return null;
+	}
+//	System.out.println("Hello from state2 warnings");
+//		this.showWarnings();
+		System.out.println();
+		return null;
 			}
 			if (YY_F != yy_next_state) {
 				yy_state = yy_next_state;
@@ -396,514 +433,816 @@ return null;
 						break;
 					case 2:
 						{ 
-  return new Symbol(sym.DO, yytext());	
+currentLine+=yytext();
+return new Symbol(sym.DO, new Token(sym.DO,yytext(), yyline, yychar));
+//  return new Symbol(sym.DO, yytext());	
 }
 					case -3:
 						break;
 					case 3:
-						{
-        return new Symbol(sym.ERROR, "Invalid Input: " + yytext(	));
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.TO, new Token(sym.TO,yytext(), yyline, yychar));
+//  return new Symbol(sym.TO, yytext());	
 }
 					case -4:
 						break;
 					case 4:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -5:
 						break;
 					case 5:
-						{ }
+						{ 
+//	this.showWarnings();
+	currentLine="";
+	yychar=0;
+}
 					case -6:
 						break;
 					case 6:
 						{ 
-	return new Symbol(sym.NM, yytext());
+	currentLine+=yytext();
 }
 					case -7:
 						break;
 					case 7:
-						{ 
-	return new Symbol(sym.ERROR, "Invalid String Literal");
+						{
+currentLine += yytext();
+Report.displayWarning(yyline, yychar, "Invalid character " + yychar, yytext());
+// warnings.add(new Warning("Invalid character "+yytext(),yyline,yychar));
+//        return new Symbol(sym.ERROR, "Invalid Input: " + yytext(	));
 }
 					case -8:
 						break;
 					case 8:
 						{ 
-  return new Symbol(sym.SM, yytext());	
+	String num = yytext();
+	String part1 = "";
+	String part2 = "";
+	int dotIndex = -1;
+	boolean nonZeroFound = false;
+	for (int i = 0; i<num.length(); i++)
+	{
+		if(num.charAt(i) == '.')
+		{
+			dotIndex = i;
+			break;
+		}
+		if(nonZeroFound)
+		{
+				part1 += num.charAt(i);
+		}
+		if(num.charAt(i) != '0' && !nonZeroFound)
+		{
+			part1 += num.charAt(i);
+			nonZeroFound = true;
+		}
+	}
+	if(!nonZeroFound)
+		part1 = "0";
+	boolean stopRemovingZeros = false;
+	int zerosCount = 0;
+	String numRev = "";
+	if(dotIndex != -1)
+	{
+		for(int i = num.length() - 1; i>dotIndex; i--)
+		{		
+			if(num.charAt(i) != '0')	stopRemovingZeros = true;
+			if(stopRemovingZeros)	numRev += num.charAt(i);
+			if(num.charAt(i) == '0' && !stopRemovingZeros) zerosCount++;
+		}
+		for(int i = numRev.length() - 1; i >= 0; i--)
+		{
+			part2 += numRev.charAt(i);
+		}
+		part2 = (zerosCount==1)? ".0": "." + part2;
+	}
+	currentLine+=yytext();
+	return new Symbol(sym.NM, new Token(sym.KW_class,"" + part1 + part2, yyline, yychar));
+//	return new Token("NM", numRev);	
+//	return new Token("NM", part1 + part2);
+//	return new Symbol(sym.NM, yytext());
 }
 					case -9:
 						break;
 					case 9:
 						{ 
-  return new Symbol(sym.LB, yytext());	
+  	currentLine+=yytext();
+  	//Single &: to be converted to && and &&.
+	Report.displayWarning(yyline, yychar, "Single & to be converted into &&", yytext());
+  	return new Symbol(sym.LA, new Token(sym.LA,yytext()+"&", yyline, yychar));
 }
 					case -10:
 						break;
 					case 10:
 						{ 
-  return new Symbol(sym.MO, yytext());	
+	currentLine += yytext();
+	Report.displayWarning(yyline, yychar, "Missing \" at the end of the string at char no " + yychar, yytext());
+//	Report.displayWarning(yyline, yychar, "Invalid character \" " + yytext(), yyline);	
+	// return new Symbol(sym.ERROR, "Invalid String Literal");
 }
 					case -11:
 						break;
 					case 11:
 						{ 
-  return new Symbol(sym.AO, yytext());	
+	currentLine+=yytext();
+	return new Symbol(sym.SM, new Token(sym.SM,yytext(), yyline, yychar));
+//   return new Symbol(sym.SM, yytext());	
 }
 					case -12:
 						break;
 					case 12:
 						{ 
-  return new Symbol(sym.FA, yytext());	
+currentLine+=yytext();
+return new Symbol(sym.LB, new Token(sym.LB,yytext(), yyline, yychar));
+//  return new Symbol(sym.LB, yytext());	
 }
 					case -13:
 						break;
 					case 13:
 						{ 
-  return new Symbol(sym.RB, yytext());	
+currentLine+=yytext();
+return new Symbol(sym.MO, new Token(sym.MO,yytext(), yyline, yychar));
+//  return new Symbol(sym.MO, yytext());	
 }
 					case -14:
 						break;
 					case 14:
 						{ 
-  return new Symbol(sym.LP, yytext());	
+currentLine+=yytext();
+return new Symbol(sym.AO, new Token(sym.AO,yytext(), yyline, yychar));
+//  return new Symbol(sym.AO, yytext());	
 }
 					case -15:
 						break;
 					case 15:
 						{ 
-  return new Symbol(sym.RP, yytext());	
+currentLine+=yytext();
+return new Symbol(sym.FA, new Token(sym.FA,yytext(), yyline, yychar));
+ // return new Symbol(sym.FA, yytext());	
 }
 					case -16:
 						break;
 					case 16:
 						{ 
-  return new Symbol(sym.PO, yytext());
+currentLine+=yytext();
+return new Symbol(sym.RB, new Token(sym.RB,yytext(), yyline, yychar));
+//  return new Symbol(sym.RB, yytext());	
 }
 					case -17:
 						break;
 					case 17:
 						{ 
-  return new Symbol(sym.MD, yytext());	
+currentLine+=yytext();
+return new Symbol(sym.LP, new Token(sym.LP,yytext(), yyline, yychar));
+//  return new Symbol(sym.LP, yytext());	
 }
 					case -18:
 						break;
 					case 18:
-						{ yybegin(SINGLE_LINE_COMMENTS);}
+						{ 
+  	currentLine += yytext();
+  	// Single | and ||: to be converted to && and ||.
+	Report.displayWarning(yyline, yychar, "Single | to be converted into ||", yytext());
+//	warnings.add(new Warning("| converted to ||",yyline,yychar));
+  	return new Symbol(sym.LO, new Token(sym.LO,yytext()+"|", yyline, yychar));
+}
 					case -19:
 						break;
 					case 19:
-						{ yybegin(COMMENTS); comment_count = comment_count + 1; }
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.RP, new Token(sym.RP,yytext(), yyline, yychar));
+//  return new Symbol(sym.RP, yytext());	
+}
 					case -20:
 						break;
 					case 20:
-						{ return new Symbol(sym.KW_if, yytext()); }
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.PO, new Token(sym.PO,yytext(), yyline, yychar));
+//  return new Symbol(sym.PO, yytext());
+}
 					case -21:
 						break;
 					case 21:
 						{ 
-  return new Symbol(sym.LA, yytext());
+currentLine+=yytext();
+return new Symbol(sym.MD, new Token(sym.MD,yytext(), yyline, yychar));
+//  return new Symbol(sym.MD, yytext());	
 }
 					case -22:
 						break;
 					case 22:
-						{ 
-	return new Symbol(sym.ST, yytext());
-}
+						{ yybegin(SINGLE_LINE_COMMENTS);}
 					case -23:
 						break;
 					case 23:
-						{ 
-  return new Symbol(sym.EQ, yytext());	
-}
+						{ yybegin(COMMENTS); comment_count = comment_count + 1; }
 					case -24:
 						break;
 					case 24:
 						{ 
-  return new Symbol(sym.NE, yytext());	
+currentLine+=yytext();
+return new Symbol(sym.KW_if, new Token(sym.KW_if,yytext(), yyline, yychar));
+// return new Symbol(sym.KW_if, yytext()); 
 }
 					case -25:
 						break;
 					case 25:
 						{ 
-  return new Symbol(sym.LO, yytext());	
+currentLine+=yytext();
+return new Symbol(sym.LA, new Token(sym.LA,yytext(), yyline, yychar));
+//  return new Symbol(sym.LA, yytext());
 }
 					case -26:
 						break;
 					case 26:
-						{ return new Symbol(sym.KW_int, yytext()); }
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.ST, new Token(sym.ST,yytext(), yyline, yychar));
+//	return new Symbol(sym.ST, yytext());
+}
 					case -27:
 						break;
 					case 27:
 						{ 
-	return new Symbol(sym.BL, yytext());
+currentLine+=yytext();
+return new Symbol(sym.EQ, new Token(sym.EQ,yytext(), yyline, yychar));
+//  return new Symbol(sym.EQ, yytext());	
 }
 					case -28:
 						break;
 					case 28:
-						{ return new Symbol(sym.KW_else, yytext()); }
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.NE, new Token(sym.NE,yytext(), yyline, yychar));
+//  return new Symbol(sym.NE, yytext());	
+}
 					case -29:
 						break;
 					case 29:
-						{ return new Symbol(sym.KW_class, yytext()); }
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.LO, new Token(sym.LO,yytext(), yyline, yychar));
+//  return new Symbol(sym.LO, yytext());	
+}
 					case -30:
 						break;
 					case 30:
-						{ return new Symbol(sym.KW_float, yytext()); }
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.KW_int, new Token(sym.KW_int,yytext(), yyline, yychar));
+//return new Symbol(sym.KW_int, yytext()); 
+}
 					case -31:
 						break;
 					case 31:
-						{ return new Symbol(sym.KW_while, yytext()); }
+						{ 
+	currentLine+=yytext();
+	return new Symbol(sym.BL, new Token(sym.BL,yytext(), yyline, yychar));
+//	return new Symbol(sym.BL, yytext());
+}
 					case -32:
 						break;
 					case 32:
-						{ return new Symbol(sym.KW_static, yytext()); }
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.KW_else, new Token(sym.KW_else,yytext(), yyline, yychar));
+// return new Symbol(sym.KW_else, yytext()); 
+}
 					case -33:
 						break;
 					case 33:
-						{ return new Symbol(sym.KW_String, yytext()); }
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.KW_class, new Token(sym.KW_class,yytext(), yyline, yychar));
+// return new Symbol(sym.KW_class, yytext(), yyline)); 
+}
 					case -34:
 						break;
 					case 34:
-						{ return new Symbol(sym.KW_return, yytext()); }
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.KW_float, new Token(sym.KW_float,yytext(), yyline, yychar));
+// return new Symbol(sym.KW_float, yytext()); 
+}
 					case -35:
 						break;
 					case 35:
-						{ return new Symbol(sym.KW_boolean, yytext()); }
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.KW_while, new Token(sym.KW_while,yytext(), yyline, yychar));
+// return new Symbol(sym.KW_while, yytext()); 
+}
 					case -36:
 						break;
 					case 36:
-						{ }
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.KW_static, new Token(sym.KW_static,yytext(), yyline, yychar));
+// return new Symbol(sym.KW_static, yytext());
+}
 					case -37:
 						break;
 					case 37:
-						{ comment_count = comment_count + 1; }
+						{
+currentLine+=yytext();
+return new Symbol(sym.KW_String, new Token(sym.KW_String,yytext(), yyline, yychar));
+// return new Symbol(sym.KW_String, yytext()); 
+}
 					case -38:
 						break;
 					case 38:
 						{ 
+currentLine+=yytext();
+return new Symbol(sym.KW_return, new Token(sym.KW_return,yytext(), yyline, yychar));
+// return new Symbol(sym.KW_return, yytext()); 
+}
+					case -39:
+						break;
+					case 39:
+						{ 
+currentLine+=yytext();
+return new Symbol(sym.KW_boolean, new Token(sym.KW_boolean,yytext(), yyline, yychar));
+// return new Symbol(sym.KW_boolean, yytext()); 
+}
+					case -40:
+						break;
+					case 40:
+						{ }
+					case -41:
+						break;
+					case 41:
+						{ 
+state = 1;
+comment_count = comment_count + 1; 
+}
+					case -42:
+						break;
+					case 42:
+						{ 
+	state = 0;
 	comment_count = comment_count - 1; 
 	if (comment_count == 0) {
     		yybegin(YYINITIAL);
 	}
 }
-					case -39:
-						break;
-					case 39:
-						{}
-					case -40:
-						break;
-					case 40:
-						{ yybegin(YYINITIAL); }
-					case -41:
-						break;
-					case 42:
-						{
-        return new Symbol(sym.ERROR, "Invalid Input: " + yytext(	));
-}
-					case -42:
+					case -43:
 						break;
 					case 43:
-						{ 
-	return new Symbol(sym.ID, yytext());
-}
-					case -43:
+						{}
+					case -44:
 						break;
 					case 44:
 						{ 
-	return new Symbol(sym.NM, yytext());
-}
-					case -44:
-						break;
-					case 45:
-						{ 
-	return new Symbol(sym.ERROR, "Invalid String Literal");
+yychar=0;
+currentLine="";
+yybegin(YYINITIAL); 
 }
 					case -45:
 						break;
 					case 46:
-						{ }
+						{ 
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
+}
 					case -46:
 						break;
-					case 48:
+					case 47:
 						{
-        return new Symbol(sym.ERROR, "Invalid Input: " + yytext(	));
+currentLine += yytext();
+Report.displayWarning(yyline, yychar, "Invalid character " + yychar, yytext());
+// warnings.add(new Warning("Invalid character "+yytext(),yyline,yychar));
+//        return new Symbol(sym.ERROR, "Invalid Input: " + yytext(	));
 }
 					case -47:
 						break;
-					case 49:
+					case 48:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	String num = yytext();
+	String part1 = "";
+	String part2 = "";
+	int dotIndex = -1;
+	boolean nonZeroFound = false;
+	for (int i = 0; i<num.length(); i++)
+	{
+		if(num.charAt(i) == '.')
+		{
+			dotIndex = i;
+			break;
+		}
+		if(nonZeroFound)
+		{
+				part1 += num.charAt(i);
+		}
+		if(num.charAt(i) != '0' && !nonZeroFound)
+		{
+			part1 += num.charAt(i);
+			nonZeroFound = true;
+		}
+	}
+	if(!nonZeroFound)
+		part1 = "0";
+	boolean stopRemovingZeros = false;
+	int zerosCount = 0;
+	String numRev = "";
+	if(dotIndex != -1)
+	{
+		for(int i = num.length() - 1; i>dotIndex; i--)
+		{		
+			if(num.charAt(i) != '0')	stopRemovingZeros = true;
+			if(stopRemovingZeros)	numRev += num.charAt(i);
+			if(num.charAt(i) == '0' && !stopRemovingZeros) zerosCount++;
+		}
+		for(int i = numRev.length() - 1; i >= 0; i--)
+		{
+			part2 += numRev.charAt(i);
+		}
+		part2 = (zerosCount==1)? ".0": "." + part2;
+	}
+	currentLine+=yytext();
+	return new Symbol(sym.NM, new Token(sym.KW_class,"" + part1 + part2, yyline, yychar));
+//	return new Token("NM", numRev);	
+//	return new Token("NM", part1 + part2);
+//	return new Symbol(sym.NM, yytext());
 }
 					case -48:
 						break;
-					case 50:
-						{ }
+					case 49:
+						{ 
+	currentLine += yytext();
+	Report.displayWarning(yyline, yychar, "Missing \" at the end of the string at char no " + yychar, yytext());
+//	Report.displayWarning(yyline, yychar, "Invalid character \" " + yytext(), yyline);	
+	// return new Symbol(sym.ERROR, "Invalid String Literal");
+}
 					case -49:
 						break;
-					case 51:
-						{
-        return new Symbol(sym.ERROR, "Invalid Input: " + yytext(	));
-}
+					case 50:
+						{ }
 					case -50:
 						break;
 					case 52:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -51:
 						break;
 					case 53:
 						{
-        return new Symbol(sym.ERROR, "Invalid Input: " + yytext(	));
+currentLine += yytext();
+Report.displayWarning(yyline, yychar, "Invalid character " + yychar, yytext());
+// warnings.add(new Warning("Invalid character "+yytext(),yyline,yychar));
+//        return new Symbol(sym.ERROR, "Invalid Input: " + yytext(	));
 }
 					case -52:
 						break;
 					case 54:
-						{ 
-	return new Symbol(sym.ID, yytext());
-}
+						{ }
 					case -53:
 						break;
 					case 55:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -54:
 						break;
 					case 56:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -55:
 						break;
 					case 57:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -56:
 						break;
 					case 58:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -57:
 						break;
 					case 59:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -58:
 						break;
 					case 60:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -59:
 						break;
 					case 61:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -60:
 						break;
 					case 62:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -61:
 						break;
 					case 63:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -62:
 						break;
 					case 64:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -63:
 						break;
 					case 65:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -64:
 						break;
 					case 66:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -65:
 						break;
 					case 67:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -66:
 						break;
 					case 68:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -67:
 						break;
 					case 69:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -68:
 						break;
 					case 70:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -69:
 						break;
 					case 71:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -70:
 						break;
 					case 72:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -71:
 						break;
 					case 73:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -72:
 						break;
 					case 74:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -73:
 						break;
 					case 75:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -74:
 						break;
 					case 76:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -75:
 						break;
 					case 77:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -76:
 						break;
 					case 78:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -77:
 						break;
 					case 79:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -78:
 						break;
 					case 80:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -79:
 						break;
 					case 81:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -80:
 						break;
 					case 82:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -81:
 						break;
 					case 83:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -82:
 						break;
 					case 84:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -83:
 						break;
 					case 85:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -84:
 						break;
 					case 86:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -85:
 						break;
 					case 87:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -86:
 						break;
 					case 88:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -87:
 						break;
 					case 89:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -88:
 						break;
 					case 90:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -89:
 						break;
 					case 91:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -90:
 						break;
 					case 92:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -91:
 						break;
 					case 93:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -92:
 						break;
 					case 94:
 						{ 
-	return new Symbol(sym.ID, yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
 }
 					case -93:
+						break;
+					case 95:
+						{ 
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
+}
+					case -94:
+						break;
+					case 96:
+						{ 
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline, yychar));
+	// return new Symbol(sym.ID, yytext());
+}
+					case -95:
 						break;
 					default:
 						yy_error(YY_E_INTERNAL,false);

@@ -1,10 +1,49 @@
 
 import java_cup.runtime.*;
 import java.util.ArrayList;
+import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
+	
+	
+parser code {:
+
+public ArrayList<String> lines; 
+
+public parser(java_cup.runtime.Scanner s, String fileName) {
+	this(s);
+	SemanticException.fileName=fileName;
+	lines = readLines();
+	
+}
+
+public ArrayList<String> readLines() {
+		ArrayList<String> lines = new ArrayList<String>();
+		try {
+			FileInputStream fstream = new FileInputStream("Algebra.decaf");
+
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String strLine;
+
+			while ((strLine = br.readLine()) != null) {
+				lines.add(strLine);
+			}
+
+			in.close();
+		} catch (Exception e) {
+			System.err.println("Error: " + e.getMessage());
+		}
+		return lines;
+	}
+
+:}	
+	
 	
 /* Terminals (tokens returned by the scanner). */
-terminal			SM, PO, MO, TO, DO, NM,FA,LP,RP,RB,LB,AO,MD,EQ,NE,LO,LA,BL,ST,ID,ERROR;
-terminal			KW_class, KW_static, KW_else, KW_if, KW_float, KW_boolean, KW_String, KW_return, KW_while, KW_int;
+terminal		Token	SM, PO, MO, TO, DO, NM,FA,LP,RP,RB,LB,AO,MD,EQ,NE,LO,LA,BL,ST,ID,ERROR;
+terminal		Token	KW_class, KW_static, KW_else, KW_if, KW_float, KW_boolean, KW_String, KW_return, KW_while, KW_int;
  	
 /* Non-terminals */
 nonterminal	ClassDecl		ClassDecl;
@@ -66,9 +105,10 @@ MethodDecls ::= MethodDecls:el MethodDecl:e
 			     RESULT = new MethodDecls();
 			  :};              
 
-MethodDecl  ::= KW_static Type: t ID: id LP FormalParams: f RP Block: b
+MethodDecl  ::= KW_static: tok Type: t ID: id LP FormalParams: f RP Block: b
 				 {:
-				 	RESULT = new MethodDecl(t, f, b, id.toString());
+				 	RESULT = new MethodDecl(t, f, b, id.getLexeme(), tok.line, 
+				 	tok.at, parser.lines.get(parser.lines.size()-1));
 				 :};
 
 FormalParams ::= FormalParams:f1 FA FormalParam:f 
@@ -90,24 +130,24 @@ FormalParams ::= FormalParams:f1 FA FormalParam:f
 
 FormalParam ::= Type: t ID: id
 				{: 
-					RESULT = new FormalParam(id.toString(), t);
+					RESULT = new FormalParam(id.getLexeme(), t);
 				:};
 
 Type ::= KW_int:a
 		{: 
-			RESULT = new Type(a.toString()); 
+			RESULT = new Type(a.getLexeme()); 
 		:} 
 		| KW_float: b 
 		{: 
-			RESULT = new Type(b.toString()); 
+			RESULT = new Type(b.getLexeme()); 
 		:}  
 		| KW_boolean: c 
 		{: 
-			RESULT = new Type(c.toString()); 
+			RESULT = new Type(c.getLexeme()); 
 		:}  
 		| KW_String: d 
 		{: 
-			RESULT = new Type(d.toString()); 
+			RESULT = new Type(d.getLexeme()); 
 		:};
 
 Block ::= LB Statements: st RB
@@ -153,48 +193,49 @@ Statement ::= Block: block
 
 LocalVarDecl ::= Type: t ID: id SM
 			{:
-				RESULT = new LocalVarDecl(id.toString(), t);
+				RESULT = new LocalVarDecl(id.getLexeme(), t, id.line, id.at,
+				parser.lines.get(parser.lines.size()-1));
 			:};	 
 
 AssignStmt ::= ID: id AO Expression: e SM 
 			{:	
-				RESULT = new AssignStmt(id.toString(), e);
+				RESULT = new AssignStmt(id.getLexeme(), e, id, parser.lines.get(parser.lines.size()-1));
 			:};
 
-IfStmt ::= KW_if LP Expression: e RP Statement: stmt KW_else Statement: elsestmt
+IfStmt ::= KW_if LP Expression: e RP: tok Statement: stmt KW_else Statement: elsestmt
 			{:
-				RESULT = new IfStmt(e, stmt, elsestmt);
+				RESULT = new IfStmt(e, stmt, elsestmt, tok.line, tok.at, parser.lines.get(parser.lines.size()-1));
 			:}
-			| KW_if LP Expression: e RP Statement: stmt
+			| KW_if LP Expression: e RP: tok Statement: stmt
 			{:
-				RESULT = new IfStmt(e, stmt); 
+				RESULT = new IfStmt(e, stmt, tok.line, tok.at, parser.lines.get(parser.lines.size()-1)); 
 			:};
 
 
-WhileStmt ::= KW_while LP Expression: exp RP Statement: stmt
+WhileStmt ::= KW_while LP: tok Expression: exp RP Statement: stmt
 			{:
-				RESULT = new WhileStmt(exp, stmt);
+				RESULT = new WhileStmt(exp, stmt, tok.line, tok.at, parser.lines.get(parser.lines.size()-1));
 			:};
 
-ReturnStmt ::= KW_return Expression: exp SM 
+ReturnStmt ::= KW_return: tok Expression: exp SM 
 			{:
-				RESULT = new ReturnStmt(exp);
+				RESULT = new ReturnStmt(exp, tok.line, tok.at, parser.lines.get(parser.lines.size()-1));
 			:};
 
 Expression ::= ConditionalAndExpr: andExp
 			{:
 				RESULT = andExp;
 			:} 
-			| Expression: exp LO ConditionalAndExpr: andExp
+			| Expression: exp LO: tok ConditionalAndExpr: andExp
 			{: 
-				RESULT = new Expression(andExp, exp);
+				RESULT = new Expression(andExp, exp, tok.line, tok.at, parser.lines.get(parser.lines.size()-1));
 			:};	
 
 ConditionalAndExpr ::= EqualityExpr: equality
 					{:
 						RESULT = equality;
 					:}
-					| ConditionalAndExpr: andExp LA EqualityExpr: equality
+					| ConditionalAndExpr: andExp LA: tok EqualityExpr: equality
 					{:
 						RESULT = new ConditionalAndExpr(equality, andExp);
 					:};
@@ -203,26 +244,26 @@ EqualityExpr ::= AdditiveExpr: add
 				{:
 					RESULT = add;
 				:} 
-				| EqualityExpr: equality EQ AdditiveExpr: add
+				| EqualityExpr: equality EQ: tok AdditiveExpr: add
 				{:
-				RESULT = new EqualityExpr(add, EqualityExpr.EQ, equality);
+				RESULT = new EqualityExpr(add, EqualityExpr.EQ, equality, tok.line, tok.at, parser.lines.get(parser.lines.size()-1));
 				:} 
-				| EqualityExpr: equality NE AdditiveExpr: add
+				| EqualityExpr: equality NE: tok AdditiveExpr: add
 				{:
-					RESULT = new EqualityExpr(add, EqualityExpr.NE, equality);
+					RESULT = new EqualityExpr(add, EqualityExpr.NE, equality, tok.line, tok.at, parser.lines.get(parser.lines.size()-1));
 				:};
 
 AdditiveExpr ::= MultiplicativeExpr: multiply
 				{:
 					 RESULT = multiply;
 				:} 
-				| AdditiveExpr: add PO MultiplicativeExpr: multiply
+				| AdditiveExpr: add PO: tok MultiplicativeExpr: multiply
 				{:
-					RESULT = new AdditiveExpr(multiply, AdditiveExpr.PO, add);
+					RESULT = new AdditiveExpr(multiply, AdditiveExpr.PO, add, tok.line, tok.at, parser.lines.get(parser.lines.size()-1));
 				:}		
-				 | AdditiveExpr: add MO MultiplicativeExpr: multiply
+				 | AdditiveExpr: add MO: tok MultiplicativeExpr: multiply
 				 {:
-					RESULT = new AdditiveExpr(multiply, AdditiveExpr.MO, add);
+					RESULT = new AdditiveExpr(multiply, AdditiveExpr.MO, add, tok.line, tok.at, parser.lines.get(parser.lines.size()-1));
 				:};
 
 
@@ -230,38 +271,38 @@ MultiplicativeExpr ::= PrimaryExpr: primary
 				{:
 					 RESULT = primary;
 				:} 
-				| MultiplicativeExpr: multiply TO PrimaryExpr: primary
+				| MultiplicativeExpr: multiply TO: tok PrimaryExpr: primary
 				{:
-					RESULT = new MultiplicativeExpr(primary,MultiplicativeExpr.TO, multiply);
+					RESULT = new MultiplicativeExpr(primary,MultiplicativeExpr.TO, multiply, tok.line, tok.at, parser.lines.get(parser.lines.size()-1));
 				:}		
-				 | MultiplicativeExpr: multiply DO PrimaryExpr: primary
+				 | MultiplicativeExpr: multiply DO: tok PrimaryExpr: primary
 				 {:
-					RESULT = new MultiplicativeExpr(primary, MultiplicativeExpr.DO, multiply);
+					RESULT = new MultiplicativeExpr(primary, MultiplicativeExpr.DO, multiply, tok.line, tok.at, parser.lines.get(parser.lines.size()-1));
 				:}
-				| MultiplicativeExpr: multiply MD PrimaryExpr: primary
+				| MultiplicativeExpr: multiply MD: tok PrimaryExpr: primary
 				{:
-					RESULT = new MultiplicativeExpr(primary, MultiplicativeExpr.MD, multiply);
+					RESULT = new MultiplicativeExpr(primary, MultiplicativeExpr.MD, multiply, tok.line, tok.at, parser.lines.get(parser.lines.size()-1));
 				:};
 
 PrimaryExpr ::= NM: nm
 				{:
-					RESULT = new PrimaryExpr(nm.toString());
+					RESULT = new PrimaryExpr(nm.getLexeme());
 				:} 
 				| BL: bl
 				{:
-				 	RESULT = new PrimaryExpr(bl.toString(), null, null);
+				 	RESULT = new PrimaryExpr(bl.getLexeme(), null, null);
 				:}
 				| ST: st
 				{:
-				 	RESULT = new PrimaryExpr(null, st.toString(), null);;
+				 	RESULT = new PrimaryExpr(null, st.getLexeme(), null);;
 				:}
 				| ID: idLexeme LP ActualParams: act RP
 				{:
-					 RESULT = new PrimaryExpr(act, idLexeme.toString());
+					 RESULT = new PrimaryExpr(act, idLexeme.getLexeme());
 				:}	 
 				| ID: idLexeme
 				{:
-				 	RESULT = new PrimaryExpr(null, null, idLexeme.toString());
+				 	RESULT = new PrimaryExpr(null, null, idLexeme.getLexeme());
 				:}  
 				| LP Expression: exp RP
 				{:
@@ -286,5 +327,4 @@ ProperActualParams::= ProperActualParams: pAs FA Expression: exp
 					{:
 						ProperActualParams pAs = new ProperActualParams();
 						pAs.add(exp);
-						RESULT = pAs;
 					:};
