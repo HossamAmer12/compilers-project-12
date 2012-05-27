@@ -6,6 +6,7 @@ public class SemanticException extends Exception {
 	public static final int CONDITION_MISMATCH=5;
 	public static final int METHOD_UNDEFINED=6;
 	public static final int METHOD_MISSING_ARGUMENTS=7;
+	public static final int VAR_INITIALIZATION=8;
 	
 	
 	public SemanticException(String s) {
@@ -37,6 +38,9 @@ public class SemanticException extends Exception {
 			break;
 		case METHOD_MISSING_ARGUMENTS:
 			exception=String.format("The method call for %s has missing or invalid arguments",s);
+			break;
+		case VAR_INITIALIZATION:
+			exception=String.format("%s must be initialized first.", s);
 			break;
 		}
 		

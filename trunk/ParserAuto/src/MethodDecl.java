@@ -10,13 +10,20 @@ public class MethodDecl
 	public static final int ID = 3; // for id
 	public static final int KW = 4; // for static
 	
+	public int lineNo;
+	public String line;
+	public int at;
+
 	public MethodDecl()
 	{	
 	}
 	
-	public MethodDecl(Type type, FormalParams formalParams, Block block, String methodID)
+	public MethodDecl(Type type, FormalParams formalParams, Block block, String methodID,int lineNo,int at,String line)
 	{
 		this.type = type;
+		this.at=at;
+		this.lineNo=lineNo;
+		this.line=line;
 		this.formalParams = formalParams;
 		this.block = block;
 		this.methodID = methodID;
@@ -74,12 +81,13 @@ public class MethodDecl
 						if(stmt.getType()=="IfStmt"){
 							containsIfStmt=true;
 							if(!stmt.ifStmt.HasReachableReturns())
-								throw new SemanticException(String.format("Method %s must have a reachable return statement.",methodID));
+								Report.semanticError(lineNo, at,String.format("Method %s must have a reachable return statement.",methodID), line);
+								
 							
 						}
 					}
 					if(!containsIfStmt)
-						throw new SemanticException(String.format("Method %s must have a reachable return statement.",methodID));
+						Report.semanticError(lineNo, at,String.format("Method %s must have a reachable return statement.",methodID), line);
 				}
 			
 			}
