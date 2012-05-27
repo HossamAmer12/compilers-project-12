@@ -9,11 +9,14 @@ public class MultiplicativeExpr extends AdditiveExpr
 	public static final int DO = 2;	// /	
 	public static final int MD = 3;// %		
 	
+	public int lineNo;
+	public int at;
+	public String line;
 	public MultiplicativeExpr()
 	{}
 
 	
-	public MultiplicativeExpr(PrimaryExpr t, int o, MultiplicativeExpr e) {
+	public MultiplicativeExpr(PrimaryExpr t, int o, MultiplicativeExpr e,int lineNo,int at,String line) {
 		primaryExpr = t;
 		op = o;
 		expr = e;
@@ -58,7 +61,7 @@ public class MultiplicativeExpr extends AdditiveExpr
 		
 		return result ;
 	}
-	public String check() throws SemanticException{
+	public String check() throws SemanticException {
 		String expr1="";
 		String expr2="";
 		if(primaryExpr!=null)
@@ -67,11 +70,11 @@ public class MultiplicativeExpr extends AdditiveExpr
 		if(expr!=null)
 			expr2= expr.check();
 		
-		if(expr1.equals(expr2))
+		if(expr1.equals(expr2) && (expr1.equals("int") || expr1.equals("float")))
 			return expr1;
 		else
-			return null;
+			Report.semanticError(lineNo, at,"Type mismatch in Expression", line);
 		
-
+		return null;
 	}
 }

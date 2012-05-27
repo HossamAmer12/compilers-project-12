@@ -20,6 +20,7 @@ public class ClassDecl {
 	public static final int ID = 3;
 	public static final int KW = 4;
 
+	public static boolean error=false;
 	
 	public ClassDecl() {
 		

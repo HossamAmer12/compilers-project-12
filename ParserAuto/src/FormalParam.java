@@ -22,6 +22,7 @@ public class FormalParam
 	
 	public void check() throws SemanticException{
 		SymbolTable.getInstance().add(new Entry(idLexeme,type));
+		
 	}
 	
 	

@@ -3,14 +3,19 @@ public class Expression
 	public ConditionalAndExpr andExpr;
 	public Expression expr;
 	
-	
+	public int lineNo;
+	public String line;
+	public int at;
 	public Expression()
 	{}
 	
 	
-	public Expression(ConditionalAndExpr t, Expression e) {
+	public Expression(ConditionalAndExpr t, Expression e,int lineNo,int at,String line) {
 		this.andExpr = t;
 		this.expr = e;
+		this.line=line;
+		this.lineNo=lineNo;
+		this.at=at;
 	}
 	
 	
@@ -58,7 +63,7 @@ public class Expression
 		
 		if(expr!=null)
 			expr2= expr.check();
-
+	
 
 		if(expr1==null && expr2!=null)
 			return expr2;
@@ -66,11 +71,12 @@ public class Expression
 		if(expr2==null && expr1!=null)
 			return expr1;
 		
+		System.out.println(expr1.toString());
 		if(expr1.equals(expr2))
 			return expr1;
 		else
-			return null;
-		
+			Report.semanticError(lineNo, at,"Type mismatch in Expression", line);
+		return null;
 		
 
 	}

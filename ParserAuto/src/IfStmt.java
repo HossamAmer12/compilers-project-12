@@ -5,21 +5,30 @@ public class IfStmt
 	public Statement stmt;
 	public Statement elseStmt;
 	
+	public int lineNo;
+	public int at;
+	public String line;
 	public IfStmt()
 	{}
 
-	public IfStmt(Expression expr, Statement stmt)
+	public IfStmt(Expression expr, Statement stmt,int lineNo,int at,String line)
 	{
 		this.expr = expr;
 		this.stmt = stmt;
+		this.line=line;;
+		this.lineNo=lineNo;
+		this.at=at;
 	}
 
 	
-	public IfStmt(Expression expr, Statement stmt, Statement elseStmt)
+	public IfStmt(Expression expr, Statement stmt, Statement elseStmt,int lineNo,int at,String line)
 	{
 		this.expr = expr;
 		this.stmt = stmt;
 		this.elseStmt = elseStmt;
+		this.line=line;
+		this.lineNo=lineNo;
+		this.at=at;
 
 	}
 	
@@ -79,7 +88,8 @@ public class IfStmt
 			
 			// Semantic Check: For Condition Mismatch
 				if(!expr.isBoolean()){
-						throw new SemanticException("If Statement",SemanticException.CONDITION_MISMATCH);
+						Report.semanticError(lineNo, at,String.format("Condition type mismatch for %s: Must be boolean.","If Statement"), line);
+				
 					}
 				
 		}

@@ -41,7 +41,7 @@ public class ConditionalAndExpr extends Expression
 
 		return result ;
 	}
-	public String check() throws SemanticException{
+	public String check() throws SemanticException {
 		String expr1="";
 		String expr2="";
 		if(equalityExpr!=null)

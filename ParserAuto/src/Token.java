@@ -110,10 +110,10 @@ public class Token {
 			lexeme="&&";
 			break;
 		case ID:
-			lexeme="An Identifier was expected";
+			lexeme="ID";
 			break;
 		case KW:
-			lexeme="A keyword was expected";
+			lexeme="KW";
 			break;
 		default:
 			System.out.println(type);

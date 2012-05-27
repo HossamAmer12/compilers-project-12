@@ -9,16 +9,21 @@ public class EqualityExpr extends ConditionalAndExpr
 	public static final int NE = 2;// != 
 	
 	
-	
+	public int lineNo;
+	public int at;
+	public String line;
 	public EqualityExpr()
 	{}
 	
 	
 	
-	public EqualityExpr(AdditiveExpr t, int o, EqualityExpr e) {
+	public EqualityExpr(AdditiveExpr t, int o, EqualityExpr e,int lineNo,int at,String line) {
 		addExpr = t;
 		op = o;
 		expr = e;
+		this.lineNo=lineNo;
+		this.line=line;
+		this.at=at;
 	}
 	
 	
@@ -56,7 +61,7 @@ public class EqualityExpr extends ConditionalAndExpr
 		
 		return result ;
 	}
-	public String check() throws SemanticException{
+	public String check() throws SemanticException {
 
 		String expr1="";
 		String expr2="";
@@ -78,7 +83,8 @@ public class EqualityExpr extends ConditionalAndExpr
 		if(expr2.equals(expr1))
 			return expr1;
 	}
-			throw new SemanticException("Type mismatch in Expression.");
+	Report.semanticError(lineNo, at,"Type mismatch in Expression", line);
+	return null;
 
 	}
 }

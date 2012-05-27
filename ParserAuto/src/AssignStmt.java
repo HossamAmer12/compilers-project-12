@@ -2,14 +2,17 @@ public class AssignStmt
 {
 	String varId;
 	Expression expr;
-	
+	Token token;
+	String line;
 	public AssignStmt()
 	{}
 	
-	public AssignStmt(String idLexeme, Expression expr)
+	public AssignStmt(String idLexeme, Expression expr,Token t,String line)
 	{
 		this.varId = idLexeme;
 		this.expr = expr;
+		this.token=t;
+		this.line=line;
 	}
 	
 	public String toString()
@@ -37,10 +40,12 @@ public class AssignStmt
 			Entry e=SymbolTable.getInstance().get(varId);
 			if(e.type!=null){
 			if(!e.type.type.toString().equals(expr.check()) || expr.check()==null)
-					throw new SemanticException(varId,SemanticException.TYPE_MISMATCH);
+				Report.semanticError(token.line, token.at, String.format("Type mismatch for variable %s.",varId),line);
 				
 			}
-		}else throw new SemanticException(varId,SemanticException.VAR_DECLARATION);
+		}else Report.semanticError(token.line, token.at, varId+" variable must be declared first.",line);
+		
+		
 		
 	}
 }

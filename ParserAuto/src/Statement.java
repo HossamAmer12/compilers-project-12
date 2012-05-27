@@ -112,31 +112,37 @@ public class Statement
 	public void check(MethodDecl method) throws SemanticException  {
 		
 		if(getType().equals("LocalVarDecl")){
+			if(localVarDecl!=null)
 			localVarDecl.check();
 			return;
 		} 
 		
 		if(getType().equals("WhileStmt")){
+			if(whileStmt!=null)
 			whileStmt.check(method);
 			return;
 		}
 		
 		if(getType().equals("AssignStmt")){
+			if(assignStmt!=null)
 			assignStmt.check();
 			return;
 		}
 		
 		if(getType().equals("ReturnStmt")){
+			if(returnStmt!=null)
 			returnStmt.check(method);
 			return;
 		}
 		
 		if(getType().equals("Block")){
+			if(block!=null)
 			block.check(method);
 			return;
 		}
 		
 		if(getType().equals("IfStmt")){
+			if(ifStmt!=null)
 			ifStmt.check(method);
 			return;
 			

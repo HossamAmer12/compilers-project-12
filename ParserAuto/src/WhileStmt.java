@@ -3,15 +3,20 @@ public class WhileStmt
 	
 	public Expression expr;
 	public Statement stmt;
-	
+	public int lineNo;
+	public int at;
+	public String line;
 	public WhileStmt()
 	{
 		
 	}
 	
-	public WhileStmt(Expression expr, Statement stmt)
+	public WhileStmt(Expression expr, Statement stmt,int lineNo,int at,String line)
 	{
 		this.expr = expr;
+		this.lineNo=lineNo;
+		this.line=line;
+		this.at=at;
 		this.stmt = stmt;
 	}
 	
@@ -48,7 +53,8 @@ public class WhileStmt
 
 			// Semantic Check: For Condition Mismatch
 				if(!expr.isBoolean()){
-						throw new SemanticException("If Statement",SemanticException.CONDITION_MISMATCH);
+						Report.semanticError(lineNo, at, String.format("Condition type mismatch for %s: Must be boolean.","If Statement"), line);
+	
 					}
 				
 		}

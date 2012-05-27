@@ -2,11 +2,14 @@ import java.util.ArrayList;
 
 public class MethodDecls extends ArrayList<MethodDecl>
 {
-	
-	public MethodDecls()
+	public int lineNo;
+	public String line;
+	public MethodDecls(int lineNo,String line)
 	{
-		super();
 
+		super();
+		this.lineNo=lineNo;
+		this.line=line;
 	}
 	
 	public String toString()
@@ -28,16 +31,17 @@ public class MethodDecls extends ArrayList<MethodDecl>
 
 	}
 	public void check() throws SemanticException {
-		
+	
 		for (MethodDecl m: this)
 		{
 			if(!SymbolTable.getInstance().contains(m.methodID))
 			{
 				SymbolTable.getInstance().add(new Entry(m.methodID,m.type,true,m.formalParams));
 			}
-			else
-				throw new SemanticException(m.methodID,SemanticException.DUPLICATE_METHOD);
-			
+			else{
+				ClassDecl.error=true;
+				Report.semanticError(lineNo, line.toString().length(), "Duplicate method declaration "+m.methodID, line.toString());
+			}
 		}
 		
 		for(MethodDecl m:this){
