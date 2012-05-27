@@ -239,7 +239,7 @@ comment_count = comment_count + 1;
 <YYINITIAL> {STRINGS_TEXT_ERROR} { 
 
 	currentLine += yytext();
-	Report.displayWarning(yyline, yychar, "Missing \" at the end of the string" + yychar, yytext());
+	Report.displayWarning(yyline, yychar, "Missing \" at the end of the string at char no " + yychar, yytext());
 
 //	Report.displayWarning(yyline, yychar, "Invalid character \" " + yytext(), yyline);	
 
@@ -247,7 +247,11 @@ comment_count = comment_count + 1;
 }
 
 <YYINITIAL> {STRINGS_TEXT} { 
-	return new Symbol(sym.ST, yytext());
+
+currentLine+=yytext();
+return new Symbol(sym.ST, new Token(sym.ST,yytext(), yyline, yychar));
+
+//	return new Symbol(sym.ST, yytext());
 }
 
 
