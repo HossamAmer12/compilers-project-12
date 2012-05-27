@@ -173,7 +173,7 @@ public class PrimaryExpr extends MultiplicativeExpr
 					
 					// Make sure it's a method
 				if(!e.isMethod)
-					Report.semanticError(token.line, token.at, callerMethodName+" method is undefined.", line);
+					Report.semanticError(token.line, token.at, callerMethodName+" is not declared as a method.", line);
 				else
 				{
 				

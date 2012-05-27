@@ -19,6 +19,9 @@ public class AdditiveExpr extends EqualityExpr
 		multiplyExpr = t;
 		op = o;
 		expr = e;
+		this.line=line;
+		this.lineNo=lineNo;
+		this.at=at;
 	}
 	
 	
