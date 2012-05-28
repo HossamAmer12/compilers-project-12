@@ -1,0 +1,541 @@
+import java.io.*;
+import java_cup.runtime.Symbol;
+import java.util.ArrayList;
+
+
+
+%%
+%class Lexer
+%implements java_cup.runtime.Scanner
+%function next_token
+%type java_cup.runtime.Symbol
+
+
+%init{ 
+	// initialize the warning list will be printed each new line and cleared.
+	// warnings= new ArrayList<Warning>();
+%init} 
+
+
+%eofval{
+	if (state== 2)
+	{
+	
+		Report.displayWarning(yyline + 1, yychar, "Missing \" at the end of the string", lines.get(yyline));
+		// warnings.add(new Warning("Missing \" at the end of the string", yyline + 1, yychar));
+		currentLine = "";
+		return new Symbol(sym.ST, new Token(sym.ST, sb, yyline + 1, yychar));
+	}
+	   if(state == 1){
+		state = 0;
+		
+		System.out.println("Hello from state1");
+		// this.showWarnings();
+		System.out.println();
+		return null;
+	}
+	
+//	System.out.println("Hello from state2 warnings");
+//		this.showWarnings();
+		System.out.println();
+		return null;
+%eofval}
+
+%{
+  private int comment_count = 0;
+
+	String fileName;
+	public ArrayList<String> lines;
+	
+  	private int state = 0; // 0 normal , 1 CommentM, 3 string
+	private String sb = "";
+	private String currentLine="";
+
+	public Lexer(java.io.InputStream s , String fileName){
+		this();
+		yy_reader = new java.io.BufferedReader(new java.io.InputStreamReader(s));
+		this.fileName = fileName;
+		lines = readLines();
+	}
+
+	public ArrayList<String> readLines() {
+			ArrayList<String> lines = new ArrayList<String>();
+			try {
+				FileInputStream fstream = new FileInputStream("Algebra.decaf");
+
+				DataInputStream in = new DataInputStream(fstream);
+				BufferedReader br = new BufferedReader(new InputStreamReader(in));
+				String strLine;
+
+				while ((strLine = br.readLine()) != null) {
+					lines.add(strLine);
+				}
+
+				in.close();
+			} catch (Exception e) {
+				System.err.println("Error: " + e.getMessage());
+			}
+			return lines;
+		}
+
+
+
+
+%} 
+%line
+%char
+
+%state COMMENTS
+%state SINGLE_LINE_COMMENTS
+
+ALPHA=[A-Za-z_]
+DIGIT=[0-9]
+
+INTEGER = ({DIGIT})+
+DOUBLE = ({DIGIT})+"."({DIGIT})+
+
+NUMBER = {DOUBLE}|{INTEGER} 
+
+BOOLEAN = true|false
+
+KEYWORD = static|class|else|if|float|boolean|String|return|while|int
+ 
+ALPHA_NUMERIC={ALPHA}|{DIGIT}
+IDENT= {ALPHA}({ALPHA_NUMERIC})*
+
+WHITE_SPACE=([\ \b\r\t\f])+
+
+SYMBOLS = ([;,(){}=+-*/%!|&.])+
+
+SPACE=([\ \b\t\f])+
+
+STRINGS_TEXT = \"({ALPHA_NUMERIC}*({SYMBOLS})*({SPACE})*)*\"
+
+WRONG_STRING_ENDINGS = ([\n\r])+
+
+WHITE_SPACE_NEW=([\ \n\b\r\t\f])+
+
+STRINGS_TEXT_ERROR = \"({ALPHA_NUMERIC}*({SYMBOLS})*({SPACE})*)*({WRONG_STRING_ENDINGS})*
+
+COMMENT_TEXT= ({ALPHA_NUMERIC}*({SYMBOLS})*({WHITE_SPACE_NEW})*)*
+
+%%
+
+<YYINITIAL> [\n] { 
+	
+	
+// System.out.println("Clear Lines");
+	currentLine = "";
+	yychar = 0;
+}
+
+<YYINITIAL> {WHITE_SPACE} { 
+	currentLine+=yytext();
+}
+
+
+
+<YYINITIAL> "/*" { yybegin(COMMENTS); comment_count = comment_count + 1; }
+
+<YYINITIAL> class 
+{ 
+
+currentLine+=yytext();
+return new Symbol(sym.KW_class, new Token(sym.KW_class,yytext(), yyline + 1, yychar));
+
+// return new Symbol(sym.KW_class, yytext(), yyline)); 
+
+
+}
+<YYINITIAL> static 
+{ 
+
+currentLine+=yytext();
+return new Symbol(sym.KW_static, new Token(sym.KW_static,yytext(), yyline + 1 , yychar));
+
+// return new Symbol(sym.KW_static, yytext());
+
+}
+<YYINITIAL> else { 
+
+currentLine+=yytext();
+return new Symbol(sym.KW_else, new Token(sym.KW_else,yytext(), yyline + 1 , yychar));
+
+// return new Symbol(sym.KW_else, yytext()); 
+
+}
+<YYINITIAL> if { 
+
+currentLine+=yytext();
+return new Symbol(sym.KW_if, new Token(sym.KW_if,yytext(), yyline + 1, yychar));
+
+// return new Symbol(sym.KW_if, yytext()); 
+
+}
+
+<YYINITIAL> float { 
+
+currentLine+=yytext();
+return new Symbol(sym.KW_float, new Token(sym.KW_float,yytext(), yyline + 1, yychar));
+
+// return new Symbol(sym.KW_float, yytext()); 
+
+}
+<YYINITIAL> boolean { 
+
+
+currentLine+=yytext();
+return new Symbol(sym.KW_boolean, new Token(sym.KW_boolean,yytext(), yyline + 1, yychar));
+
+// return new Symbol(sym.KW_boolean, yytext()); 
+
+}
+<YYINITIAL> String {
+
+currentLine+=yytext();
+return new Symbol(sym.KW_String, new Token(sym.KW_String,yytext(), yyline + 1, yychar));
+
+// return new Symbol(sym.KW_String, yytext()); 
+
+}
+
+<YYINITIAL> return { 
+
+
+currentLine+=yytext();
+return new Symbol(sym.KW_return, new Token(sym.KW_return,yytext(), yyline + 1, yychar));
+
+// return new Symbol(sym.KW_return, yytext()); 
+
+}
+<YYINITIAL> while { 
+
+
+currentLine+=yytext();
+return new Symbol(sym.KW_while, new Token(sym.KW_while,yytext(), yyline + 1, yychar));
+
+// return new Symbol(sym.KW_while, yytext()); 
+
+}
+
+<YYINITIAL> int { 
+
+currentLine+=yytext();
+return new Symbol(sym.KW_int, new Token(sym.KW_int,yytext(), yyline + 1, yychar));
+
+//return new Symbol(sym.KW_int, yytext()); 
+
+}
+
+<YYINITIAL> "//" { yybegin(SINGLE_LINE_COMMENTS);}
+
+
+
+<SINGLE_LINE_COMMENTS> [^\n] {}
+
+<SINGLE_LINE_COMMENTS> [\n] 
+{ 
+
+yychar=0;
+currentLine="";
+yybegin(YYINITIAL); 
+
+}
+
+
+<COMMENTS> "/*" { 
+
+// state = 1;
+comment_count = comment_count + 1; 
+
+}
+<COMMENTS> "*/" { 
+
+	state = 0;
+	comment_count = comment_count - 1; 
+	
+	if (comment_count == 0) {
+    		yybegin(YYINITIAL);
+	}
+}
+<COMMENTS> {COMMENT_TEXT} {}
+
+
+<YYINITIAL> {STRINGS_TEXT_ERROR} { 
+
+	
+	currentLine += yytext();
+	Report.displayWarning(yyline + 1, yychar, "Missing \" at the end of the string at char no " + yychar, lines.get(yyline));
+	
+	return new Symbol(sym.ST, new Token(sym.ST, yytext() + "\"", yyline + 1, yychar));
+	
+//	Report.displayWarning(yyline + 1, yychar, "Missing \" at the end of the string at char no " + yychar, lines.get(lines.size()-1));
+//	Report.displayWarning(yyline + 1, yychar, "Invalid character \" " + yytext(), yyline + 1);	
+
+	// return new Symbol(sym.ERROR, "Invalid String Literal");
+}
+
+<YYINITIAL> {STRINGS_TEXT} { 
+
+currentLine+=yytext();
+return new Symbol(sym.ST, new Token(sym.ST,yytext(), yyline + 1, yychar));
+
+//	return new Symbol(sym.ST, yytext());
+}
+
+
+<YYINITIAL> {NUMBER} { 
+
+	String num = yytext();
+	String part1 = "";
+	String part2 = "";
+	int dotIndex = -1;
+	boolean nonZeroFound = false;
+	
+	
+	for (int i = 0; i<num.length(); i++)
+	{
+		if(num.charAt(i) == '.')
+		{
+			dotIndex = i;
+			break;
+		}
+	
+		if(nonZeroFound)
+		{
+				part1 += num.charAt(i);
+		}
+	
+		if(num.charAt(i) != '0' && !nonZeroFound)
+		{
+			part1 += num.charAt(i);
+			nonZeroFound = true;
+		}
+	}
+	
+	if(!nonZeroFound)
+		part1 = "0";
+	
+	boolean stopRemovingZeros = false;
+	int zerosCount = 0;
+	String numRev = "";
+	
+	if(dotIndex != -1)
+	{
+		for(int i = num.length() - 1; i>dotIndex; i--)
+		{		
+			if(num.charAt(i) != '0')	stopRemovingZeros = true;
+			
+			if(stopRemovingZeros)	numRev += num.charAt(i);
+			
+			if(num.charAt(i) == '0' && !stopRemovingZeros) zerosCount++;
+
+		}
+		
+		for(int i = numRev.length() - 1; i >= 0; i--)
+		{
+			part2 += numRev.charAt(i);
+		}
+		
+		part2 = (zerosCount==1)? ".0": "." + part2;
+	}
+
+	currentLine+=yytext();
+	return new Symbol(sym.NM, new Token(sym.KW_class,"" + part1 + part2, yyline + 1, yychar));
+
+}
+
+
+<YYINITIAL> "." { 
+
+currentLine+=yytext();
+
+ Report.displayWarning(yyline + 1, yychar, "Wrong number " + yychar, lines.get(yyline));
+
+}
+
+<YYINITIAL> {BOOLEAN} { 
+	
+//	System.out.println("BL:  "+  (yyline+1) + ", yytext: " + yytext());
+	currentLine+=yytext();
+	return new Symbol(sym.BL, new Token(sym.BL,yytext(), yyline + 1, yychar));
+
+//	return new Symbol(sym.BL, yytext());
+}
+
+<YYINITIAL> {KEYWORD} { 
+
+	currentLine+=yytext();
+	return new Symbol(sym.KW, new Token(sym.KW,yytext(), yyline + 1, yychar));
+
+//	return new Symbol(sym.KW, yytext());
+}
+
+<YYINITIAL> {IDENT} { 
+
+	currentLine+=yytext();
+	return new Symbol(sym.ID, new Token(sym.ID,yytext(), yyline + 1, yychar));
+
+	// return new Symbol(sym.ID, yytext());
+}
+
+
+<YYINITIAL> ";" { 
+
+	currentLine+=yytext();
+	return new Symbol(sym.SM, new Token(sym.SM,yytext(), yyline + 1, yychar));
+
+//   return new Symbol(sym.SM, yytext());	
+}
+
+<YYINITIAL> "{" { 
+
+currentLine+=yytext();
+return new Symbol(sym.LB, new Token(sym.LB,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.LB, yytext());	
+}
+
+<YYINITIAL> "-" { 
+
+currentLine+=yytext();
+return new Symbol(sym.MO, new Token(sym.MO,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.MO, yytext());	
+}
+
+<YYINITIAL> "==" { 
+
+currentLine+=yytext();
+return new Symbol(sym.EQ, new Token(sym.EQ,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.EQ, yytext());	
+}
+
+<YYINITIAL> "," { 
+
+currentLine+=yytext();
+return new Symbol(sym.FA, new Token(sym.FA,yytext(), yyline + 1, yychar));
+
+ // return new Symbol(sym.FA, yytext());	
+}
+
+<YYINITIAL> "}" { 
+
+currentLine+=yytext();
+return new Symbol(sym.RB, new Token(sym.RB,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.RB, yytext());	
+}
+
+<YYINITIAL> "!=" { 
+
+currentLine+=yytext();
+return new Symbol(sym.NE, new Token(sym.NE,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.NE, yytext());	
+}
+
+<YYINITIAL> "(" { 
+
+currentLine+=yytext();
+return new Symbol(sym.LP, new Token(sym.LP,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.LP, yytext());	
+}
+
+<YYINITIAL> "=" { 
+
+currentLine+=yytext();
+return new Symbol(sym.AO, new Token(sym.AO,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.AO, yytext());	
+}
+
+<YYINITIAL> "/" { 
+
+currentLine+=yytext();
+return new Symbol(sym.DO, new Token(sym.DO,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.DO, yytext());	
+}
+
+<YYINITIAL> "*" { 
+
+currentLine+=yytext();
+return new Symbol(sym.TO, new Token(sym.TO,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.TO, yytext());	
+}
+
+
+<YYINITIAL> "||" { 
+
+currentLine+=yytext();
+return new Symbol(sym.LO, new Token(sym.LO,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.LO, yytext());	
+}
+
+<YYINITIAL> "|" { 
+
+  	currentLine += yytext();
+  	// Single | and ||: to be converted to && and ||.
+	Report.displayWarning(yyline + 1, yychar, "Single | to be converted into ||", lines.get(yyline));
+  	
+//	warnings.add(new Warning("| converted to ||",yyline + 1,yychar));
+  	return new Symbol(sym.LO, new Token(sym.LO,yytext()+"|", yyline + 1, yychar));
+}
+
+<YYINITIAL> ")" { 
+
+currentLine+=yytext();
+return new Symbol(sym.RP, new Token(sym.RP,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.RP, yytext());	
+}
+
+<YYINITIAL> "+" { 
+
+currentLine+=yytext();
+return new Symbol(sym.PO, new Token(sym.PO,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.PO, yytext());
+} 
+
+
+<YYINITIAL> "%" { 
+
+currentLine+=yytext();
+return new Symbol(sym.MD, new Token(sym.MD,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.MD, yytext());	
+}
+
+<YYINITIAL> "&&" { 
+
+currentLine+=yytext();
+return new Symbol(sym.LA, new Token(sym.LA,yytext(), yyline + 1, yychar));
+
+//  return new Symbol(sym.LA, yytext());
+} 
+
+<YYINITIAL> "&" { 
+  
+  	currentLine+=yytext();
+  	//Single &: to be converted to && and &&.
+  	
+	Report.displayWarning(yyline + 1, yychar, "Single & to be converted into &&", lines.get(yyline));
+  	return new Symbol(sym.LA, new Token(sym.LA,yytext()+"&", yyline + 1, yychar));
+}
+
+<YYINITIAL, COMMENTS, SINGLE_LINE_COMMENTS> . {
+
+currentLine += yytext();
+
+Report.displayWarning(yyline + 1, yychar, "Invalid character " + yychar, lines.get(yyline));
+
+
+// warnings.add(new Warning("Invalid character "+yytext(),yyline + 1,yychar));
+//        return new Symbol(sym.ERROR, "Invalid Input: " + yytext(	));
+}
